@@ -15,7 +15,6 @@
             color: #000;
         }
         
-        /* Navigation Bar Styles */
         .navbar {
             background-color: #000;
             padding: 15px;
@@ -35,9 +34,7 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .nav-button:hover {
-            background-color: #333;
-        }
+        .nav-button:hover { background-color: #333; }
         .nav-button.active {
             background-color: #fdf1a9;
             color: #000;
@@ -60,10 +57,7 @@
             padding: 0 20px;
         }
         
-        /* Views */
-        #analyticsView {
-            display: none; 
-        }
+        #plannerView, #analyticsView { display: none; }
 
         .box {
             border: 1px solid #000;
@@ -93,20 +87,14 @@
             background: transparent;
         }
         
-        .row input[type="text"], .row input[type="time"], .row input[type="number"], #todayDate, .time-input {
+        .row input[type="text"], .row input[type="time"], .row input[type="number"], #currentPlannerDate, .time-input {
             text-align: center;
         }
 
-        .row {
-            display: flex;
-            border-bottom: 1px solid #000;
-        }
-        .row:last-child {
-            border-bottom: none;
-        }
-        .flex-row {
-            display: flex;
-        }
+        .row { display: flex; border-bottom: 1px solid #000; }
+        .row:last-child { border-bottom: none; }
+        .flex-row { display: flex; }
+        
         .checkbox-cell {
             width: 40px;
             display: flex;
@@ -114,61 +102,32 @@
             justify-content: center;
         }
         .checkbox-cell input {
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             border: 1px solid #000;
             cursor: pointer;
         }
         .number-cell {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
         }
         
         .task-label {
-            width: 70px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-right: 1px solid #000;
-            font-size: 14px;
-            font-weight: bold;
+            width: 70px; display: flex; align-items: center; justify-content: center;
+            border-right: 1px solid #000; font-size: 14px; font-weight: bold;
         }
-        .schedule-middle-col {
-            flex: 1; 
-            display: flex;
-            border-right: 1px solid #000; 
-        }
-        .schedule-right-col {
-            width: 50px; 
-            display: flex;
-        }
+        .schedule-middle-col { flex: 1; display: flex; border-right: 1px solid #000; }
+        .schedule-right-col { width: 50px; display: flex; }
         .schedule-middle-col input, .schedule-right-col input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 8px;
+            width: 100%; box-sizing: border-box; padding: 8px;
         }
         
         input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .break-box, .calendar-day {
-            flex: 1; 
-            padding: 10px; 
-            border-right: 1px solid #000;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-            text-align: center;
+            flex: 1; padding: 10px; border-right: 1px solid #000;
+            cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;
         }
-        .break-box:last-child {
-            border-right: none;
-        }
-        /* Red X effect */
+        .break-box:last-child { border-right: none; }
         .crossed {
             background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), 
                         linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
@@ -176,131 +135,78 @@
         }
 
         .notes-table {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            flex: 1;
-            border-right: 1px solid #000;
+            display: grid; grid-template-columns: 1fr 1fr; flex: 1; border-right: 1px solid #000;
         }
         .notes-cell {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #000;
-            box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center;
+            border-bottom: 1px solid #000; box-sizing: border-box;
         }
-        .notes-cell-right {
-            border-right: 1px solid #000;
-        }
-        .notes-cell.no-border-bottom {
-            border-bottom: none;
-        }
+        .notes-cell-right { border-right: 1px solid #000; }
+        .notes-cell.no-border-bottom { border-bottom: none; }
 
-        /* Analytics specific styles */
-        .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-            margin: 20px 0;
-            color: #000;
+        /* Analytics */
+        .stat-number { font-size: 36px; font-weight: bold; text-align: center; margin: 20px 0; color: #000; }
+        .stat-label { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; padding: 0 5px; }
+        .chart-container { padding: 20px; display: flex; justify-content: center; align-items: center; height: 250px; position: relative; }
+        .chart-toggle-group { position: absolute; right: 5px; display: flex; gap: 5px; }
+        .chart-toggle-btn { padding: 2px 8px; font-size: 10px; background: #fff; border: 1px solid #000; cursor: pointer; font-weight: bold; }
+        .chart-toggle-btn.active { background: #000; color: #fff; }
+        .insights-list { padding: 20px; font-size: 18px; line-height: 2; margin: 0; list-style-type: none; text-align: center; }
+
+        /* Notebook View Styles */
+        .notebook-card {
+            border: 2px solid #000; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;
+            background-color: #fdf1a9; box-shadow: 4px 4px 0px #000; margin-bottom: 20px;
         }
-        .stat-label {
-            text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
-            padding: 0 5px;
+        .notebook-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px #000; }
+        .notebook-title { font-size: 24px; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-list { text-align: left; margin-top: 20px; border-top: 2px dashed #000; padding-top: 20px; }
+        .page-item {
+            padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; background: #fff;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            font-weight: bold; transition: 0.2s;
         }
-        .time-filter {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            grid-column: span 2;
+        .page-item:hover { border-color: #000; background: #fdf1a9; }
+        .new-page-btn {
+            background: #000; color: #fff; border: none; padding: 15px; width: 100%;
+            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s;
         }
-        .filter-btn, .chart-toggle-btn {
-            background: #fff;
-            border: 1px solid #000;
-            padding: 5px 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .filter-btn.active, .chart-toggle-btn.active {
-            background: #000;
-            color: #fff;
-        }
-        .chart-container {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 250px;
-            position: relative;
-        }
-        .chart-toggle-group {
-            position: absolute;
-            right: 5px;
-            display: flex;
-            gap: 5px;
-        }
-        .chart-toggle-btn {
-            padding: 2px 8px;
-            font-size: 10px;
-        }
+        .new-page-btn:hover { background: #333; }
         
-        /* Ultra-minimalist Insights List */
-        .insights-list {
-            padding: 20px;
-            font-size: 16px;
-            line-height: 2;
-            margin: 0;
-            list-style-type: none;
-            text-align: center;
-        }
-
-        /* RTL Calendar Grid for Hebrew Days */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            border-top: 1px solid #000;
-            border-left: 1px solid #000;
-            margin: 10px;
-            direction: rtl; /* Makes Sunday (א) start on the right */
-        }
-        .calendar-header {
-            background-color: #f9f9f9;
-            font-size: 14px;
-            padding: 8px 0;
-        }
-        .calendar-cell {
-            border-left: 1px solid #000; /* Adjusted for RTL */
-            border-bottom: 1px solid #000;
-            aspect-ratio: 1; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .calendar-empty {
-            background-color: #f0f0f0;
-        }
+        #savedPagesContainer { max-height: 400px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <button class="nav-button active" id="btnPlanner" onclick="switchTab('planner')">PLANNER</button>
+        <button class="nav-button active" id="btnNotebooks" onclick="switchTab('notebooks')">NOTEBOOKS</button>
+        <button class="nav-button" id="btnPlanner" onclick="switchTab('planner')">PLANNER</button>
         <button class="nav-button" id="btnAnalytics" onclick="switchTab('analytics')">ANALYTICS</button>
     </div>
 
-    <div class="header-title" id="mainTitle">STUDY PLANNER</div>
+    <div class="header-title" id="mainTitle">MY NOTEBOOKS</div>
 
-    <div id="plannerView" class="container">
+    <div id="notebooksView" class="container" style="display: block; max-width: 600px;">
+        <div class="notebook-card">
+            <div class="notebook-title">Semester A 2026</div>
+            <div>Computer Science & Neuroscience</div>
+        </div>
+        <div class="page-list">
+            <h3 style="margin-top: 0;">Saved Study Pages</h3>
+            <div id="savedPagesContainer">
+                </div>
+            <button class="new-page-btn" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
+        </div>
+    </div>
+
+    <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
+        
+        <input type="hidden" id="activeDateKey">
+
         <div>
             <div class="box flex-row">
                 <div class="yellow-header" style="padding: 8px 15px; border-bottom: none; border-right: 1px solid #000; text-align: left;">DATE:</div>
-                <input type="text" id="todayDate" style="flex: 1; padding: 8px;" placeholder="DD/MM/YYYY">
+                <input type="text" id="currentPlannerDate" class="save-target" style="flex: 1; padding: 8px; font-weight:bold;" readonly>
             </div>
 
             <div class="box">
@@ -311,10 +217,10 @@
                         <div class="row">
                             <div class="task-label">Task ${i}</div>
                             <div class="schedule-middle-col">
-                                <input type="text" placeholder="...">
+                                <input type="text" class="sched-task save-target" placeholder="...">
                             </div>
                             <div class="schedule-right-col">
-                                <input type="number" min="1" max="10" placeholder="#">
+                                <input type="number" min="1" max="10" class="sched-cat save-target" placeholder="#">
                             </div>
                         </div>
                         `);
@@ -324,30 +230,44 @@
 
             <div class="box">
                 <div class="yellow-header" style="font-size: 16px;">Todo</div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <script>
+                    for(let i=1; i<=5; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="checkbox-cell" style="border-right: 1px solid #000;">
+                                <input type="checkbox" class="todo-check save-target">
+                            </div>
+                            <input type="text" class="todo-text save-target" style="width: 100%; padding: 8px; box-sizing: border-box;">
+                        </div>
+                        `);
+                    }
+                </script>
             </div>
 
             <div class="box">
                 <div class="yellow-header">REWARD</div>
-                <input type="text" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="...">
+                <input type="text" id="rewardInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="...">
             </div>
         </div>
 
         <div>
             <div class="box">
                 <div class="yellow-header">STUDY SESSION GOAL</div>
-                <input type="text" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;">
+                <input type="text" id="goalInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;">
             </div>
 
             <div class="box">
                 <div class="yellow-header">TODAY'S TOP THREE</div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">1</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">2</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">3</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <script>
+                    for(let i=1; i<=3; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="number-cell" style="width: 30px; border-right: 1px solid #000;">${i}</div>
+                            <input type="text" class="top-three save-target" style="width: 100%; padding: 8px; box-sizing: border-box;">
+                        </div>
+                        `);
+                    }
+                </script>
             </div>
 
             <div class="box">
@@ -362,13 +282,15 @@
                     for(let i=1; i<=10; i++) {
                         document.write(`
                         <div class="row">
-                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;"><input type="checkbox"></div>
+                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;">
+                                <input type="checkbox" class="track-check save-target">
+                            </div>
                             <div class="number-cell" style="flex: 1; font-size: 14px;">Task ${i}</div>
                             <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;">
-                                <input type="text" class="time-input start-time" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                                <input type="text" class="time-input start-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
                             </div>
                             <div style="width: 90px; box-sizing: border-box; display: flex;">
-                                <input type="text" class="time-input finish-time" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                                <input type="text" class="time-input finish-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
                             </div>
                         </div>
                         `);
@@ -379,11 +301,11 @@
             <div class="box">
                 <div class="yellow-header">BREAK TIMES CHECK LIST</div>
                 <div class="flex-row" style="text-align: center;">
-                    <div class="break-box">1</div>
-                    <div class="break-box">2</div>
-                    <div class="break-box">3</div>
-                    <div class="break-box">4</div>
-                    <div class="break-box">5</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">1</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">2</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">3</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">4</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">5</div>
                 </div>
             </div>
 
@@ -395,24 +317,16 @@
                         <div class="notes-cell" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;">TIME</div>
                         
                         <div class="notes-cell notes-cell-right" style="padding: 8px;">Taken</div>
-                        <div class="notes-cell">
-                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
-                        </div>
+                        <div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
                         
                         <div class="notes-cell notes-cell-right" style="padding: 8px;">Effect</div>
-                        <div class="notes-cell">
-                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
-                        </div>
+                        <div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
                         
                         <div class="notes-cell notes-cell-right" style="padding: 8px;">Start Work</div>
-                        <div class="notes-cell">
-                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
-                        </div>
+                        <div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
                         
                         <div class="notes-cell notes-cell-right no-border-bottom" style="padding: 8px;">Finish</div>
-                        <div class="notes-cell no-border-bottom">
-                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
-                        </div>
+                        <div class="notes-cell no-border-bottom"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
                     </div>
                     
                     <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
@@ -425,33 +339,26 @@
     </div>
 
     <div id="analyticsView" class="container">
-        
-        <div class="time-filter">
-            <button class="filter-btn">Today</button>
-            <button class="filter-btn active">This Week</button>
-            <button class="filter-btn">This Month</button>
-        </div>
-
         <div style="grid-column: span 2; display: flex; gap: 20px;">
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">TOTAL HOURS</div>
-                <div class="stat-number">32.5</div>
-                <div class="stat-label">Hours logged</div>
+                <div class="stat-number" id="statTotalHours">0.0</div>
+                <div class="stat-label">Hours logged total</div>
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">DAILY AVERAGE</div>
-                <div class="stat-number">4.6</div>
+                <div class="stat-number" id="statDailyAvg">0.0</div>
                 <div class="stat-label">Hours per day</div>
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">BEST DAY</div>
-                <div class="stat-number">Tue</div>
+                <div class="stat-number" id="statBestDay">N/A</div>
                 <div class="stat-label">Most productive</div>
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
-                <div class="yellow-header">AVG BREAK</div>
-                <div class="stat-number">18m</div>
-                <div class="stat-label">Between sessions</div>
+                <div class="yellow-header">TOTAL SESSIONS</div>
+                <div class="stat-number" id="statTotalSessions">0</div>
+                <div class="stat-label">Blocks completed</div>
             </div>
         </div>
 
@@ -476,104 +383,216 @@
         </div>
 
         <div class="box" style="grid-column: span 2;">
-            <div class="yellow-header">CONSISTENCY CALENDAR</div>
-            <div class="calendar-grid">
-                <div class="calendar-cell calendar-header">א</div>
-                <div class="calendar-cell calendar-header">ב</div>
-                <div class="calendar-cell calendar-header">ג</div>
-                <div class="calendar-cell calendar-header">ד</div>
-                <div class="calendar-cell calendar-header">ה</div>
-                <div class="calendar-cell calendar-header">ו</div>
-                <div class="calendar-cell calendar-header">ש</div>
-                
-                <div class="calendar-cell calendar-empty"></div>
-                <div class="calendar-cell calendar-empty"></div>
-                <div class="calendar-cell calendar-empty"></div>
-                <div class="calendar-cell calendar-empty"></div>
-                <div class="calendar-cell calendar-day">1</div>
-                <div class="calendar-cell calendar-day crossed">2</div>
-                <div class="calendar-cell calendar-day crossed">3</div>
-                
-                <div class="calendar-cell calendar-day">4</div>
-                <div class="calendar-cell calendar-day crossed">5</div>
-                <div class="calendar-cell calendar-day crossed">6</div>
-                <div class="calendar-cell calendar-day crossed">7</div>
-                <div class="calendar-cell calendar-day">8</div>
-                <div class="calendar-cell calendar-day crossed">9</div>
-                <div class="calendar-cell calendar-day crossed">10</div>
-                
-                <div class="calendar-cell calendar-day">11</div>
-                <div class="calendar-cell calendar-day crossed">12</div>
-                <div class="calendar-cell calendar-day crossed">13</div>
-                <div class="calendar-cell calendar-day">14</div>
-                <div class="calendar-cell calendar-day crossed">15</div>
-                <div class="calendar-cell calendar-day crossed">16</div>
-                <div class="calendar-cell calendar-day">17</div>
-                
-                <div class="calendar-cell calendar-day">18</div>
-                <div class="calendar-cell calendar-day">19</div>
-                <div class="calendar-cell calendar-day">20</div>
-                <div class="calendar-cell calendar-day">21</div>
-                <div class="calendar-cell calendar-day">22</div>
-                <div class="calendar-cell calendar-day">23</div>
-                <div class="calendar-cell calendar-day">24</div>
-                
-                <div class="calendar-cell calendar-day">25</div>
-                <div class="calendar-cell calendar-day">26</div>
-                <div class="calendar-cell calendar-day">27</div>
-                <div class="calendar-cell calendar-day">28</div>
-                <div class="calendar-cell calendar-day">29</div>
-                <div class="calendar-cell calendar-day">30</div>
-                <div class="calendar-cell calendar-day">31</div>
-            </div>
-        </div>
-
-        <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">DATA INSIGHTS & RECOMMENDATIONS</div>
             <ul class="insights-list">
-                <li>🏆 <strong>BEST DAY:</strong> Tuesday (Highest Volume)</li>
-                <li>⭐ <strong>GOLDEN HOURS:</strong> 08:30 - 13:00 (+45% Focus)</li>
-                <li>☕ <strong>IDEAL BREAK:</strong> 15-20 mins (Maximizes Daily Total)</li>
+                <li>🏆 <strong>YOUR RECORD:</strong> The most hours you studied in a single day is <span id="insightRecord">0</span>.</li>
+                <li>⭐ <strong>CONSISTENCY:</strong> You have recorded data for <span id="insightDays">0</span> days in this notebook.</li>
+                <li>🎯 <strong>KEEP GOING:</strong> Consistency is key for exams. Aim for steady daily averages rather than cramming!</li>
             </ul>
         </div>
-
     </div>
 
     <script>
-        // --- Register Chart DataLabels Plugin ---
         Chart.register(ChartDataLabels);
 
-        // --- Tab Switching Logic ---
+        // --- Core Application State & Storage ---
+        const STORAGE_KEY = 'studyApp_NotebookData';
+        
+        // Load data from LocalStorage or create empty object
+        function loadAllData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        // Save data object to LocalStorage
+        function saveAllData(dataObj) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
+        }
+
+        // --- View Navigation ---
         function switchTab(tabName) {
-            const planner = document.getElementById('plannerView');
-            const analytics = document.getElementById('analyticsView');
-            const btnPlanner = document.getElementById('btnPlanner');
-            const btnAnalytics = document.getElementById('btnAnalytics');
+            document.getElementById('notebooksView').style.display = 'none';
+            document.getElementById('plannerView').style.display = 'none';
+            document.getElementById('analyticsView').style.display = 'none';
+            
+            document.getElementById('btnNotebooks').classList.remove('active');
+            document.getElementById('btnPlanner').classList.remove('active');
+            document.getElementById('btnAnalytics').classList.remove('active');
+
             const title = document.getElementById('mainTitle');
 
-            if (tabName === 'planner') {
-                planner.style.display = 'grid';
-                analytics.style.display = 'none';
-                btnPlanner.classList.add('active');
-                btnAnalytics.classList.remove('active');
+            if (tabName === 'notebooks') {
+                document.getElementById('notebooksView').style.display = 'block';
+                document.getElementById('btnNotebooks').classList.add('active');
+                title.innerText = 'MY NOTEBOOKS';
+                renderNotebookList(); // Refresh list
+            } else if (tabName === 'planner') {
+                document.getElementById('plannerView').style.display = 'grid';
+                document.getElementById('btnPlanner').classList.add('active');
                 title.innerText = 'STUDY PLANNER';
-            } else {
-                planner.style.display = 'none';
-                analytics.style.display = 'grid'; 
-                btnPlanner.classList.remove('active');
-                btnAnalytics.classList.add('active');
+            } else if (tabName === 'analytics') {
+                document.getElementById('analyticsView').style.display = 'grid'; 
+                document.getElementById('btnAnalytics').classList.add('active');
                 title.innerText = 'STUDY ANALYTICS';
+                updateAnalyticsData(); // Recalculate based on real data
             }
         }
 
-        // --- Planner Logic (Time & Dates) ---
-        const dateField = document.getElementById('todayDate');
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const year = today.getFullYear();
-        dateField.value = `${day}/${month}/${year}`;
+        // --- Notebook List Generation ---
+        function renderNotebookList() {
+            const data = loadAllData();
+            const container = document.getElementById('savedPagesContainer');
+            container.innerHTML = ''; // Clear current
 
+            const dates = Object.keys(data).sort((a, b) => new Date(b) - new Date(a)); // Newest first
+
+            if (dates.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">No pages saved yet. Create your first daily page!</p>';
+                return;
+            }
+
+            dates.forEach(dateStr => {
+                const dayData = data[dateStr];
+                const totalH = (dayData.totalMinutes / 60).toFixed(1);
+                
+                // Format date nicely
+                const dateObj = new Date(dateStr);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const niceDate = dateObj.toLocaleDateString('en-US', options);
+
+                const div = document.createElement('div');
+                div.className = 'page-item';
+                div.onclick = () => loadDayIntoPlanner(dateStr);
+                div.innerHTML = `
+                    <span>📅 ${niceDate}</span>
+                    <span>⏱️ ${totalH} Hours Logged</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- Auto-Save & Loading Engine ---
+        function getFormattedDate(dateObj) {
+            return dateObj.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+        }
+
+        function createNewPage() {
+            const today = new Date();
+            const dateKey = getFormattedDate(today);
+            loadDayIntoPlanner(dateKey); // Will load if exists, or create clean slate
+        }
+
+        function loadDayIntoPlanner(dateKey) {
+            const data = loadAllData();
+            document.getElementById('activeDateKey').value = dateKey;
+            
+            // Format for display (DD/MM/YYYY)
+            const d = new Date(dateKey);
+            const displayDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            document.getElementById('currentPlannerDate').value = displayDate;
+
+            // Clear all fields first
+            clearPlannerForm();
+
+            // If data exists for this day, populate it
+            if (data[dateKey]) {
+                const dayData = data[dateKey];
+                
+                // Load texts, numbers, times
+                populateArray('.sched-task', dayData.schedTasks);
+                populateArray('.sched-cat', dayData.schedCats);
+                populateArray('.todo-text', dayData.todoTexts);
+                populateArray('.top-three', dayData.topThrees);
+                populateArray('.start-time', dayData.startTimes);
+                populateArray('.finish-time', dayData.finishTimes);
+                populateArray('.notes-time', dayData.notesTimes);
+                
+                document.getElementById('rewardInput').value = dayData.reward || '';
+                document.getElementById('goalInput').value = dayData.goal || '';
+                
+                // Load checkboxes
+                populateChecks('.todo-check', dayData.todoChecks);
+                populateChecks('.track-check', dayData.trackChecks);
+
+                // Load breaks (crossed class)
+                const breaks = document.querySelectorAll('.break-box');
+                (dayData.breaks || []).forEach((isCrossed, i) => {
+                    if (isCrossed && breaks[i]) breaks[i].classList.add('crossed');
+                });
+
+                // Fix time inputs type (if they have data, make them type="time")
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if(input.value !== "") input.type = "time";
+                });
+            }
+            
+            calculateTotalTime(); // Update total visual
+            switchTab('planner');
+        }
+
+        function clearPlannerForm() {
+            document.querySelectorAll('.save-target').forEach(el => {
+                if (el.type === 'checkbox') el.checked = false;
+                else if (el.classList.contains('break-box')) el.classList.remove('crossed');
+                else if (el.id !== 'currentPlannerDate') el.value = '';
+                
+                if (el.classList.contains('time-input')) el.type = 'text'; // reset to blank
+            });
+        }
+
+        function saveCurrentData() {
+            const dateKey = document.getElementById('activeDateKey').value;
+            if (!dateKey) return; // Don't save if no date is active
+
+            // Always calculate time before saving
+            const totalMins = calculateTotalTime();
+
+            const dayData = {
+                schedTasks: getArrayValues('.sched-task'),
+                schedCats: getArrayValues('.sched-cat'),
+                todoTexts: getArrayValues('.todo-text'),
+                todoChecks: getCheckValues('.todo-check'),
+                topThrees: getArrayValues('.top-three'),
+                startTimes: getArrayValues('.start-time'),
+                finishTimes: getArrayValues('.finish-time'),
+                trackChecks: getCheckValues('.track-check'),
+                notesTimes: getArrayValues('.notes-time'),
+                reward: document.getElementById('rewardInput').value,
+                goal: document.getElementById('goalInput').value,
+                breaks: Array.from(document.querySelectorAll('.break-box')).map(b => b.classList.contains('crossed')),
+                totalMinutes: totalMins
+            };
+
+            const allData = loadAllData();
+            allData[dateKey] = dayData;
+            saveAllData(allData);
+        }
+
+        // Helper functions for saving/loading
+        function getArrayValues(selector) {
+            return Array.from(document.querySelectorAll(selector)).map(el => el.value);
+        }
+        function getCheckValues(selector) {
+            return Array.from(document.querySelectorAll(selector)).map(el => el.checked);
+        }
+        function populateArray(selector, valuesArr) {
+            if (!valuesArr) return;
+            const elements = document.querySelectorAll(selector);
+            valuesArr.forEach((val, i) => { if (elements[i]) elements[i].value = val; });
+        }
+        function populateChecks(selector, boolArr) {
+            if (!boolArr) return;
+            const elements = document.querySelectorAll(selector);
+            boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; });
+        }
+
+        function toggleBreak(element) {
+            element.classList.toggle('crossed');
+            saveCurrentData(); // Save state when a break is clicked
+        }
+
+
+        // --- Time Calculation ---
         function calculateTotalTime() {
             let totalMinutes = 0;
             const startTimes = document.querySelectorAll('.start-time');
@@ -590,158 +609,214 @@
                     let startTotalMins = (startH * 60) + startM;
                     let finishTotalMins = (finishH * 60) + finishM;
 
-                    if (finishTotalMins < startTotalMins) {
-                        finishTotalMins += (24 * 60); 
-                    }
-
+                    if (finishTotalMins < startTotalMins) finishTotalMins += (24 * 60); 
                     totalMinutes += (finishTotalMins - startTotalMins);
                 }
             }
 
             const finalHours = Math.floor(totalMinutes / 60);
             const finalMins = totalMinutes % 60;
+            document.getElementById('totalTime').value = `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
             
-            document.getElementById('totalTime').value = 
-                `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
+            return totalMinutes; // Return for the save function
         }
 
+        // --- Time Input UX ---
         const timeInputs = document.querySelectorAll('.time-input');
         timeInputs.forEach(input => {
             input.addEventListener('focus', function() { this.type = 'time'; });
-            input.addEventListener('blur', function() {
-                if (this.value === '') this.type = 'text';
-                calculateTotalTime();
-            });
+            input.addEventListener('blur', function() { if (this.value === '') this.type = 'text'; });
             input.addEventListener('dblclick', function() {
                 this.type = 'time'; 
                 if (this.value === '') {
                     const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    this.value = `${hours}:${minutes}`;
-                    calculateTotalTime();
+                    this.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                    this.dispatchEvent(new Event('change'));
                 }
             });
         });
 
         const finishTimes = document.querySelectorAll('.finish-time');
         const startTimes = document.querySelectorAll('.start-time');
-
         finishTimes.forEach((finishInput, index) => {
             finishInput.addEventListener('change', function() {
-                calculateTotalTime();
                 if (this.value !== '' && index + 1 < startTimes.length) {
                     if (startTimes[index + 1].value === '') {
                         startTimes[index + 1].type = 'time'; 
                         startTimes[index + 1].value = this.value;
-                        calculateTotalTime();
+                        startTimes[index + 1].dispatchEvent(new Event('change'));
                     }
                 }
             });
         });
 
-        startTimes.forEach(input => input.addEventListener('input', calculateTotalTime));
-        finishTimes.forEach(input => input.addEventListener('input', calculateTotalTime));
 
-        const breakBoxes = document.querySelectorAll('.break-box');
-        breakBoxes.forEach(box => {
-            box.addEventListener('click', function() {
-                this.classList.toggle('crossed');
-            });
-        });
+        // --- Analytics Engine (Real Data!) ---
+        let trendChartObj = null;
+        let pieChartObj = null;
 
-        const calendarDays = document.querySelectorAll('.calendar-day');
-        calendarDays.forEach(day => {
-            day.addEventListener('click', function() {
-                this.classList.toggle('crossed');
-            });
-        });
+        function updateAnalyticsData() {
+            const data = loadAllData();
+            const dates = Object.keys(data).sort(); // chronological
+            
+            if(dates.length === 0) return; // No data yet
 
-        // --- Chart.js Configuration & Toggle Logic ---
-        
-        // 1. Category Pie Chart (Now with DataLabels!)
-        const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'doughnut',
-            data: {
-                labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
-                datasets: [{
-                    data: [40, 30, 20, 10],
-                    backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'right' },
-                    datalabels: {
-                        color: '#fff',
-                        font: { weight: 'bold', size: 14 },
-                        formatter: (value) => value + '%' // Show percentage sign
+            let totalMinsAllTime = 0;
+            let totalSessionsAllTime = 0;
+            let maxMinsInDay = 0;
+            let dayAverages = { 'Sunday':[], 'Monday':[], 'Tuesday':[], 'Wednesday':[], 'Thursday':[], 'Friday':[], 'Saturday':[] };
+            
+            // Arrays for the chart (last 7 days max)
+            const chartLabels = [];
+            const chartHours = [];
+            const chartSessions = [];
+            
+            // Category counting map
+            const categoryCounts = {};
+
+            dates.forEach(dateStr => {
+                const dayData = data[dateStr];
+                const d = new Date(dateStr);
+                const dayName = d.toLocaleDateString('en-US', { weekday: 'long' });
+                
+                totalMinsAllTime += dayData.totalMinutes;
+                
+                // Count real sessions (where a start time exists)
+                let daySessions = dayData.startTimes.filter(t => t !== "").length;
+                totalSessionsAllTime += daySessions;
+
+                if (dayData.totalMinutes > maxMinsInDay) maxMinsInDay = dayData.totalMinutes;
+
+                // Track for "Best Day" calculation
+                dayAverages[dayName].push(dayData.totalMinutes);
+
+                // Collect categories
+                dayData.schedCats.forEach(cat => {
+                    if(cat) {
+                        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
                     }
+                });
+
+                // Add to chart arrays
+                chartLabels.push(dayName.substring(0,3));
+                chartHours.push((dayData.totalMinutes / 60).toFixed(1));
+                chartSessions.push(daySessions);
+            });
+
+            // Update Quick Stats Text
+            const totalHoursDec = (totalMinsAllTime / 60).toFixed(1);
+            document.getElementById('statTotalHours').innerText = totalHoursDec;
+            document.getElementById('statDailyAvg').innerText = (totalHoursDec / dates.length).toFixed(1);
+            document.getElementById('statTotalSessions').innerText = totalSessionsAllTime;
+            
+            document.getElementById('insightRecord').innerText = (maxMinsInDay / 60).toFixed(1) + " hours";
+            document.getElementById('insightDays').innerText = dates.length;
+
+            // Find Best Day
+            let bestDay = "N/A";
+            let bestAvg = -1;
+            for (const [day, arr] of Object.entries(dayAverages)) {
+                if(arr.length > 0) {
+                    let sum = arr.reduce((a, b) => a + b, 0);
+                    let avg = sum / arr.length;
+                    if(avg > bestAvg) { bestAvg = avg; bestDay = day.substring(0,3); }
                 }
             }
-        });
+            document.getElementById('statBestDay').innerText = bestDay;
 
-        // 2. Trend Bar Chart (Now with DataLabels on top of bars!)
-        const dataHours = [2, 5.5, 7.2, 4, 6, 4.5, 3.3];
-        const dataSessions = [2, 4, 6, 3, 5, 4, 2];
+            // Update Charts (Take only last 7 entries for trend)
+            const recentLabels = chartLabels.slice(-7);
+            const recentHours = chartHours.slice(-7);
+            const recentSessions = chartSessions.slice(-7);
 
-        const ctxBar = document.getElementById('trendBarChart').getContext('2d');
-        let trendChart = new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                datasets: [{
-                    label: 'Study Hours',
-                    data: dataHours,
-                    backgroundColor: '#fdf1a9',
-                    borderColor: '#000000',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { 
-                        beginAtZero: true,
-                        suggestedMax: 10 // Gives breathing room for the label above the bar
-                    }
+            updateTrendChart(recentLabels, recentHours, recentSessions);
+            updatePieChart(categoryCounts);
+        }
+
+        // Global variables to hold chart data so toggle works
+        let globalChartHours = [];
+        let globalChartSessions = [];
+
+        function updateTrendChart(labels, hoursData, sessionsData) {
+            globalChartHours = hoursData;
+            globalChartSessions = sessionsData;
+
+            const ctxBar = document.getElementById('trendBarChart').getContext('2d');
+            if(trendChartObj) trendChartObj.destroy(); // Destroy old chart before drawing new
+
+            trendChartObj = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Study Hours',
+                        data: hoursData,
+                        backgroundColor: '#fdf1a9',
+                        borderColor: '#000000',
+                        borderWidth: 2
+                    }]
                 },
-                plugins: {
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        color: '#000',
-                        font: { weight: 'bold', size: 14 }
-                    }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, suggestedMax: Math.max(...hoursData) + 2 } },
+                    plugins: { datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold', size: 14 } } }
                 }
-            }
-        });
+            });
+            // Reset toggle buttons
+            document.getElementById('btnHours').classList.add('active');
+            document.getElementById('btnSessions').classList.remove('active');
+        }
 
-        // Function to toggle between Hours and Sessions
         function toggleChart(type) {
+            if(!trendChartObj) return;
             const btnHours = document.getElementById('btnHours');
             const btnSessions = document.getElementById('btnSessions');
 
             if (type === 'hours') {
-                trendChart.data.datasets[0].data = dataHours;
-                trendChart.data.datasets[0].label = 'Study Hours';
-                btnHours.classList.add('active');
-                btnSessions.classList.remove('active');
-                trendChart.options.scales.y.suggestedMax = 10;
+                trendChartObj.data.datasets[0].data = globalChartHours;
+                trendChartObj.data.datasets[0].label = 'Study Hours';
+                btnHours.classList.add('active'); btnSessions.classList.remove('active');
+                trendChartObj.options.scales.y.suggestedMax = Math.max(...globalChartHours) + 2;
             } else {
-                trendChart.data.datasets[0].data = dataSessions;
-                trendChart.data.datasets[0].label = 'Number of Sessions';
-                btnSessions.classList.add('active');
-                btnHours.classList.remove('active');
-                trendChart.options.scales.y.suggestedMax = 8;
+                trendChartObj.data.datasets[0].data = globalChartSessions;
+                trendChartObj.data.datasets[0].label = 'Number of Sessions';
+                btnSessions.classList.add('active'); btnHours.classList.remove('active');
+                trendChartObj.options.scales.y.suggestedMax = Math.max(...globalChartSessions) + 2;
             }
-            trendChart.update();
+            trendChartObj.update();
         }
+
+        function updatePieChart(categoryCounts) {
+            const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
+            if(pieChartObj) pieChartObj.destroy();
+
+            const labels = Object.keys(categoryCounts).map(k => `Category ${k}`);
+            const data = Object.values(categoryCounts);
+            
+            // If empty, show a grey placeholder
+            if(data.length === 0) { labels.push('No Data'); data.push(1); }
+
+            pieChartObj = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#cccccc'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font: { weight: 'bold' } } }
+                }
+            });
+        }
+
+        // Initialize App on Load
+        window.onload = () => {
+            switchTab('notebooks'); // Start at notebooks screen
+        };
     </script>
 </body>
 </html>
