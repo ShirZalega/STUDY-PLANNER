@@ -15,6 +15,7 @@
             color: #000;
         }
         
+        /* Navigation Bar */
         .navbar {
             background-color: #000; padding: 15px; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;
         }
@@ -30,6 +31,11 @@
 
         .container {
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px;
+        }
+        
+        /* NEW: Single Column Container for Notebook Detail View */
+        .single-col-container {
+            display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 20px;
         }
         
         #notebooksGridView, #notebookDetailView, #plannerView, #analyticsView { display: none; }
@@ -107,17 +113,20 @@
         
         .add-notebook-card { border: 2px dashed #000; background-color: #fff; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; }
         .add-notebook-card:hover { background-color: #f9f9f9; box-shadow: none; border-color: #333; color: #000; }
-        .page-list { text-align: left; border-top: 2px dashed #000; padding-top: 20px; }
+        
+        /* Page list styling for vertical layout */
+        .page-list { text-align: left; width: 100%; }
         .page-item { padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; background: #fff; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .page-item:hover { border-color: #000; background: #fdf1a9; }
         
         .btn-black { background: #000; color: #fff; border: none; padding: 15px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase; }
         .btn-black:hover { background: #333; }
-        .back-btn { background: transparent; border: none; color: #000; font-size: 16px; font-weight: bold; text-align: left; cursor: pointer; padding: 0 0 20px 0; grid-column: span 2; }
+        .back-btn { background: transparent; border: none; color: #000; font-size: 16px; font-weight: bold; text-align: left; cursor: pointer; padding: 0; align-self: flex-start; }
         .back-btn:hover { text-decoration: underline; }
 
         #savedPagesContainer { max-height: 400px; overflow-y: auto; }
         
+        /* Modal */
         #newNotebookModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: #fff; padding: 30px; border: 2px solid #000; width: 400px; text-align: center; box-shadow: 8px 8px 0px #000; }
         .modal-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #000; box-sizing: border-box; font-size: 16px; font-family: inherit;}
@@ -152,21 +161,23 @@
         </div>
     </div>
 
-    <div id="notebookDetailView" class="container" style="max-width: 600px;">
-        <button class="back-btn" style="grid-column: 1;" onclick="switchTab('notebooks')">🔙 ALL NOTEBOOKS</button>
-        <div class="notebook-card" style="width: 100%; box-sizing: border-box;">
+    <div id="notebookDetailView" class="single-col-container">
+        <button class="back-btn" onclick="switchTab('notebooks')">🔙 ALL NOTEBOOKS</button>
+        
+        <div class="notebook-card" style="width: 100%; box-sizing: border-box; margin-bottom: 10px;">
             <div class="notebook-title" id="detailNotebookTitle">Notebook Name</div>
             <div id="detailNotebookDesc">Description</div>
         </div>
-        <div class="page-list" style="width: 100%;">
-            <h3 style="margin-top: 0;">Saved Study Pages</h3>
+        
+        <div class="page-list">
+            <h3 style="margin-top: 0; border-bottom: 2px dashed #000; padding-bottom: 10px; text-align: center;">Saved Study Pages</h3>
             <div id="savedPagesContainer"></div>
             <button class="btn-black" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
         </div>
     </div>
 
     <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
-        <button class="back-btn" onclick="openNotebook(currentNotebookId)">🔙 BACK TO NOTEBOOK</button>
+        <button class="back-btn" style="grid-column: span 2; padding-bottom: 20px;" onclick="openNotebook(currentNotebookId)">🔙 BACK TO NOTEBOOK</button>
         <input type="hidden" id="activeDateKey">
 
         <div>
@@ -375,17 +386,17 @@
             return dateObj.toISOString().split('T')[0]; 
         }
 
-        // --- NEW: FAKE DATA GENERATOR BUTTON ---
+        // --- FAKE DATA GENERATOR ---
         function generateFakeWeek() {
             const data = loadAllData();
             const fakeId = "nb_fake_" + Date.now();
             const today = new Date();
-            const d0 = getFormattedDate(today); // Today
-            const d1 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -1
-            const d2 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -2
-            const d3 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -3
-            const d4 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -4
-            const d5 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -5
+            const d0 = getFormattedDate(today);
+            const d1 = getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
+            const d2 = getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
+            const d3 = getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
+            const d4 = getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
+            const d5 = getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
 
             const blankArray = ["", "", "", "", "", "", "", "", "", ""];
             const blankArray5 = ["", "", "", "", ""];
@@ -393,35 +404,35 @@
             data.notebooks[fakeId] = {
                 id: fakeId, title: "Sample Semester (Fake Data)", desc: "A generated week of study sessions",
                 pages: {
-                    [d5]: { // Medium day
+                    [d5]: {
                         schedTasks: blankArray, schedCats: ["1", "1", "3", "3", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["09:00", "11:00", "14:00", "16:00", "", "", "", "", "", ""], finishTimes: ["10:30", "12:30", "15:30", "17:30", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 360 
                     },
-                    [d4]: { // Bad day
+                    [d4]: {
                         schedTasks: blankArray, schedCats: ["2", "4", "", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["10:30", "15:30", "", "", "", "", "", "", "", ""], finishTimes: ["12:30", "16:30", "", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 180 
                     },
-                    [d3]: { // Excellent day
+                    [d3]: {
                         schedTasks: blankArray, schedCats: ["1", "1", "2", "2", "3", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["08:00", "10:00", "12:30", "14:30", "16:30", "", "", "", "", ""], finishTimes: ["09:45", "11:45", "14:15", "16:15", "18:00", "", "", "", "", ""], trackChecks: [], totalMinutes: 510 
                     },
-                    [d2]: { // Good day
+                    [d2]: {
                         schedTasks: blankArray, schedCats: ["3", "3", "4", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["08:30", "10:30", "13:00", "", "", "", "", "", "", ""], finishTimes: ["10:00", "12:00", "15:00", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 300 
                     },
-                    [d1]: { // Awesome day
+                    [d1]: {
                         schedTasks: blankArray, schedCats: ["1", "2", "3", "4", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["07:30", "09:30", "12:00", "14:00", "", "", "", "", "", ""], finishTimes: ["09:15", "11:15", "13:30", "15:30", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 390 
                     },
-                    [d0]: { // Today
+                    [d0]: {
                         schedTasks: blankArray, schedCats: ["1", "1", "", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
                         startTimes: ["09:00", "11:15", "", "", "", "", "", "", "", ""], finishTimes: ["10:45", "13:00", "", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 210 
                     }
                 }
             };
             saveAllData(data);
-            triggerCloudSave(); // Save to drive
-            alert("Fake Week Data Generated Successfully! Open 'Sample Semester' to see it.");
+            triggerCloudSave();
+            alert("Fake Week Data Generated! Open 'Sample Semester' to see it.");
             renderNotebookGrid();
         }
 
@@ -487,7 +498,7 @@
 
         function refreshCurrentView() {
             if(document.getElementById('notebooksGridView').style.display === 'block') renderNotebookGrid();
-            else if(document.getElementById('notebookDetailView').style.display === 'block') openNotebook(currentNotebookId);
+            else if(document.getElementById('notebookDetailView').style.display === 'flex') openNotebook(currentNotebookId);
             else if(document.getElementById('plannerView').style.display === 'grid') loadDayIntoPlanner(document.getElementById('activeDateKey').value);
             else if(document.getElementById('analyticsView').style.display === 'grid') updateAnalyticsData();
         }
@@ -527,7 +538,7 @@
             document.getElementById('notebooksGridView').style.display = 'none';
             document.getElementById('plannerView').style.display = 'none';
             document.getElementById('analyticsView').style.display = 'none';
-            document.getElementById('notebookDetailView').style.display = 'grid';
+            document.getElementById('notebookDetailView').style.display = 'flex'; // Switched to single column!
             document.getElementById('appHeaderSection').style.display = 'block'; 
 
             document.getElementById('detailNotebookTitle').innerText = nb.title;
