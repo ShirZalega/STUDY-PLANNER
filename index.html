@@ -137,7 +137,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             flex: 1;
-            border-right: 1px solid #000; /* Changed to border-right for LTR layout */
+            border-right: 1px solid #000;
         }
         .notes-cell {
             display: flex;
@@ -147,7 +147,7 @@
             box-sizing: border-box;
         }
         .notes-cell-right {
-            border-right: 1px solid #000; /* Vertical middle line */
+            border-right: 1px solid #000;
         }
         .notes-cell.no-border-bottom {
             border-bottom: none;
@@ -295,59 +295,11 @@
         const year = today.getFullYear();
         dateField.value = `${day}/${month}/${year}`;
 
-        // 2. Manage time inputs (keep them blank until clicked)
-        const timeInputs = document.querySelectorAll('.time-input');
-        timeInputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.type = 'time';
-            });
-            
-            input.addEventListener('blur', function() {
-                if (this.value === '') {
-                    this.type = 'text';
-                }
-            });
-
-            // Double click to auto-fill current time
-            input.addEventListener('dblclick', function() {
-                this.type = 'time'; 
-                if (this.value === '') {
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    this.value = `${hours}:${minutes}`;
-                    this.dispatchEvent(new Event('change'));
-                }
-            });
-        });
-
-        // 3. Smart sync: Copy finish time to next row's start time
-        const finishTimes = document.querySelectorAll('.finish-time');
-        const startTimes = document.querySelectorAll('.start-time');
-
-        finishTimes.forEach((finishInput, index) => {
-            finishInput.addEventListener('change', function() {
-                if (this.value !== '' && index + 1 < startTimes.length) {
-                    if (startTimes[index + 1].value === '') {
-                        startTimes[index + 1].type = 'time'; 
-                        startTimes[index + 1].value = this.value;
-                        startTimes[index + 1].dispatchEvent(new Event('change'));
-                    }
-                }
-            });
-        });
-
-        // 4. Toggle Break Checkmarks (Red 'X')
-        const breakBoxes = document.querySelectorAll('.break-box');
-        breakBoxes.forEach(box => {
-            box.addEventListener('click', function() {
-                this.classList.toggle('crossed');
-            });
-        });
-
-        // 5. Automatic Total Study Time Calculator
+        // 2. Main calculation function
         function calculateTotalTime() {
             let totalMinutes = 0;
+            const startTimes = document.querySelectorAll('.start-time');
+            const finishTimes = document.querySelectorAll('.finish-time');
 
             for (let i = 0; i < 10; i++) {
                 const startVal = startTimes[i].value;
@@ -375,8 +327,62 @@
                 `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
         }
 
-        startTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
-        finishTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
+        // 3. Manage time inputs (keep them blank until clicked)
+        const timeInputs = document.querySelectorAll('.time-input');
+        timeInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.type = 'time';
+            });
+            
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.type = 'text';
+                }
+                calculateTotalTime(); // Calculate when leaving the box
+            });
+
+            // Double click to auto-fill current time
+            input.addEventListener('dblclick', function() {
+                this.type = 'time'; 
+                if (this.value === '') {
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    this.value = `${hours}:${minutes}`;
+                    calculateTotalTime(); // Calculate instantly!
+                }
+            });
+        });
+
+        // 4. Smart sync: Copy finish time to next row's start time
+        const finishTimes = document.querySelectorAll('.finish-time');
+        const startTimes = document.querySelectorAll('.start-time');
+
+        finishTimes.forEach((finishInput, index) => {
+            finishInput.addEventListener('change', function() {
+                calculateTotalTime(); // Calculate instantly!
+                
+                if (this.value !== '' && index + 1 < startTimes.length) {
+                    if (startTimes[index + 1].value === '') {
+                        startTimes[index + 1].type = 'time'; 
+                        startTimes[index + 1].value = this.value;
+                        calculateTotalTime(); // Calculate instantly for the next row too!
+                    }
+                }
+            });
+        });
+
+        // Add 'input' listeners for instant updates while typing
+        startTimes.forEach(input => input.addEventListener('input', calculateTotalTime));
+        finishTimes.forEach(input => input.addEventListener('input', calculateTotalTime));
+
+        // 5. Toggle Break Checkmarks (Red 'X')
+        const breakBoxes = document.querySelectorAll('.break-box');
+        breakBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                this.classList.toggle('crossed');
+            });
+        });
     </script>
 </body>
 </html>
