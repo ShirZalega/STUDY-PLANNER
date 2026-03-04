@@ -131,6 +131,27 @@
                         linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
             color: rgba(0,0,0,0.3);
         }
+
+        /* Perfect Grid layout for the Notes section table */
+        .notes-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex: 1;
+            border-right: 1px solid #000; /* Changed to border-right for LTR layout */
+        }
+        .notes-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #000;
+            box-sizing: border-box;
+        }
+        .notes-cell-right {
+            border-right: 1px solid #000; /* Vertical middle line */
+        }
+        .notes-cell.no-border-bottom {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -193,7 +214,8 @@
 
             <div class="box">
                 <div class="flex-row yellow-header" style="padding: 0;">
-                    <div style="flex: 1;"></div>
+                    <div style="width: 40px; border-right: 1px solid #000;"></div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center;">TASK NUMBER</div>
                     <div style="width: 90px; padding: 8px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box;">START TIME</div>
                     <div style="width: 90px; padding: 8px; box-sizing: border-box;">FINISH TIME</div>
                 </div>
@@ -202,10 +224,8 @@
                     for(let i=1; i<=10; i++) {
                         document.write(`
                         <div class="row">
-                            <div style="flex: 1; display: flex;">
-                                <div class="checkbox-cell"><input type="checkbox"></div>
-                                <div class="number-cell" style="flex: 1; font-size: 18px;">${i}</div>
-                            </div>
+                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;"><input type="checkbox"></div>
+                            <div class="number-cell" style="flex: 1; font-size: 14px;">Task ${i}</div>
                             <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;">
                                 <input type="text" class="time-input start-time" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
                             </div>
@@ -231,40 +251,34 @@
 
             <div class="box">
                 <div class="yellow-header">NOTES</div>
-                <div class="flex-row" style="direction: rtl;">
-                    <div style="flex: 1; border-left: 1px solid #000; display: flex; flex-direction: column;">
-                        <div class="flex-row" style="border-bottom: 1px solid #000; background-color: #f9f9f9;">
-                            <div style="flex: 1; text-align: center; font-weight: bold; padding: 8px; border-left: 1px solid #000;">זמן</div>
-                            <div style="flex: 1; text-align: center; font-weight: bold; padding: 8px;">מהות</div>
+                <div class="flex-row">
+                    <div class="notes-table">
+                        <div class="notes-cell notes-cell-right" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;">PHASE</div>
+                        <div class="notes-cell" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;">TIME</div>
+                        
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Taken</div>
+                        <div class="notes-cell">
+                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
                         </div>
-                        <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
-                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
-                            </div>
-                            <div style="flex: 1; text-align: center; padding: 8px;">לקיחה</div>
+                        
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Effect</div>
+                        <div class="notes-cell">
+                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
                         </div>
-                        <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
-                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
-                            </div>
-                            <div style="flex: 1; text-align: center; padding: 8px;">השפעה</div>
+                        
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Start Work</div>
+                        <div class="notes-cell">
+                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
                         </div>
-                        <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
-                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
-                            </div>
-                            <div style="flex: 1; text-align: center; padding: 8px;">תחילה עבודה</div>
-                        </div>
-                        <div class="flex-row">
-                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
-                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
-                            </div>
-                            <div style="flex: 1; text-align: center; padding: 8px;">סיום</div>
+                        
+                        <div class="notes-cell notes-cell-right no-border-bottom" style="padding: 8px;">Finish</div>
+                        <div class="notes-cell no-border-bottom">
+                            <input type="text" class="time-input" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;">
                         </div>
                     </div>
                     
                     <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
-                        <div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;">סה״כ זמן למידה</div>
+                        <div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;">TOTAL STUDY TIME</div>
                         <input type="text" id="totalTime" readonly placeholder="00:00" style="font-size: 28px; font-weight: bold; text-align: center; border-bottom: 2px dashed #000; width: 120px;">
                     </div>
                 </div>
@@ -284,34 +298,30 @@
         // 2. Manage time inputs (keep them blank until clicked)
         const timeInputs = document.querySelectorAll('.time-input');
         timeInputs.forEach(input => {
-            // When user clicks the box, turn it into a time picker
             input.addEventListener('focus', function() {
                 this.type = 'time';
             });
             
-            // If user clicks away and left it empty, revert it to text to keep it blank
             input.addEventListener('blur', function() {
                 if (this.value === '') {
                     this.type = 'text';
                 }
             });
 
-            // Double click to auto-fill the current time
+            // Double click to auto-fill current time
             input.addEventListener('dblclick', function() {
-                this.type = 'time'; // Ensure it's a time input
+                this.type = 'time'; 
                 if (this.value === '') {
                     const now = new Date();
                     const hours = String(now.getHours()).padStart(2, '0');
                     const minutes = String(now.getMinutes()).padStart(2, '0');
                     this.value = `${hours}:${minutes}`;
-                    
-                    // Manually trigger the change event to update the total time calculator
                     this.dispatchEvent(new Event('change'));
                 }
             });
         });
 
-        // 3. Smart sync: Copy finish time to the next row's start time
+        // 3. Smart sync: Copy finish time to next row's start time
         const finishTimes = document.querySelectorAll('.finish-time');
         const startTimes = document.querySelectorAll('.start-time');
 
@@ -319,9 +329,8 @@
             finishInput.addEventListener('change', function() {
                 if (this.value !== '' && index + 1 < startTimes.length) {
                     if (startTimes[index + 1].value === '') {
-                        startTimes[index + 1].type = 'time'; // Make sure the next box is ready for time
+                        startTimes[index + 1].type = 'time'; 
                         startTimes[index + 1].value = this.value;
-                        // Trigger calculation for the new value
                         startTimes[index + 1].dispatchEvent(new Event('change'));
                     }
                 }
@@ -351,7 +360,6 @@
                     let startTotalMins = (startH * 60) + startM;
                     let finishTotalMins = (finishH * 60) + finishM;
 
-                    // Handle studying past midnight
                     if (finishTotalMins < startTotalMins) {
                         finishTotalMins += (24 * 60); 
                     }
@@ -360,7 +368,6 @@
                 }
             }
 
-            // Convert back to HH:MM format
             const finalHours = Math.floor(totalMinutes / 60);
             const finalMins = totalMinutes % 60;
             
@@ -368,7 +375,6 @@
                 `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
         }
 
-        // Trigger the calculator whenever a start or finish time changes
         startTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
         finishTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
     </script>
