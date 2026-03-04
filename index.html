@@ -48,8 +48,8 @@
             background: transparent;
         }
         
-        /* Center all input text */
-        .row input[type="text"], .row input[type="time"], .row input[type="number"], #todayDate {
+        /* Center text in all standard inputs */
+        .row input[type="text"], .row input[type="time"], .row input[type="number"], #todayDate, .time-input {
             text-align: center;
         }
 
@@ -59,14 +59,6 @@
         }
         .row:last-child {
             border-bottom: none;
-        }
-        .row input[type="text"] {
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .row input[type="time"] {
-            padding: 8px;
         }
         .flex-row {
             display: flex;
@@ -90,7 +82,7 @@
             font-weight: bold;
         }
         
-        /* Schedule columns */
+        /* Schedule Box 3-Column Layout */
         .task-label {
             width: 70px; 
             display: flex;
@@ -98,24 +90,31 @@
             justify-content: center;
             border-right: 1px solid #000;
             font-size: 14px;
+            font-weight: bold;
         }
-        .task-input {
+        .schedule-middle-col {
             flex: 1; 
-            border-right: 1px solid #000;
+            display: flex;
+            border-right: 1px solid #000; 
         }
-        .cat-input {
+        .schedule-right-col {
             width: 50px; 
-            font-size: 14px;
+            display: flex;
+        }
+        .schedule-middle-col input, .schedule-right-col input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
         }
         
-        /* Hide up/down arrows in number inputs */
+        /* Hide up/down arrows in number inputs for a clean look */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
             margin: 0; 
         }
 
-        /* Break boxes styling for the interactive 'X' */
+        /* Break boxes styling with interactive 'X' */
         .break-box {
             flex: 1; 
             padding: 10px; 
@@ -127,11 +126,10 @@
         .break-box:last-child {
             border-right: none;
         }
-        /* This class creates a red X over the box when added */
         .break-box.crossed {
             background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), 
                         linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
-            color: rgba(0,0,0,0.3); /* Dims the number slightly */
+            color: rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -153,8 +151,12 @@
                         document.write(`
                         <div class="row">
                             <div class="task-label">Task ${i}</div>
-                            <input type="text" class="task-input">
-                            <input type="number" min="1" max="10" class="cat-input" placeholder="#">
+                            <div class="schedule-middle-col">
+                                <input type="text" placeholder="...">
+                            </div>
+                            <div class="schedule-right-col">
+                                <input type="number" min="1" max="10" placeholder="#">
+                            </div>
                         </div>
                         `);
                     }
@@ -163,16 +165,16 @@
 
             <div class="box">
                 <div class="yellow-header" style="font-size: 16px;">Todo</div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"></div><input type="text"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
-                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
+                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
             </div>
 
             <div class="box">
                 <div class="yellow-header">REWARD</div>
-                <input type="text" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="What's your treat today?">
+                <input type="text" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="...">
             </div>
         </div>
 
@@ -184,9 +186,9 @@
 
             <div class="box">
                 <div class="yellow-header">TODAY'S TOP THREE</div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">1</div><input type="text"></div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">2</div><input type="text"></div>
-                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">3</div><input type="text"></div>
+                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">1</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">2</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div class="row"><div class="number-cell" style="width: 30px; border-right: 1px solid #000;">3</div><input type="text" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
             </div>
 
             <div class="box">
@@ -204,11 +206,11 @@
                                 <div class="checkbox-cell"><input type="checkbox"></div>
                                 <div class="number-cell" style="flex: 1; font-size: 18px;">${i}</div>
                             </div>
-                            <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box;">
-                                <input type="time" class="start-time" style="width: 100%; box-sizing: border-box;">
+                            <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;">
+                                <input type="text" class="time-input start-time" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
                             </div>
-                            <div style="width: 90px; box-sizing: border-box;">
-                                <input type="time" class="finish-time" style="width: 100%; box-sizing: border-box;">
+                            <div style="width: 90px; box-sizing: border-box; display: flex;">
+                                <input type="text" class="time-input finish-time" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
                             </div>
                         </div>
                         `);
@@ -236,19 +238,27 @@
                             <div style="flex: 1; text-align: center; font-weight: bold; padding: 8px;">מהות</div>
                         </div>
                         <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
+                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
                             <div style="flex: 1; text-align: center; padding: 8px;">לקיחה</div>
                         </div>
                         <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
+                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
                             <div style="flex: 1; text-align: center; padding: 8px;">השפעה</div>
                         </div>
                         <div class="flex-row" style="border-bottom: 1px solid #000;">
-                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
+                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
                             <div style="flex: 1; text-align: center; padding: 8px;">תחילה עבודה</div>
                         </div>
                         <div class="flex-row">
-                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; border-left: 1px solid #000; display: flex;">
+                                <input type="text" class="time-input" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
                             <div style="flex: 1; text-align: center; padding: 8px;">סיום</div>
                         </div>
                     </div>
@@ -271,15 +281,32 @@
         const year = today.getFullYear();
         dateField.value = `${day}/${month}/${year}`;
 
-        // 2. Auto-fill time inputs when clicked
-        const timeInputs = document.querySelectorAll('input[type="time"]');
+        // 2. Manage time inputs (keep them blank until clicked)
+        const timeInputs = document.querySelectorAll('.time-input');
         timeInputs.forEach(input => {
+            // When user clicks the box, turn it into a time picker
             input.addEventListener('focus', function() {
+                this.type = 'time';
+            });
+            
+            // If user clicks away and left it empty, revert it to text to keep it blank
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.type = 'text';
+                }
+            });
+
+            // Double click to auto-fill the current time
+            input.addEventListener('dblclick', function() {
+                this.type = 'time'; // Ensure it's a time input
                 if (this.value === '') {
                     const now = new Date();
                     const hours = String(now.getHours()).padStart(2, '0');
                     const minutes = String(now.getMinutes()).padStart(2, '0');
                     this.value = `${hours}:${minutes}`;
+                    
+                    // Manually trigger the change event to update the total time calculator
+                    this.dispatchEvent(new Event('change'));
                 }
             });
         });
@@ -292,7 +319,10 @@
             finishInput.addEventListener('change', function() {
                 if (this.value !== '' && index + 1 < startTimes.length) {
                     if (startTimes[index + 1].value === '') {
+                        startTimes[index + 1].type = 'time'; // Make sure the next box is ready for time
                         startTimes[index + 1].value = this.value;
+                        // Trigger calculation for the new value
+                        startTimes[index + 1].dispatchEvent(new Event('change'));
                     }
                 }
             });
@@ -314,7 +344,6 @@
                 const startVal = startTimes[i].value;
                 const finishVal = finishTimes[i].value;
 
-                // Only calculate if both start and finish times exist for this row
                 if (startVal && finishVal) {
                     const [startH, startM] = startVal.split(':').map(Number);
                     const [finishH, finishM] = finishVal.split(':').map(Number);
@@ -322,7 +351,7 @@
                     let startTotalMins = (startH * 60) + startM;
                     let finishTotalMins = (finishH * 60) + finishM;
 
-                    // Handle cases where studying goes past midnight
+                    // Handle studying past midnight
                     if (finishTotalMins < startTotalMins) {
                         finishTotalMins += (24 * 60); 
                     }
@@ -331,7 +360,7 @@
                 }
             }
 
-            // Convert total minutes back to HH:MM format
+            // Convert back to HH:MM format
             const finalHours = Math.floor(totalMinutes / 60);
             const finalMins = totalMinutes % 60;
             
@@ -339,7 +368,7 @@
                 `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
         }
 
-        // Trigger calculation whenever any start or finish time changes
+        // Trigger the calculator whenever a start or finish time changes
         startTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
         finishTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
     </script>
