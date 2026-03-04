@@ -25,20 +25,33 @@
             max-width: 900px;
             margin: 0 auto;
         }
+        
+        /* שינינו את עובי המסגרת ל-1 פיקסל כדי שייראה עדין וזהה לדף */
         .box {
-            border: 2px solid #000;
+            border: 1px solid #000;
             margin-bottom: 20px;
             background: #fff;
         }
         .yellow-header {
-            background-color: #fdf1a9; /* Pastel yellow matching the original page */
+            background-color: #fdf1a9; 
             padding: 8px;
             font-weight: bold;
-            font-size: 14px;
-            border-bottom: 2px solid #000;
+            font-size: 14px; /* זה הגודל של הכותרות */
+            border-bottom: 1px solid #000;
             text-align: center;
             letter-spacing: 1px;
         }
+        
+        /* הכלל החדש שמוודא שכל מה שאת מקלידה שווה בגודלו לכותרות וצבוע שחור */
+        input[type="text"], input[type="time"], input[type="date"], textarea {
+            font-size: 14px; 
+            color: #000;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            background: transparent;
+        }
+
         .row {
             display: flex;
             border-bottom: 1px solid #000;
@@ -47,17 +60,12 @@
             border-bottom: none;
         }
         .row input[type="text"] {
-            border: none;
             padding: 8px;
             width: 100%;
-            outline: none;
             box-sizing: border-box;
         }
         .row input[type="time"] {
-            border: none;
             padding: 8px;
-            outline: none;
-            font-family: inherit;
         }
         .flex-row {
             display: flex;
@@ -72,7 +80,7 @@
         .checkbox-cell input {
             width: 18px;
             height: 18px;
-            border: 2px solid #000;
+            border: 1px solid #000;
             cursor: pointer;
         }
         .number-cell {
@@ -88,7 +96,6 @@
             border-right: 1px solid #000;
         }
         
-        /* Hebrew notes section */
         .notes-section {
             direction: rtl;
             padding: 10px;
@@ -104,12 +111,10 @@
             font-size: 18px;
         }
         .total-time-row input {
-            border: none;
-            border-bottom: 2px dashed #000;
+            border-bottom: 1px dashed #000;
             margin-right: 10px;
             font-size: 16px;
             text-align: center;
-            outline: none;
             width: 100px;
         }
     </style>
@@ -121,13 +126,13 @@
     <div class="container">
         <div>
             <div class="box flex-row">
-                <div class="yellow-header" style="width: 60px; border-bottom: none; border-right: 2px solid #000;">DATE:</div>
-                <input type="date" style="flex: 1; border: none; padding: 5px; outline: none;">
+                <div class="yellow-header" style="padding: 8px 15px; border-bottom: none; border-right: 1px solid #000; text-align: left;">DATE:</div>
+                <input type="date" style="flex: 1; padding: 8px; cursor: pointer;">
             </div>
 
             <div class="box">
                 <div class="flex-row yellow-header" style="padding: 0;">
-                    <div style="width: 80px; padding: 8px; border-right: 2px solid #000;">TIME</div>
+                    <div style="width: 80px; padding: 8px; border-right: 1px solid #000;">TIME</div>
                     <div style="flex: 1; padding: 8px;">SCHEDULE</div>
                 </div>
                 <div class="row"><div class="time-col"><input type="time" style="width: 100%;"></div><input type="text"></div>
@@ -163,26 +168,26 @@
 
             <div class="box">
                 <div class="flex-row yellow-header" style="padding: 0; justify-content: flex-end;">
-                    <div style="width: 90px; padding: 8px; border-right: 2px solid #000; border-left: 2px solid #000;">START TIME</div>
+                    <div style="width: 90px; padding: 8px; border-right: 1px solid #000; border-left: 1px solid #000;">START TIME</div>
                     <div style="width: 90px; padding: 8px;">FINISH TIME</div>
                 </div>
                 
                 <div class="row">
                     <div class="checkbox-cell" style="width: 40px; border-right: none;"><input type="checkbox"></div>
-                    <div class="number-cell" style="width: 30px; border-right: 2px solid #000; font-size: 18px;">1</div>
-                    <div style="width: 90px; border-right: 2px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
+                    <div class="number-cell" style="width: 30px; border-right: 1px solid #000; font-size: 18px;">1</div>
+                    <div style="width: 90px; border-right: 1px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                     <div style="width: 90px;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                 </div>
                 <div class="row">
                     <div class="checkbox-cell" style="width: 40px; border-right: none;"><input type="checkbox"></div>
-                    <div class="number-cell" style="width: 30px; border-right: 2px solid #000; font-size: 18px;">2</div>
-                    <div style="width: 90px; border-right: 2px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
+                    <div class="number-cell" style="width: 30px; border-right: 1px solid #000; font-size: 18px;">2</div>
+                    <div style="width: 90px; border-right: 1px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                     <div style="width: 90px;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                 </div>
                 <div class="row">
                     <div class="checkbox-cell" style="width: 40px; border-right: none;"><input type="checkbox"></div>
-                    <div class="number-cell" style="width: 30px; border-right: 2px solid #000; font-size: 18px;">3</div>
-                    <div style="width: 90px; border-right: 2px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
+                    <div class="number-cell" style="width: 30px; border-right: 1px solid #000; font-size: 18px;">3</div>
+                    <div style="width: 90px; border-right: 1px solid #000;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                     <div style="width: 90px;"><input type="time" style="width: 100%; box-sizing: border-box;"></div>
                 </div>
             </div>
@@ -212,21 +217,15 @@
     </div>
 
     <script>
-        // Find all input fields of type "time"
         const timeInputs = document.querySelectorAll('input[type="time"]');
         
-        // Go through each time input field one by one
         timeInputs.forEach(input => {
-            // When the field is clicked or focused...
             input.addEventListener('focus', function() {
-                // Check if the field is currently empty
                 if (this.value === '') {
-                    // Get the current time from the computer
                     const now = new Date();
                     const hours = String(now.getHours()).padStart(2, '0');
                     const minutes = String(now.getMinutes()).padStart(2, '0');
                     
-                    // Put the current time into the field
                     this.value = `${hours}:${minutes}`;
                 }
             });
