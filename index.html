@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Planner & Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #ffffff;
-            margin: 0; /* Changed margin to 0 for the top nav bar */
+            margin: 0; 
             padding-bottom: 40px;
             color: #000;
         }
         
-        /* --- NEW: Navigation Bar Styles --- */
+        /* Navigation Bar Styles */
         .navbar {
             background-color: #000;
             padding: 15px;
@@ -76,6 +77,7 @@
             border-bottom: 1px solid #000;
             text-align: center;
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
         input[type="text"], input[type="time"], input[type="number"], textarea {
             font-size: 14px; 
@@ -184,6 +186,46 @@
         }
         .notes-cell.no-border-bottom {
             border-bottom: none;
+        }
+
+        /* Analytics specific styles */
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #000;
+        }
+        .stat-label {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .time-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            grid-column: span 2;
+        }
+        .filter-btn {
+            background: #fff;
+            border: 1px solid #000;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .filter-btn.active {
+            background: #000;
+            color: #fff;
+        }
+        .chart-container {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
         }
     </style>
 </head>
@@ -324,9 +366,59 @@
         </div>
     </div>
 
-    <div id="analyticsView" class="container" style="display: block; text-align: center; grid-column: span 2;">
-        <h3 style="color: #666; margin-top: 50px;">Your analytics will appear here!</h3>
-        <p>We will build the charts and data tracking here next.</p>
+    <div id="analyticsView" class="container">
+        
+        <div class="time-filter">
+            <button class="filter-btn">Today</button>
+            <button class="filter-btn active">This Week</button>
+            <button class="filter-btn">This Month</button>
+        </div>
+
+        <div style="grid-column: span 2; display: flex; gap: 20px;">
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">TOTAL HOURS</div>
+                <div class="stat-number">32.5</div>
+                <div class="stat-label">Hours logged this week</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">DAILY AVERAGE</div>
+                <div class="stat-number">4.6</div>
+                <div class="stat-label">Hours per day</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">BEST DAY</div>
+                <div class="stat-number">Tue</div>
+                <div class="stat-label">7.2 hours studied</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">TASKS COMPLETED</div>
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Of planned tasks</div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="yellow-header">CATEGORY BREAKDOWN (By Subject)</div>
+            <div class="chart-container">
+                <canvas id="categoryPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="yellow-header">STUDY TRENDS (Hours per Day)</div>
+            <div class="chart-container">
+                <canvas id="trendBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box" style="grid-column: span 2;">
+            <div class="yellow-header">FOCUS INSIGHTS</div>
+            <div style="padding: 30px; font-size: 18px; text-align: center; line-height: 1.5;">
+                💡 <strong>Insight:</strong> You are most productive when your first study block starts before 09:30 AM.<br>
+                <em>On these days, you average 1.5 hours more study time than days you start later.</em>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -346,17 +438,14 @@
                 title.innerText = 'STUDY PLANNER';
             } else {
                 planner.style.display = 'none';
-                analytics.style.display = 'block'; // Block because we centered the text for now
+                analytics.style.display = 'grid'; 
                 btnPlanner.classList.remove('active');
                 btnAnalytics.classList.add('active');
                 title.innerText = 'STUDY ANALYTICS';
             }
         }
-        
-        // Hide analytics on initial load
-        document.getElementById('analyticsView').style.display = 'none';
 
-        // --- Planner Logic (Date, Time, Calculations) ---
+        // --- Planner Logic ---
         const dateField = document.getElementById('todayDate');
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -438,6 +527,52 @@
             box.addEventListener('click', function() {
                 this.classList.toggle('crossed');
             });
+        });
+
+        // --- Chart.js Configuration (Fake Data for Analytics) ---
+        
+        // 1. Category Pie Chart
+        const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
+                datasets: [{
+                    data: [40, 30, 20, 10], // Fake percentages
+                    backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // 2. Trend Bar Chart
+        const ctxBar = document.getElementById('trendBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                datasets: [{
+                    label: 'Study Hours',
+                    data: [2, 5.5, 7.2, 4, 6, 4.5, 3.3], // Fake daily hours
+                    backgroundColor: '#fdf1a9',
+                    borderColor: '#000000',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
         });
     </script>
 </body>
