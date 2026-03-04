@@ -15,7 +15,6 @@
             color: #000;
         }
         
-        /* Navigation Bar */
         .navbar {
             background-color: #000; padding: 15px; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;
         }
@@ -62,7 +61,6 @@
         .break-box { flex: 1; padding: 10px; border-right: 1px solid #000; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center; }
         .break-box:last-child { border-right: none; }
         
-        /* Red X Effect for breaks and calendar */
         .crossed { background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px)); color: rgba(0,0,0,0.3); }
 
         .notes-table { display: grid; grid-template-columns: 1fr 1fr; flex: 1; border-right: 1px solid #000; }
@@ -79,7 +77,6 @@
         .chart-toggle-btn.active, .time-filter-btn.active { background: #000; color: #fff; }
         .time-filter-container { grid-column: span 2; display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
 
-        /* Insights Style */
         .insights-container { padding: 20px 30px; font-size: 16px; line-height: 1.8; text-align: left; }
         .insights-container ul { list-style: none; padding: 0; margin: 0; }
         .insights-container li { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
@@ -87,7 +84,6 @@
         .insight-highlight { font-weight: bold; color: #000; background: #fdf1a9; padding: 2px 6px; border-radius: 4px; }
         .strategy-box { background: #f9f9f9; border-left: 4px solid #000; padding: 15px; margin-top: 20px; font-size: 15px; font-style: italic; }
 
-        /* Beautiful Compact Calendar Frame */
         .calendar-wrapper { 
             max-width: 350px; margin: 10px auto 20px; padding: 15px;
             border: 3px solid #000; background: #fff; box-shadow: 4px 4px 0px #000;
@@ -122,13 +118,18 @@
 
         #savedPagesContainer { max-height: 400px; overflow-y: auto; }
         
-        /* Modal */
         #newNotebookModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: #fff; padding: 30px; border: 2px solid #000; width: 400px; text-align: center; box-shadow: 8px 8px 0px #000; }
         .modal-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #000; box-sizing: border-box; font-size: 16px; font-family: inherit;}
         .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .modal-btn { flex: 1; padding: 10px; font-weight: bold; border: 2px solid #000; cursor: pointer; background: #fff; }
         .modal-btn.primary { background: #000; color: #fff; }
+        
+        .btn-fake-data {
+            margin-top: 50px; background: transparent; border: 2px dashed red; color: red; padding: 10px;
+            cursor: pointer; font-weight: bold; width: 100%; text-transform: uppercase;
+        }
+        .btn-fake-data:hover { background: #ffeeee; }
     </style>
 </head>
 <body>
@@ -145,6 +146,10 @@
 
     <div id="notebooksGridView" class="container" style="display: block;">
         <div class="notebook-grid" id="notebookGridContainer"></div>
+        
+        <div style="grid-column: span 2;">
+            <button class="btn-fake-data" onclick="generateFakeWeek()">[+] Inject Fake Week Data (For Testing)</button>
+        </div>
     </div>
 
     <div id="notebookDetailView" class="container" style="max-width: 600px;">
@@ -370,55 +375,54 @@
             return dateObj.toISOString().split('T')[0]; 
         }
 
-        // --- FAKE DATA GENERATOR (Generates data for recent days so filters work) ---
-        function setupDataStructure() {
-            let data = loadAllData();
-            if (Object.keys(data).length === 0 || !data.notebooks) {
-                const fakeId = "nb_" + Date.now();
-                
-                const today = new Date();
-                const d0 = getFormattedDate(today); // Today
-                
-                const d1Obj = new Date(today); d1Obj.setDate(d1Obj.getDate() - 1);
-                const d1 = getFormattedDate(d1Obj); // Yesterday
-                
-                const d2Obj = new Date(today); d2Obj.setDate(d2Obj.getDate() - 2);
-                const d2 = getFormattedDate(d2Obj); // 2 days ago
+        // --- NEW: FAKE DATA GENERATOR BUTTON ---
+        function generateFakeWeek() {
+            const data = loadAllData();
+            const fakeId = "nb_fake_" + Date.now();
+            const today = new Date();
+            const d0 = getFormattedDate(today); // Today
+            const d1 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -1
+            const d2 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -2
+            const d3 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -3
+            const d4 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -4
+            const d5 = getFormattedDate(new Date(today.setDate(today.getDate() - 1))); // -5
 
-                const d3Obj = new Date(today); d3Obj.setDate(d3Obj.getDate() - 3);
-                const d3 = getFormattedDate(d3Obj); // 3 days ago
+            const blankArray = ["", "", "", "", "", "", "", "", "", ""];
+            const blankArray5 = ["", "", "", "", ""];
 
-                data = {
-                    notebooks: {
-                        [fakeId]: {
-                            id: fakeId, title: "Semester A 2026", desc: "Computer Science & Neuroscience",
-                            pages: {
-                                [d3]: { // Okay day
-                                    schedTasks: [], schedCats: ["3", "1"], todoTexts: [], todoChecks: [], topThrees: [], notesTimes: [], reward: "", goal: "", breaks: [],
-                                    startTimes: ["10:00", "15:00", "", "", "", "", "", "", "", ""], finishTimes: ["12:30", "16:30", "", "", "", "", "", "", "", ""],
-                                    trackChecks: [], totalMinutes: 240 
-                                },
-                                [d2]: { // Very good day
-                                    schedTasks: [], schedCats: ["1", "2"], todoTexts: [], todoChecks: [], topThrees: [], notesTimes: [], reward: "", goal: "", breaks: [],
-                                    startTimes: ["08:00", "10:30", "13:30", "16:00", "", "", "", "", "", ""], finishTimes: ["10:00", "12:30", "15:30", "17:30", "", "", "", "", "", ""],
-                                    trackChecks: [], totalMinutes: 450 
-                                },
-                                [d1]: { // Short day
-                                    schedTasks: [], schedCats: ["3", "4"], todoTexts: [], todoChecks: [], topThrees: [], notesTimes: [], reward: "", goal: "", breaks: [],
-                                    startTimes: ["09:00", "11:30", "", "", "", "", "", "", "", ""], finishTimes: ["11:00", "13:00", "", "", "", "", "", "", "", ""],
-                                    trackChecks: [], totalMinutes: 210 
-                                },
-                                [d0]: { // Today
-                                    schedTasks: [], schedCats: ["1", "3"], todoTexts: [], todoChecks: [], topThrees: [], notesTimes: [], reward: "", goal: "", breaks: [],
-                                    startTimes: ["08:30", "10:15", "12:30", "14:15", "", "", "", "", "", ""], finishTimes: ["10:00", "11:45", "14:00", "15:45", "", "", "", "", "", ""],
-                                    trackChecks: [], totalMinutes: 360 
-                                }
-                            }
-                        }
+            data.notebooks[fakeId] = {
+                id: fakeId, title: "Sample Semester (Fake Data)", desc: "A generated week of study sessions",
+                pages: {
+                    [d5]: { // Medium day
+                        schedTasks: blankArray, schedCats: ["1", "1", "3", "3", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["09:00", "11:00", "14:00", "16:00", "", "", "", "", "", ""], finishTimes: ["10:30", "12:30", "15:30", "17:30", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 360 
+                    },
+                    [d4]: { // Bad day
+                        schedTasks: blankArray, schedCats: ["2", "4", "", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["10:30", "15:30", "", "", "", "", "", "", "", ""], finishTimes: ["12:30", "16:30", "", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 180 
+                    },
+                    [d3]: { // Excellent day
+                        schedTasks: blankArray, schedCats: ["1", "1", "2", "2", "3", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["08:00", "10:00", "12:30", "14:30", "16:30", "", "", "", "", ""], finishTimes: ["09:45", "11:45", "14:15", "16:15", "18:00", "", "", "", "", ""], trackChecks: [], totalMinutes: 510 
+                    },
+                    [d2]: { // Good day
+                        schedTasks: blankArray, schedCats: ["3", "3", "4", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["08:30", "10:30", "13:00", "", "", "", "", "", "", ""], finishTimes: ["10:00", "12:00", "15:00", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 300 
+                    },
+                    [d1]: { // Awesome day
+                        schedTasks: blankArray, schedCats: ["1", "2", "3", "4", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["07:30", "09:30", "12:00", "14:00", "", "", "", "", "", ""], finishTimes: ["09:15", "11:15", "13:30", "15:30", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 390 
+                    },
+                    [d0]: { // Today
+                        schedTasks: blankArray, schedCats: ["1", "1", "", "", "", "", "", "", "", ""], todoTexts: blankArray5, todoChecks: [false,false,false,false,false], topThrees: ["","",""], notesTimes: blankArray5, reward: "", goal: "", breaks: [],
+                        startTimes: ["09:00", "11:15", "", "", "", "", "", "", "", ""], finishTimes: ["10:45", "13:00", "", "", "", "", "", "", "", ""], trackChecks: [], totalMinutes: 210 
                     }
-                };
-                saveAllData(data);
-            }
+                }
+            };
+            saveAllData(data);
+            triggerCloudSave(); // Save to drive
+            alert("Fake Week Data Generated Successfully! Open 'Sample Semester' to see it.");
+            renderNotebookGrid();
         }
 
         async function initCloudSync() {
@@ -466,12 +470,12 @@
                 currentNotebookId = null;
                 document.getElementById('notebooksGridView').style.display = 'block';
                 document.getElementById('btnNotebooks').classList.add('active');
-                document.getElementById('appHeaderSection').style.display = 'block'; // Show header
+                document.getElementById('appHeaderSection').style.display = 'block'; 
                 renderNotebookGrid();
             } else if (tabName === 'analytics') {
                 document.getElementById('analyticsView').style.display = 'grid'; 
                 document.getElementById('btnAnalytics').classList.add('active');
-                document.getElementById('appHeaderSection').style.display = 'none'; // HIDE header in analytics
+                document.getElementById('appHeaderSection').style.display = 'none'; 
                 
                 if(!currentNotebookId) {
                     const data = loadAllData(); const keys = Object.keys(data.notebooks);
@@ -524,7 +528,7 @@
             document.getElementById('plannerView').style.display = 'none';
             document.getElementById('analyticsView').style.display = 'none';
             document.getElementById('notebookDetailView').style.display = 'grid';
-            document.getElementById('appHeaderSection').style.display = 'block'; // Show header
+            document.getElementById('appHeaderSection').style.display = 'block'; 
 
             document.getElementById('detailNotebookTitle').innerText = nb.title;
             document.getElementById('detailNotebookDesc').innerText = nb.desc;
@@ -626,7 +630,7 @@
             });
         });
 
-        // --- NEW: DYNAMIC CALENDAR RENDERER ---
+        // --- DYNAMIC CALENDAR RENDERER ---
         function renderDynamicCalendar(pagesData) {
             const grid = document.getElementById('dynamicCalendarGrid');
             grid.innerHTML = '';
@@ -634,38 +638,28 @@
             const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
             daysOfWeek.forEach(d => {
                 const el = document.createElement('div');
-                el.className = 'calendar-cell calendar-header';
-                el.innerText = d;
-                grid.appendChild(el);
+                el.className = 'calendar-cell calendar-header'; el.innerText = d; grid.appendChild(el);
             });
 
             const today = new Date();
             const year = today.getFullYear();
             const month = today.getMonth(); 
             
-            // Set English Month Name
             document.getElementById('calendarMonthLabel').innerText = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Empty slots
             for(let i=0; i<firstDay; i++) {
-                const el = document.createElement('div');
-                el.className = 'calendar-cell calendar-empty';
-                grid.appendChild(el);
+                const el = document.createElement('div'); el.className = 'calendar-cell calendar-empty'; grid.appendChild(el);
             }
 
-            // Days 1..31
             for(let d=1; d<=daysInMonth; d++) {
                 const el = document.createElement('div');
-                el.className = 'calendar-cell calendar-day';
-                el.innerText = d;
+                el.className = 'calendar-cell calendar-day'; el.innerText = d;
                 
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                if(pagesData && pagesData[dateStr] && pagesData[dateStr].totalMinutes > 0) {
-                    el.classList.add('crossed');
-                }
+                if(pagesData && pagesData[dateStr] && pagesData[dateStr].totalMinutes > 0) { el.classList.add('crossed'); }
                 grid.appendChild(el);
             }
         }
@@ -700,7 +694,6 @@
             const pages = nb.pages; 
             const allDates = Object.keys(pages).sort(); 
             
-            // Draw the Live Calendar based on the entire notebook data!
             renderDynamicCalendar(pages);
             
             const todayDate = new Date();
@@ -865,9 +858,8 @@
         }
 
         window.onload = () => {
-            setupDataStructure(); 
-            switchTab('notebooks'); 
             initCloudSync(); 
+            switchTab('notebooks'); 
         };
     </script>
 </body>
