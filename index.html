@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Planner & Analytics</title>
+    <title>Study Planner</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
@@ -15,66 +15,35 @@
             color: #000;
         }
         
-        /* Navigation Bar (Now only 2 tabs) */
         .navbar {
-            background-color: #000;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
+            background-color: #000; padding: 15px; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;
         }
         .nav-button {
-            background-color: transparent;
-            color: #fff;
-            border: 2px solid #fff;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
+            background-color: transparent; color: #fff; border: 2px solid #fff; padding: 10px 20px;
+            font-size: 16px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
         }
         .nav-button:hover { background-color: #333; }
-        .nav-button.active {
-            background-color: #fdf1a9;
-            color: #000;
-            border-color: #fdf1a9;
-        }
+        .nav-button.active { background-color: #fdf1a9; color: #000; border-color: #fdf1a9; }
 
-        .header-title {
-            text-align: center;
-            letter-spacing: 3px;
-            font-weight: bold;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .sync-status {
-            text-align: center; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 30px; height: 20px;
-        }
+        .header-title { text-align: center; letter-spacing: 3px; font-weight: bold; font-size: 24px; margin-bottom: 10px; }
+        .sync-status { text-align: center; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 30px; height: 20px; }
 
         .container {
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px;
         }
         
-        #plannerView, #analyticsView { display: none; }
+        /* View Toggling */
+        #notebooksGridView, #notebookDetailView, #plannerView, #analyticsView { display: none; }
 
-        .box {
-            border: 1px solid #000; margin-bottom: 20px; background: #fff;
-        }
+        .box { border: 1px solid #000; margin-bottom: 20px; background: #fff; }
         .yellow-header {
             background-color: #fdf1a9; padding: 8px; font-weight: bold; font-size: 14px;
-            border-bottom: 1px solid #000; text-align: center; letter-spacing: 1px; text-transform: uppercase;
+            border-bottom: 1px solid #000; text-align: center; letter-spacing: 1px; text-transform: uppercase; position: relative;
         }
         input[type="text"], input[type="time"], input[type="number"], textarea {
             font-size: 14px; color: #000; border: none; outline: none; font-family: inherit; background: transparent;
         }
-        
-        .row input[type="text"], .row input[type="time"], .row input[type="number"], #currentPlannerDate, .time-input {
-            text-align: center;
-        }
-
+        .row input[type="text"], .row input[type="time"], .row input[type="number"], #currentPlannerDate, .time-input { text-align: center; }
         .row { display: flex; border-bottom: 1px solid #000; }
         .row:last-child { border-bottom: none; }
         .flex-row { display: flex; }
@@ -83,72 +52,85 @@
         .checkbox-cell input { width: 18px; height: 18px; border: 1px solid #000; cursor: pointer; }
         .number-cell { display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
-        .task-label {
-            width: 70px; display: flex; align-items: center; justify-content: center;
-            border-right: 1px solid #000; font-size: 14px; font-weight: bold;
-        }
+        .task-label { width: 70px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #000; font-size: 14px; font-weight: bold; }
         .schedule-middle-col { flex: 1; display: flex; border-right: 1px solid #000; }
         .schedule-right-col { width: 50px; display: flex; }
         .schedule-middle-col input, .schedule-right-col input { width: 100%; box-sizing: border-box; padding: 8px; }
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        .break-box, .calendar-day {
-            flex: 1; padding: 10px; border-right: 1px solid #000; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;
-        }
+        .break-box, .calendar-day { flex: 1; padding: 10px; border-right: 1px solid #000; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center; }
         .break-box:last-child { border-right: none; }
-        .crossed {
-            background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), 
-                        linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
-            color: rgba(0,0,0,0.3);
-        }
+        .crossed { background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px)); color: rgba(0,0,0,0.3); }
 
         .notes-table { display: grid; grid-template-columns: 1fr 1fr; flex: 1; border-right: 1px solid #000; }
         .notes-cell { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #000; box-sizing: border-box; }
         .notes-cell-right { border-right: 1px solid #000; }
         .notes-cell.no-border-bottom { border-bottom: none; }
 
+        /* Analytics */
         .stat-number { font-size: 36px; font-weight: bold; text-align: center; margin: 20px 0; color: #000; }
         .stat-label { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; padding: 0 5px; }
         .chart-container { padding: 20px; display: flex; justify-content: center; align-items: center; height: 250px; position: relative; }
         .chart-toggle-group { position: absolute; right: 5px; display: flex; gap: 5px; }
         .chart-toggle-btn { padding: 2px 8px; font-size: 10px; background: #fff; border: 1px solid #000; cursor: pointer; font-weight: bold; }
         .chart-toggle-btn.active { background: #000; color: #fff; }
-        
         .insights-list { padding: 20px; font-size: 18px; line-height: 2; margin: 0; list-style-type: none; text-align: center; }
 
-        .calendar-wrapper { max-width: 500px; margin: 0 auto; padding-bottom: 20px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #000; border-left: 1px solid #000; direction: rtl; }
-        .calendar-header { background-color: #f9f9f9; font-size: 12px; padding: 10px 0; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #000; border-left: 1px solid #000; direction: rtl; margin: 10px; }
+        .calendar-header { background-color: #f9f9f9; font-size: 14px; padding: 10px 0; }
         .calendar-cell { border-left: 1px solid #000; border-bottom: 1px solid #000; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; cursor: pointer; }
         .calendar-empty { background-color: #f0f0f0; }
 
-        /* Notebook View Styles */
+        /* Notebook Grid & Cards */
+        .notebook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
         .notebook-card {
-            border: 2px solid #000; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;
-            background-color: #fdf1a9; box-shadow: 4px 4px 0px #000; margin-bottom: 20px;
+            border: 2px solid #000; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s;
+            background-color: #fdf1a9; box-shadow: 4px 4px 0px #000; position: relative;
         }
         .notebook-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px #000; }
         .notebook-title { font-size: 24px; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
-        .page-list { text-align: left; margin-top: 20px; border-top: 2px dashed #000; padding-top: 20px; }
+        
+        .add-notebook-card {
+            border: 2px dashed #000; background-color: #fff; box-shadow: none; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: #666;
+        }
+        .add-notebook-card:hover { background-color: #f9f9f9; box-shadow: none; border-color: #333; color: #000; }
+
+        /* Pages List */
+        .page-list { text-align: left; border-top: 2px dashed #000; padding-top: 20px; }
         .page-item {
             padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; background: #fff;
             display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
         .page-item:hover { border-color: #000; background: #fdf1a9; }
+        
+        /* UI Buttons */
         .btn-black {
             background: #000; color: #fff; border: none; padding: 15px; width: 100%;
-            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s;
+            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase;
         }
         .btn-black:hover { background: #333; }
-        
         .back-btn {
-            grid-column: span 2; background: transparent; border: none; color: #000; font-size: 16px; 
-            font-weight: bold; text-align: left; cursor: pointer; padding: 0 0 20px 0;
+            background: transparent; border: none; color: #000; font-size: 16px; 
+            font-weight: bold; text-align: left; cursor: pointer; padding: 0 0 20px 0; grid-column: span 2;
         }
         .back-btn:hover { text-decoration: underline; }
 
         #savedPagesContainer { max-height: 400px; overflow-y: auto; }
+
+        /* Custom Modal for New Notebook */
+        #newNotebookModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal-content {
+            background: #fff; padding: 30px; border: 2px solid #000; width: 400px; text-align: center; box-shadow: 8px 8px 0px #000;
+        }
+        .modal-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #000; box-sizing: border-box; font-size: 16px; font-family: inherit;}
+        .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-btn { flex: 1; padding: 10px; font-weight: bold; border: 2px solid #000; cursor: pointer; background: #fff; }
+        .modal-btn.primary { background: #000; color: #fff; }
     </style>
 </head>
 <body>
@@ -158,16 +140,23 @@
         <button class="nav-button" id="btnAnalytics" onclick="switchTab('analytics')">ANALYTICS</button>
     </div>
 
-    <div class="header-title" id="mainTitle">MY NOTEBOOKS</div>
-    <div class="sync-status" id="syncStatus">☁️ Connecting...</div>
+    <div class="header-title" id="mainTitle">STUDY PLANNER</div>
+    <div class="sync-status" id="syncStatus">☁️ Connecting to Google Drive...</div>
 
-    <div id="notebooksView" class="container" style="display: block; max-width: 600px;">
-        <div class="notebook-card">
-            <div class="notebook-title">Semester A 2026</div>
-            <div>Computer Science & Neuroscience</div>
+    <div id="notebooksGridView" class="container" style="display: block;">
+        <div class="notebook-grid" id="notebookGridContainer">
+            </div>
+    </div>
+
+    <div id="notebookDetailView" class="container" style="max-width: 600px;">
+        <button class="back-btn" style="grid-column: 1;" onclick="switchTab('notebooks')">🔙 ALL NOTEBOOKS</button>
+        
+        <div class="notebook-card" style="width: 100%; box-sizing: border-box;">
+            <div class="notebook-title" id="detailNotebookTitle">Notebook Name</div>
+            <div id="detailNotebookDesc">Description</div>
         </div>
 
-        <div class="page-list">
+        <div class="page-list" style="width: 100%;">
             <h3 style="margin-top: 0;">Saved Study Pages</h3>
             <div id="savedPagesContainer"></div>
             <button class="btn-black" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
@@ -176,8 +165,7 @@
 
     <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
         
-        <button class="back-btn" onclick="switchTab('notebooks')">🔙 BACK TO NOTEBOOK</button>
-
+        <button class="back-btn" onclick="openNotebook(currentNotebookId)">🔙 BACK TO NOTEBOOK</button>
         <input type="hidden" id="activeDateKey">
 
         <div>
@@ -306,6 +294,12 @@
     </div>
 
     <div id="analyticsView" class="container">
+        
+        <div style="grid-column: span 2; text-align: center; margin-bottom: 20px;">
+            <h2 style="margin:0;" id="analyticsNotebookTitle">Loading...</h2>
+            <div style="color:#666;">Analytics for this notebook</div>
+        </div>
+
         <div style="grid-column: span 2; display: flex; gap: 20px;">
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">TOTAL HOURS</div>
@@ -331,9 +325,7 @@
 
         <div class="box">
             <div class="yellow-header">CATEGORY BREAKDOWN</div>
-            <div class="chart-container">
-                <canvas id="categoryPieChart"></canvas>
-            </div>
+            <div class="chart-container"><canvas id="categoryPieChart"></canvas></div>
         </div>
 
         <div class="box">
@@ -344,18 +336,77 @@
                     <button class="chart-toggle-btn" id="btnSessions" onclick="toggleChart('sessions')">Sessions</button>
                 </div>
             </div>
-            <div class="chart-container">
-                <canvas id="trendBarChart"></canvas>
+            <div class="chart-container"><canvas id="trendBarChart"></canvas></div>
+        </div>
+
+        <div class="box" style="grid-column: span 2;">
+            <div class="yellow-header">CONSISTENCY CALENDAR</div>
+            <div class="calendar-grid">
+                <div class="calendar-cell calendar-header">א</div>
+                <div class="calendar-cell calendar-header">ב</div>
+                <div class="calendar-cell calendar-header">ג</div>
+                <div class="calendar-cell calendar-header">ד</div>
+                <div class="calendar-cell calendar-header">ה</div>
+                <div class="calendar-cell calendar-header">ו</div>
+                <div class="calendar-cell calendar-header">ש</div>
+                
+                <div class="calendar-cell calendar-empty"></div>
+                <div class="calendar-cell calendar-empty"></div>
+                <div class="calendar-cell calendar-empty"></div>
+                <div class="calendar-cell calendar-empty"></div>
+                <div class="calendar-cell calendar-day">1</div>
+                <div class="calendar-cell calendar-day crossed">2</div>
+                <div class="calendar-cell calendar-day crossed">3</div>
+                <div class="calendar-cell calendar-day">4</div>
+                <div class="calendar-cell calendar-day crossed">5</div>
+                <div class="calendar-cell calendar-day crossed">6</div>
+                <div class="calendar-cell calendar-day crossed">7</div>
+                <div class="calendar-cell calendar-day">8</div>
+                <div class="calendar-cell calendar-day crossed">9</div>
+                <div class="calendar-cell calendar-day crossed">10</div>
+                <div class="calendar-cell calendar-day">11</div>
+                <div class="calendar-cell calendar-day crossed">12</div>
+                <div class="calendar-cell calendar-day crossed">13</div>
+                <div class="calendar-cell calendar-day">14</div>
+                <div class="calendar-cell calendar-day crossed">15</div>
+                <div class="calendar-cell calendar-day crossed">16</div>
+                <div class="calendar-cell calendar-day">17</div>
+                <div class="calendar-cell calendar-day">18</div>
+                <div class="calendar-cell calendar-day">19</div>
+                <div class="calendar-cell calendar-day">20</div>
+                <div class="calendar-cell calendar-day">21</div>
+                <div class="calendar-cell calendar-day">22</div>
+                <div class="calendar-cell calendar-day">23</div>
+                <div class="calendar-cell calendar-day">24</div>
+                <div class="calendar-cell calendar-day">25</div>
+                <div class="calendar-cell calendar-day">26</div>
+                <div class="calendar-cell calendar-day">27</div>
+                <div class="calendar-cell calendar-day">28</div>
+                <div class="calendar-cell calendar-day">29</div>
+                <div class="calendar-cell calendar-day">30</div>
+                <div class="calendar-cell calendar-day">31</div>
             </div>
         </div>
 
         <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">DATA INSIGHTS & RECOMMENDATIONS</div>
             <ul class="insights-list">
-                <li>🏆 <strong>YOUR RECORD:</strong> The most hours you studied in a single day is <span id="insightRecord">0</span>.</li>
-                <li>⭐ <strong>CONSISTENCY:</strong> You have recorded data for <span id="insightDays">0</span> days in this notebook.</li>
-                <li>🎯 <strong>KEEP GOING:</strong> Consistency is key for exams. Aim for steady daily averages rather than cramming!</li>
+                <li>🏆 <strong>YOUR RECORD:</strong> <span id="insightRecord">0</span> hours in a single day</li>
+                <li>⭐ <strong>CONSISTENCY:</strong> <span id="insightDays">0</span> days recorded in this notebook</li>
+                <li>🎯 <strong>KEEP GOING:</strong> Steady daily averages are better than cramming!</li>
             </ul>
+        </div>
+    </div>
+
+    <div id="newNotebookModal">
+        <div class="modal-content">
+            <h2>Create New Notebook</h2>
+            <input type="text" id="nnTitle" class="modal-input" placeholder="Notebook Title (e.g. Semester B 2026)">
+            <input type="text" id="nnDesc" class="modal-input" placeholder="Short Description (Optional)">
+            <div class="modal-btn-row">
+                <button class="modal-btn" onclick="document.getElementById('newNotebookModal').style.display='none'">Cancel</button>
+                <button class="modal-btn primary" onclick="submitNewNotebook()">Create</button>
+            </div>
         </div>
     </div>
 
@@ -366,56 +417,50 @@
         const CLOUD_URL = 'https://script.google.com/macros/s/AKfycbzgAd_QvMdP4lD5x_tiXxV1cQwKaDrMrJ9zHFd9abmHUKfdnd_2m7hRtThHyhXGXPUi/exec';
         const STORAGE_KEY = 'studyApp_NotebookData';
         let syncTimer;
+        let currentNotebookId = null; // Tracks which notebook we are in!
 
-        // Create Fake Data if Notebook is Empty!
-        function seedFakeDataIfEmpty() {
+        // Load / Save raw data
+        function loadAllData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : { notebooks: {} };
+        }
+        function saveAllData(dataObj) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
+        }
+
+        // Data Migration & Setup (Ensures the structure is { notebooks: { id1: {...}, id2: {...} } })
+        function setupDataStructure() {
             let data = loadAllData();
-            if (Object.keys(data).length === 0) {
-                const fakeData = {
-                    "2026-03-02": {
-                        "schedTasks": ["Calculus Assignment", "Read Chapter 4", "", "", "", "", "", "", "", ""],
-                        "schedCats": ["1", "2", "", "", "", "", "", "", "", ""],
-                        "todoTexts": ["Submit Homework", "Review Notes", "", "", ""],
-                        "todoChecks": [true, true, false, false, false],
-                        "topThrees": ["Finish Math", "Start Biology", ""],
-                        "startTimes": ["09:00", "11:30", "14:00", "", "", "", "", "", "", ""],
-                        "finishTimes": ["11:00", "13:00", "15:00", "", "", "", "", "", "", ""],
-                        "trackChecks": [true, true, true, false, false, false, false, false, false, false],
-                        "notesTimes": ["08:30", "09:00", "09:00", "15:00"],
-                        "reward": "Ice Cream", "goal": "Stay focused!",
-                        "breaks": [true, true, false, false, false],
-                        "totalMinutes": 270 // 4.5 hours
-                    },
-                    "2026-03-03": {
-                        "schedTasks": ["Neuroscience Lab", "Linear Algebra", "Flashcards", "", "", "", "", "", "", ""],
-                        "schedCats": ["3", "1", "4", "", "", "", "", "", "", ""],
-                        "todoTexts": ["Print Lab", "", "", "", ""],
-                        "todoChecks": [true, false, false, false, false],
-                        "topThrees": ["Finish Lab", "", ""],
-                        "startTimes": ["08:00", "10:00", "13:00", "15:30", "", "", "", "", "", ""],
-                        "finishTimes": ["09:30", "12:00", "15:00", "16:30", "", "", "", "", "", ""],
-                        "trackChecks": [true, true, true, true, false, false, false, false, false, false],
-                        "notesTimes": ["07:45", "08:00", "08:00", "16:30"],
-                        "reward": "Watch Netflix", "goal": "Crush it",
-                        "breaks": [true, true, true, false, false],
-                        "totalMinutes": 390 // 6.5 hours
-                    },
-                    "2026-03-04": {
-                        "schedTasks": ["Biology Reading", "Math Review", "", "", "", "", "", "", "", ""],
-                        "schedCats": ["3", "1", "", "", "", "", "", "", "", ""],
-                        "todoTexts": ["Read pages 100-150", "", "", "", ""],
-                        "todoChecks": [true, false, false, false, false],
-                        "topThrees": ["Reading", "", ""],
-                        "startTimes": ["10:00", "12:30", "14:00", "", "", "", "", "", "", ""],
-                        "finishTimes": ["12:00", "13:30", "16:00", "", "", "", "", "", "", ""],
-                        "trackChecks": [true, true, true, false, false, false, false, false, false, false],
-                        "notesTimes": ["09:30", "10:00", "10:00", "16:00"],
-                        "reward": "Walk outside", "goal": "Learn well",
-                        "breaks": [true, true, false, false, false],
-                        "totalMinutes": 300 // 5.0 hours
+            
+            // If data is empty, create a default fake notebook
+            if (Object.keys(data).length === 0 || !data.notebooks) {
+                const fakeId = "nb_" + Date.now();
+                data = {
+                    notebooks: {
+                        [fakeId]: {
+                            id: fakeId,
+                            title: "Semester A 2026",
+                            desc: "Computer Science & Neuroscience",
+                            pages: {
+                                "2026-03-02": {
+                                    schedTasks: ["Calculus Assignment", "Read Chapter 4", "", "", "", "", "", "", "", ""], schedCats: ["1", "2", "", "", "", "", "", "", "", ""],
+                                    todoTexts: ["Submit Homework", "Review Notes", "", "", ""], todoChecks: [true, true, false, false, false],
+                                    topThrees: ["Finish Math", "Start Biology", ""], startTimes: ["09:00", "11:30", "14:00", "", "", "", "", "", "", ""], finishTimes: ["11:00", "13:00", "15:00", "", "", "", "", "", "", ""],
+                                    trackChecks: [true, true, true, false, false, false, false, false, false, false], notesTimes: ["08:30", "09:00", "09:00", "15:00"],
+                                    reward: "Ice Cream", goal: "Stay focused!", breaks: [true, true, false, false, false], totalMinutes: 270 
+                                },
+                                "2026-03-03": {
+                                    schedTasks: ["Neuroscience Lab", "Linear Algebra", "Flashcards", "", "", "", "", "", "", ""], schedCats: ["3", "1", "4", "", "", "", "", "", "", ""],
+                                    todoTexts: ["Print Lab", "", "", "", ""], todoChecks: [true, false, false, false, false],
+                                    topThrees: ["Finish Lab", "", ""], startTimes: ["08:00", "10:00", "13:00", "15:30", "", "", "", "", "", ""], finishTimes: ["09:30", "12:00", "15:00", "16:30", "", "", "", "", "", ""],
+                                    trackChecks: [true, true, true, true, false, false, false, false, false, false], notesTimes: ["07:45", "08:00", "08:00", "16:30"],
+                                    reward: "Watch Netflix", goal: "Crush it", breaks: [true, true, true, false, false], totalMinutes: 390 
+                                }
+                            }
+                        }
                     }
                 };
-                saveAllData(fakeData);
+                saveAllData(data);
             }
         }
 
@@ -425,80 +470,134 @@
                 const response = await fetch(CLOUD_URL);
                 const cloudData = await response.json();
                 
-                // If cloud has data, override local
-                if(Object.keys(cloudData).length > 0) {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+                // If cloud has ALL_NOTEBOOKS, use it
+                if(cloudData["ALL_NOTEBOOKS"]) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData["ALL_NOTEBOOKS"]));
                 }
+                
                 document.getElementById('syncStatus').innerText = '☁️ Synced & Up to Date';
-                
-                if (document.getElementById('notebooksView').style.display === 'block') renderNotebookList();
-                else if (document.getElementById('analyticsView').style.display === 'grid') updateAnalyticsData();
-                
+                refreshCurrentView();
             } catch (error) {
                 console.error("Cloud sync failed", error);
                 document.getElementById('syncStatus').innerText = '☁️ Offline Mode (Local Data Only)';
-                renderNotebookList(); 
+                refreshCurrentView();
             }
         }
 
-        async function saveToCloud(dateKey, dayData) {
-            try {
-                document.getElementById('syncStatus').innerText = '☁️ Saving to Drive...';
-                await fetch(CLOUD_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ dateKey: dateKey, dayData: dayData })
-                });
-                document.getElementById('syncStatus').innerText = '☁️ Saved to Drive';
-            } catch (error) {
-                document.getElementById('syncStatus').innerText = '☁️ Saved Locally (Cloud Error)';
-            }
-        }
-        
-        function loadAllData() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : {};
-        }
-
-        function saveAllData(dataObj) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
+        async function triggerCloudSave() {
+            clearTimeout(syncTimer);
+            document.getElementById('syncStatus').innerText = '☁️ Pending save...';
+            syncTimer = setTimeout(async () => {
+                try {
+                    document.getElementById('syncStatus').innerText = '☁️ Saving to Drive...';
+                    await fetch(CLOUD_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ dateKey: "ALL_NOTEBOOKS", dayData: loadAllData() })
+                    });
+                    document.getElementById('syncStatus').innerText = '☁️ Saved to Drive';
+                } catch (error) {
+                    document.getElementById('syncStatus').innerText = '☁️ Saved Locally (Cloud Error)';
+                }
+            }, 2000);
         }
 
         // --- View Navigation ---
         function switchTab(tabName) {
-            document.getElementById('notebooksView').style.display = 'none';
+            document.getElementById('notebooksGridView').style.display = 'none';
+            document.getElementById('notebookDetailView').style.display = 'none';
             document.getElementById('plannerView').style.display = 'none';
             document.getElementById('analyticsView').style.display = 'none';
             
             document.getElementById('btnNotebooks').classList.remove('active');
             document.getElementById('btnAnalytics').classList.remove('active');
 
-            const title = document.getElementById('mainTitle');
-
             if (tabName === 'notebooks') {
-                document.getElementById('notebooksView').style.display = 'block';
+                currentNotebookId = null; // Reset selection
+                document.getElementById('notebooksGridView').style.display = 'block';
                 document.getElementById('btnNotebooks').classList.add('active');
-                title.innerText = 'MY NOTEBOOKS';
-                renderNotebookList();
-            } else if (tabName === 'planner') {
-                document.getElementById('plannerView').style.display = 'grid';
-                // No active tab on top, just the title changes
-                title.innerText = 'STUDY PLANNER';
+                renderNotebookGrid();
             } else if (tabName === 'analytics') {
                 document.getElementById('analyticsView').style.display = 'grid'; 
                 document.getElementById('btnAnalytics').classList.add('active');
-                title.innerText = 'STUDY ANALYTICS';
+                if(!currentNotebookId) {
+                    // Auto-select the first notebook if none selected
+                    const data = loadAllData();
+                    const keys = Object.keys(data.notebooks);
+                    if(keys.length > 0) currentNotebookId = keys[0];
+                }
                 updateAnalyticsData();
             }
         }
 
-        // --- Notebook List ---
-        function renderNotebookList() {
+        function refreshCurrentView() {
+            if(document.getElementById('notebooksGridView').style.display === 'block') renderNotebookGrid();
+            else if(document.getElementById('notebookDetailView').style.display === 'block') openNotebook(currentNotebookId);
+            else if(document.getElementById('plannerView').style.display === 'grid') loadDayIntoPlanner(document.getElementById('activeDateKey').value);
+            else if(document.getElementById('analyticsView').style.display === 'grid') updateAnalyticsData();
+        }
+
+        // --- Notebook Management ---
+        function renderNotebookGrid() {
             const data = loadAllData();
+            const container = document.getElementById('notebookGridContainer');
+            container.innerHTML = '';
+
+            Object.values(data.notebooks).forEach(nb => {
+                const div = document.createElement('div');
+                div.className = 'notebook-card';
+                div.onclick = () => openNotebook(nb.id);
+                div.innerHTML = `
+                    <div class="notebook-title">${nb.title}</div>
+                    <div>${nb.desc}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Add 'New Notebook' Button
+            const addBtn = document.createElement('div');
+            addBtn.className = 'notebook-card add-notebook-card';
+            addBtn.onclick = () => document.getElementById('newNotebookModal').style.display = 'flex';
+            addBtn.innerHTML = `
+                <div style="font-size: 40px; font-weight:bold; margin-bottom:10px;">+</div>
+                <div style="font-weight:bold;">NEW NOTEBOOK</div>
+            `;
+            container.appendChild(addBtn);
+        }
+
+        function submitNewNotebook() {
+            const title = document.getElementById('nnTitle').value.trim();
+            const desc = document.getElementById('nnDesc').value.trim();
+            if(!title) { alert("Please enter a title!"); return; }
+
+            const newId = "nb_" + Date.now();
+            const data = loadAllData();
+            data.notebooks[newId] = { id: newId, title: title, desc: desc, pages: {} };
+            saveAllData(data);
+            triggerCloudSave();
+
+            document.getElementById('nnTitle').value = '';
+            document.getElementById('nnDesc').value = '';
+            document.getElementById('newNotebookModal').style.display = 'none';
+            renderNotebookGrid();
+        }
+
+        function openNotebook(nbId) {
+            currentNotebookId = nbId;
+            const data = loadAllData();
+            const nb = data.notebooks[nbId];
+
+            document.getElementById('notebooksGridView').style.display = 'none';
+            document.getElementById('plannerView').style.display = 'none';
+            document.getElementById('analyticsView').style.display = 'none';
+            document.getElementById('notebookDetailView').style.display = 'grid';
+
+            document.getElementById('detailNotebookTitle').innerText = nb.title;
+            document.getElementById('detailNotebookDesc').innerText = nb.desc;
+
             const container = document.getElementById('savedPagesContainer');
             container.innerHTML = ''; 
-
-            const dates = Object.keys(data).sort((a, b) => new Date(b) - new Date(a)); 
+            const dates = Object.keys(nb.pages).sort((a, b) => new Date(b) - new Date(a)); 
 
             if (dates.length === 0) {
                 container.innerHTML = '<p style="text-align:center; color:#666;">No pages saved yet.</p>';
@@ -506,7 +605,7 @@
             }
 
             dates.forEach(dateStr => {
-                const dayData = data[dateStr];
+                const dayData = nb.pages[dateStr];
                 const totalH = (dayData.totalMinutes / 60).toFixed(1);
                 
                 const dateObj = new Date(dateStr);
@@ -516,15 +615,12 @@
                 const div = document.createElement('div');
                 div.className = 'page-item';
                 div.onclick = () => loadDayIntoPlanner(dateStr);
-                div.innerHTML = `
-                    <span>📅 ${niceDate}</span>
-                    <span>⏱️ ${totalH} Hours Logged</span>
-                `;
+                div.innerHTML = `<span>📅 ${niceDate}</span><span>⏱️ ${totalH} Hours Logged</span>`;
                 container.appendChild(div);
             });
         }
 
-        // --- Form Engine ---
+        // --- Planner Engine ---
         function getFormattedDate(dateObj) { return dateObj.toISOString().split('T')[0]; }
 
         function createNewPage() {
@@ -534,6 +630,7 @@
 
         function loadDayIntoPlanner(dateKey) {
             const data = loadAllData();
+            const pages = data.notebooks[currentNotebookId].pages;
             document.getElementById('activeDateKey').value = dateKey;
             
             const d = new Date(dateKey);
@@ -542,35 +639,25 @@
 
             clearPlannerForm();
 
-            if (data[dateKey]) {
-                const dayData = data[dateKey];
-                
-                populateArray('.sched-task', dayData.schedTasks);
-                populateArray('.sched-cat', dayData.schedCats);
-                populateArray('.todo-text', dayData.todoTexts);
-                populateArray('.top-three', dayData.topThrees);
-                populateArray('.start-time', dayData.startTimes);
-                populateArray('.finish-time', dayData.finishTimes);
+            if (pages[dateKey]) {
+                const dayData = pages[dateKey];
+                populateArray('.sched-task', dayData.schedTasks); populateArray('.sched-cat', dayData.schedCats);
+                populateArray('.todo-text', dayData.todoTexts); populateArray('.top-three', dayData.topThrees);
+                populateArray('.start-time', dayData.startTimes); populateArray('.finish-time', dayData.finishTimes);
                 populateArray('.notes-time', dayData.notesTimes);
-                
                 document.getElementById('rewardInput').value = dayData.reward || '';
                 document.getElementById('goalInput').value = dayData.goal || '';
-                
-                populateChecks('.todo-check', dayData.todoChecks);
-                populateChecks('.track-check', dayData.trackChecks);
+                populateChecks('.todo-check', dayData.todoChecks); populateChecks('.track-check', dayData.trackChecks);
 
                 const breaks = document.querySelectorAll('.break-box');
-                (dayData.breaks || []).forEach((isCrossed, i) => {
-                    if (isCrossed && breaks[i]) breaks[i].classList.add('crossed');
-                });
-
-                document.querySelectorAll('.time-input').forEach(input => {
-                    if(input.value !== "") input.type = "time";
-                });
+                (dayData.breaks || []).forEach((isCrossed, i) => { if (isCrossed && breaks[i]) breaks[i].classList.add('crossed'); });
+                document.querySelectorAll('.time-input').forEach(input => { if(input.value !== "") input.type = "time"; });
             }
             
             calculateTotalTime(); 
-            switchTab('planner');
+            
+            document.getElementById('notebookDetailView').style.display = 'none';
+            document.getElementById('plannerView').style.display = 'grid';
         }
 
         function clearPlannerForm() {
@@ -584,7 +671,7 @@
 
         function saveCurrentData() {
             const dateKey = document.getElementById('activeDateKey').value;
-            if (!dateKey) return; 
+            if (!dateKey || !currentNotebookId) return; 
 
             const totalMins = calculateTotalTime();
 
@@ -599,30 +686,18 @@
                 totalMinutes: totalMins
             };
 
-            const allData = loadAllData();
-            allData[dateKey] = dayData;
-            saveAllData(allData);
-
-            clearTimeout(syncTimer);
-            document.getElementById('syncStatus').innerText = '☁️ Pending save...';
-            syncTimer = setTimeout(() => { saveToCloud(dateKey, dayData); }, 2000);
+            const data = loadAllData();
+            data.notebooks[currentNotebookId].pages[dateKey] = dayData;
+            saveAllData(data);
+            triggerCloudSave(); // Auto sync
         }
 
         function getArrayValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.value); }
         function getCheckValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.checked); }
-        function populateArray(selector, valuesArr) {
-            if (!valuesArr) return;
-            const elements = document.querySelectorAll(selector);
-            valuesArr.forEach((val, i) => { if (elements[i]) elements[i].value = val; });
-        }
-        function populateChecks(selector, boolArr) {
-            if (!boolArr) return;
-            const elements = document.querySelectorAll(selector);
-            boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; });
-        }
+        function populateArray(selector, valuesArr) { if (!valuesArr) return; const elements = document.querySelectorAll(selector); valuesArr.forEach((val, i) => { if (elements[i]) elements[i].value = val; }); }
+        function populateChecks(selector, boolArr) { if (!boolArr) return; const elements = document.querySelectorAll(selector); boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; }); }
         function toggleBreak(element) { element.classList.toggle('crossed'); saveCurrentData(); }
 
-        // --- Time Calculation ---
         function calculateTotalTime() {
             let totalMinutes = 0;
             const startTimes = document.querySelectorAll('.start-time');
@@ -631,8 +706,7 @@
             for (let i = 0; i < 10; i++) {
                 const startVal = startTimes[i].value; const finishVal = finishTimes[i].value;
                 if (startVal && finishVal) {
-                    const [startH, startM] = startVal.split(':').map(Number);
-                    const [finishH, finishM] = finishVal.split(':').map(Number);
+                    const [startH, startM] = startVal.split(':').map(Number); const [finishH, finishM] = finishVal.split(':').map(Number);
                     let startTotalMins = (startH * 60) + startM; let finishTotalMins = (finishH * 60) + finishM;
                     if (finishTotalMins < startTotalMins) finishTotalMins += (24 * 60); 
                     totalMinutes += (finishTotalMins - startTotalMins);
@@ -676,8 +750,14 @@
         let globalChartHours = []; let globalChartSessions = [];
 
         function updateAnalyticsData() {
+            if(!currentNotebookId) return;
+
             const data = loadAllData();
-            const dates = Object.keys(data).sort(); 
+            const nb = data.notebooks[currentNotebookId];
+            document.getElementById('analyticsNotebookTitle').innerText = nb.title;
+
+            const pages = nb.pages;
+            const dates = Object.keys(pages).sort(); 
             
             if(dates.length === 0) return; 
 
@@ -687,7 +767,7 @@
             const chartLabels = []; const chartHours = []; const chartSessions = []; const categoryCounts = {};
 
             dates.forEach(dateStr => {
-                const dayData = data[dateStr];
+                const dayData = pages[dateStr];
                 const d = new Date(dateStr);
                 const dayName = d.toLocaleDateString('en-US', { weekday: 'long' });
                 
@@ -711,7 +791,7 @@
             document.getElementById('statTotalHours').innerText = totalHoursDec;
             document.getElementById('statDailyAvg').innerText = (totalHoursDec / dates.length).toFixed(1);
             document.getElementById('statTotalSessions').innerText = totalSessionsAllTime;
-            document.getElementById('insightRecord').innerText = (maxMinsInDay / 60).toFixed(1) + " hours";
+            document.getElementById('insightRecord').innerText = (maxMinsInDay / 60).toFixed(1);
             document.getElementById('insightDays').innerText = dates.length;
 
             let bestDay = "N/A"; let bestAvg = -1;
@@ -776,9 +856,9 @@
             });
         }
 
-        // Initialize App on Load
+        // Initialize App
         window.onload = () => {
-            seedFakeDataIfEmpty(); // Inject initial fake data so it's not empty!
+            setupDataStructure(); 
             switchTab('notebooks'); 
             initCloudSync(); 
         };
