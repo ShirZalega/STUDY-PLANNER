@@ -90,9 +90,9 @@
             font-weight: bold;
         }
         
-        /* New rules for SCHEDULE columns */
+        /* Schedule columns */
         .task-label {
-            width: 70px; /* Narrow left column */
+            width: 70px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -100,41 +100,38 @@
             font-size: 14px;
         }
         .task-input {
-            flex: 1; /* Wide middle column */
+            flex: 1; 
             border-right: 1px solid #000;
         }
         .cat-input {
-            width: 50px; /* Narrow right column */
+            width: 50px; 
             font-size: 14px;
         }
         
-        /* Hide the up/down arrows in the number input for a cleaner look */
+        /* Hide up/down arrows in number inputs */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
             margin: 0; 
         }
 
-        .notes-section {
-            direction: rtl;
-            padding: 10px;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .total-time-row {
-            display: flex;
-            align-items: center;
+        /* Break boxes styling for the interactive 'X' */
+        .break-box {
+            flex: 1; 
+            padding: 10px; 
+            border-right: 1px solid #000;
+            cursor: pointer;
             font-weight: bold;
-            font-size: 18px;
+            transition: all 0.2s;
         }
-        .total-time-row input {
-            border-bottom: 1px dashed #000;
-            margin-right: 10px;
-            font-size: 16px;
-            text-align: center;
-            width: 100px;
+        .break-box:last-child {
+            border-right: none;
+        }
+        /* This class creates a red X over the box when added */
+        .break-box.crossed {
+            background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), 
+                        linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
+            color: rgba(0,0,0,0.3); /* Dims the number slightly */
         }
     </style>
 </head>
@@ -151,7 +148,6 @@
 
             <div class="box">
                 <div class="yellow-header">SCHEDULE</div>
-                
                 <script>
                     for(let i=1; i<=10; i++) {
                         document.write(`
@@ -172,6 +168,11 @@
                 <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
                 <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
                 <div class="row"><div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox"></div><input type="text"></div>
+            </div>
+
+            <div class="box">
+                <div class="yellow-header">REWARD</div>
+                <input type="text" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="What's your treat today?">
             </div>
         </div>
 
@@ -218,21 +219,43 @@
             <div class="box">
                 <div class="yellow-header">BREAK TIMES CHECK LIST</div>
                 <div class="flex-row" style="text-align: center;">
-                    <div style="flex: 1; padding: 10px; border-right: 1px solid #000;">1</div>
-                    <div style="flex: 1; padding: 10px; border-right: 1px solid #000;">2</div>
-                    <div style="flex: 1; padding: 10px; border-right: 1px solid #000;">3</div>
-                    <div style="flex: 1; padding: 10px; border-right: 1px solid #000;">4</div>
-                    <div style="flex: 1; padding: 10px;">5</div>
+                    <div class="break-box">1</div>
+                    <div class="break-box">2</div>
+                    <div class="break-box">3</div>
+                    <div class="break-box">4</div>
+                    <div class="break-box">5</div>
                 </div>
             </div>
 
             <div class="box">
                 <div class="yellow-header">NOTES</div>
-                <div class="notes-section">
-                    <textarea style="width: 100%; height: 60px; border: none; outline: none; resize: none; font-family: inherit;" placeholder="Notes..."></textarea>
-                    <div class="total-time-row">
-                        <span>Total Study Hours</span>
-                        <input type="text" id="totalTime" readonly placeholder="--:--">
+                <div class="flex-row" style="direction: rtl;">
+                    <div style="flex: 1; border-left: 1px solid #000; display: flex; flex-direction: column;">
+                        <div class="flex-row" style="border-bottom: 1px solid #000; background-color: #f9f9f9;">
+                            <div style="flex: 1; text-align: center; font-weight: bold; padding: 8px; border-left: 1px solid #000;">זמן</div>
+                            <div style="flex: 1; text-align: center; font-weight: bold; padding: 8px;">מהות</div>
+                        </div>
+                        <div class="flex-row" style="border-bottom: 1px solid #000;">
+                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; text-align: center; padding: 8px;">לקיחה</div>
+                        </div>
+                        <div class="flex-row" style="border-bottom: 1px solid #000;">
+                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; text-align: center; padding: 8px;">השפעה</div>
+                        </div>
+                        <div class="flex-row" style="border-bottom: 1px solid #000;">
+                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; text-align: center; padding: 8px;">תחילה עבודה</div>
+                        </div>
+                        <div class="flex-row">
+                            <input type="time" style="flex: 1; border-left: 1px solid #000; border-bottom: none; text-align: center;">
+                            <div style="flex: 1; text-align: center; padding: 8px;">סיום</div>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+                        <div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;">סה״כ זמן למידה</div>
+                        <input type="text" id="totalTime" readonly placeholder="00:00" style="font-size: 28px; font-weight: bold; text-align: center; border-bottom: 2px dashed #000; width: 120px;">
                     </div>
                 </div>
             </div>
@@ -240,7 +263,7 @@
     </div>
 
     <script>
-        // Automatically set today's date formatted with slashes
+        // 1. Set today's date automatically
         const dateField = document.getElementById('todayDate');
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -248,7 +271,7 @@
         const year = today.getFullYear();
         dateField.value = `${day}/${month}/${year}`;
 
-        // Auto-fill time inputs with current time when clicked
+        // 2. Auto-fill time inputs when clicked
         const timeInputs = document.querySelectorAll('input[type="time"]');
         timeInputs.forEach(input => {
             input.addEventListener('focus', function() {
@@ -261,7 +284,7 @@
             });
         });
 
-        // Smart sync: Copy finish time to the next row's start time
+        // 3. Smart sync: Copy finish time to the next row's start time
         const finishTimes = document.querySelectorAll('.finish-time');
         const startTimes = document.querySelectorAll('.start-time');
 
@@ -274,6 +297,51 @@
                 }
             });
         });
+
+        // 4. Toggle Break Checkmarks (Red 'X')
+        const breakBoxes = document.querySelectorAll('.break-box');
+        breakBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                this.classList.toggle('crossed');
+            });
+        });
+
+        // 5. Automatic Total Study Time Calculator
+        function calculateTotalTime() {
+            let totalMinutes = 0;
+
+            for (let i = 0; i < 10; i++) {
+                const startVal = startTimes[i].value;
+                const finishVal = finishTimes[i].value;
+
+                // Only calculate if both start and finish times exist for this row
+                if (startVal && finishVal) {
+                    const [startH, startM] = startVal.split(':').map(Number);
+                    const [finishH, finishM] = finishVal.split(':').map(Number);
+
+                    let startTotalMins = (startH * 60) + startM;
+                    let finishTotalMins = (finishH * 60) + finishM;
+
+                    // Handle cases where studying goes past midnight
+                    if (finishTotalMins < startTotalMins) {
+                        finishTotalMins += (24 * 60); 
+                    }
+
+                    totalMinutes += (finishTotalMins - startTotalMins);
+                }
+            }
+
+            // Convert total minutes back to HH:MM format
+            const finalHours = Math.floor(totalMinutes / 60);
+            const finalMins = totalMinutes % 60;
+            
+            document.getElementById('totalTime').value = 
+                `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
+        }
+
+        // Trigger calculation whenever any start or finish time changes
+        startTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
+        finishTimes.forEach(input => input.addEventListener('change', calculateTotalTime));
     </script>
 </body>
 </html>
