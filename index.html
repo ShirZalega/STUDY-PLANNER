@@ -15,13 +15,14 @@
             color: #000;
         }
         
+        /* Navigation Bar (Now only 2 tabs) */
         .navbar {
             background-color: #000;
             padding: 15px;
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .nav-button {
             background-color: transparent;
@@ -46,45 +47,28 @@
             letter-spacing: 3px;
             font-weight: bold;
             font-size: 24px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
+        
+        .sync-status {
+            text-align: center; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 30px; height: 20px;
+        }
+
         .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px;
         }
         
         #plannerView, #analyticsView { display: none; }
 
         .box {
-            border: 1px solid #000;
-            margin-bottom: 20px;
-            background: #fff;
+            border: 1px solid #000; margin-bottom: 20px; background: #fff;
         }
         .yellow-header {
-            background-color: #fdf1a9; 
-            padding: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            border-bottom: 1px solid #000;
-            text-align: center;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            background-color: #fdf1a9; padding: 8px; font-weight: bold; font-size: 14px;
+            border-bottom: 1px solid #000; text-align: center; letter-spacing: 1px; text-transform: uppercase;
         }
         input[type="text"], input[type="time"], input[type="number"], textarea {
-            font-size: 14px; 
-            color: #000;
-            border: none;
-            outline: none;
-            font-family: inherit;
-            background: transparent;
+            font-size: 14px; color: #000; border: none; outline: none; font-family: inherit; background: transparent;
         }
         
         .row input[type="text"], .row input[type="time"], .row input[type="number"], #currentPlannerDate, .time-input {
@@ -95,20 +79,9 @@
         .row:last-child { border-bottom: none; }
         .flex-row { display: flex; }
         
-        .checkbox-cell {
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .checkbox-cell input {
-            width: 18px; height: 18px;
-            border: 1px solid #000;
-            cursor: pointer;
-        }
-        .number-cell {
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
+        .checkbox-cell { width: 40px; display: flex; align-items: center; justify-content: center; }
+        .checkbox-cell input { width: 18px; height: 18px; border: 1px solid #000; cursor: pointer; }
+        .number-cell { display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
         .task-label {
             width: 70px; display: flex; align-items: center; justify-content: center;
@@ -116,16 +89,12 @@
         }
         .schedule-middle-col { flex: 1; display: flex; border-right: 1px solid #000; }
         .schedule-right-col { width: 50px; display: flex; }
-        .schedule-middle-col input, .schedule-right-col input {
-            width: 100%; box-sizing: border-box; padding: 8px;
-        }
+        .schedule-middle-col input, .schedule-right-col input { width: 100%; box-sizing: border-box; padding: 8px; }
         
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .break-box, .calendar-day {
-            flex: 1; padding: 10px; border-right: 1px solid #000;
-            cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;
+            flex: 1; padding: 10px; border-right: 1px solid #000; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;
         }
         .break-box:last-child { border-right: none; }
         .crossed {
@@ -134,24 +103,25 @@
             color: rgba(0,0,0,0.3);
         }
 
-        .notes-table {
-            display: grid; grid-template-columns: 1fr 1fr; flex: 1; border-right: 1px solid #000;
-        }
-        .notes-cell {
-            display: flex; align-items: center; justify-content: center;
-            border-bottom: 1px solid #000; box-sizing: border-box;
-        }
+        .notes-table { display: grid; grid-template-columns: 1fr 1fr; flex: 1; border-right: 1px solid #000; }
+        .notes-cell { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #000; box-sizing: border-box; }
         .notes-cell-right { border-right: 1px solid #000; }
         .notes-cell.no-border-bottom { border-bottom: none; }
 
-        /* Analytics */
         .stat-number { font-size: 36px; font-weight: bold; text-align: center; margin: 20px 0; color: #000; }
         .stat-label { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; padding: 0 5px; }
         .chart-container { padding: 20px; display: flex; justify-content: center; align-items: center; height: 250px; position: relative; }
         .chart-toggle-group { position: absolute; right: 5px; display: flex; gap: 5px; }
         .chart-toggle-btn { padding: 2px 8px; font-size: 10px; background: #fff; border: 1px solid #000; cursor: pointer; font-weight: bold; }
         .chart-toggle-btn.active { background: #000; color: #fff; }
+        
         .insights-list { padding: 20px; font-size: 18px; line-height: 2; margin: 0; list-style-type: none; text-align: center; }
+
+        .calendar-wrapper { max-width: 500px; margin: 0 auto; padding-bottom: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #000; border-left: 1px solid #000; direction: rtl; }
+        .calendar-header { background-color: #f9f9f9; font-size: 12px; padding: 10px 0; }
+        .calendar-cell { border-left: 1px solid #000; border-bottom: 1px solid #000; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .calendar-empty { background-color: #f0f0f0; }
 
         /* Notebook View Styles */
         .notebook-card {
@@ -163,16 +133,21 @@
         .page-list { text-align: left; margin-top: 20px; border-top: 2px dashed #000; padding-top: 20px; }
         .page-item {
             padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; background: #fff;
-            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-            font-weight: bold; transition: 0.2s;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
         .page-item:hover { border-color: #000; background: #fdf1a9; }
-        .new-page-btn {
+        .btn-black {
             background: #000; color: #fff; border: none; padding: 15px; width: 100%;
-            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s;
+            font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s;
         }
-        .new-page-btn:hover { background: #333; }
+        .btn-black:hover { background: #333; }
         
+        .back-btn {
+            grid-column: span 2; background: transparent; border: none; color: #000; font-size: 16px; 
+            font-weight: bold; text-align: left; cursor: pointer; padding: 0 0 20px 0;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
         #savedPagesContainer { max-height: 400px; overflow-y: auto; }
     </style>
 </head>
@@ -180,27 +155,29 @@
 
     <div class="navbar">
         <button class="nav-button active" id="btnNotebooks" onclick="switchTab('notebooks')">NOTEBOOKS</button>
-        <button class="nav-button" id="btnPlanner" onclick="switchTab('planner')">PLANNER</button>
         <button class="nav-button" id="btnAnalytics" onclick="switchTab('analytics')">ANALYTICS</button>
     </div>
 
     <div class="header-title" id="mainTitle">MY NOTEBOOKS</div>
+    <div class="sync-status" id="syncStatus">☁️ Connecting...</div>
 
     <div id="notebooksView" class="container" style="display: block; max-width: 600px;">
         <div class="notebook-card">
             <div class="notebook-title">Semester A 2026</div>
             <div>Computer Science & Neuroscience</div>
         </div>
+
         <div class="page-list">
             <h3 style="margin-top: 0;">Saved Study Pages</h3>
-            <div id="savedPagesContainer">
-                </div>
-            <button class="new-page-btn" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
+            <div id="savedPagesContainer"></div>
+            <button class="btn-black" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
         </div>
     </div>
 
     <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
         
+        <button class="back-btn" onclick="switchTab('notebooks')">🔙 BACK TO NOTEBOOK</button>
+
         <input type="hidden" id="activeDateKey">
 
         <div>
@@ -216,12 +193,8 @@
                         document.write(`
                         <div class="row">
                             <div class="task-label">Task ${i}</div>
-                            <div class="schedule-middle-col">
-                                <input type="text" class="sched-task save-target" placeholder="...">
-                            </div>
-                            <div class="schedule-right-col">
-                                <input type="number" min="1" max="10" class="sched-cat save-target" placeholder="#">
-                            </div>
+                            <div class="schedule-middle-col"><input type="text" class="sched-task save-target" placeholder="..."></div>
+                            <div class="schedule-right-col"><input type="number" min="1" max="10" class="sched-cat save-target" placeholder="#"></div>
                         </div>
                         `);
                     }
@@ -234,9 +207,7 @@
                     for(let i=1; i<=5; i++) {
                         document.write(`
                         <div class="row">
-                            <div class="checkbox-cell" style="border-right: 1px solid #000;">
-                                <input type="checkbox" class="todo-check save-target">
-                            </div>
+                            <div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox" class="todo-check save-target"></div>
                             <input type="text" class="todo-text save-target" style="width: 100%; padding: 8px; box-sizing: border-box;">
                         </div>
                         `);
@@ -277,14 +248,11 @@
                     <div style="width: 90px; padding: 8px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box;">START TIME</div>
                     <div style="width: 90px; padding: 8px; box-sizing: border-box;">FINISH TIME</div>
                 </div>
-                
                 <script>
                     for(let i=1; i<=10; i++) {
                         document.write(`
                         <div class="row">
-                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;">
-                                <input type="checkbox" class="track-check save-target">
-                            </div>
+                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;"><input type="checkbox" class="track-check save-target"></div>
                             <div class="number-cell" style="flex: 1; font-size: 14px;">Task ${i}</div>
                             <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;">
                                 <input type="text" class="time-input start-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
@@ -328,7 +296,6 @@
                         <div class="notes-cell notes-cell-right no-border-bottom" style="padding: 8px;">Finish</div>
                         <div class="notes-cell no-border-bottom"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
                     </div>
-                    
                     <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
                         <div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;">TOTAL STUDY TIME</div>
                         <input type="text" id="totalTime" readonly placeholder="00:00" style="font-size: 28px; font-weight: bold; text-align: center; border-bottom: 2px dashed #000; width: 120px;">
@@ -395,16 +362,104 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        // --- Core Application State & Storage ---
+        // --- GOOGLE DRIVE CLOUD SYNC ---
+        const CLOUD_URL = 'https://script.google.com/macros/s/AKfycbzgAd_QvMdP4lD5x_tiXxV1cQwKaDrMrJ9zHFd9abmHUKfdnd_2m7hRtThHyhXGXPUi/exec';
         const STORAGE_KEY = 'studyApp_NotebookData';
+        let syncTimer;
+
+        // Create Fake Data if Notebook is Empty!
+        function seedFakeDataIfEmpty() {
+            let data = loadAllData();
+            if (Object.keys(data).length === 0) {
+                const fakeData = {
+                    "2026-03-02": {
+                        "schedTasks": ["Calculus Assignment", "Read Chapter 4", "", "", "", "", "", "", "", ""],
+                        "schedCats": ["1", "2", "", "", "", "", "", "", "", ""],
+                        "todoTexts": ["Submit Homework", "Review Notes", "", "", ""],
+                        "todoChecks": [true, true, false, false, false],
+                        "topThrees": ["Finish Math", "Start Biology", ""],
+                        "startTimes": ["09:00", "11:30", "14:00", "", "", "", "", "", "", ""],
+                        "finishTimes": ["11:00", "13:00", "15:00", "", "", "", "", "", "", ""],
+                        "trackChecks": [true, true, true, false, false, false, false, false, false, false],
+                        "notesTimes": ["08:30", "09:00", "09:00", "15:00"],
+                        "reward": "Ice Cream", "goal": "Stay focused!",
+                        "breaks": [true, true, false, false, false],
+                        "totalMinutes": 270 // 4.5 hours
+                    },
+                    "2026-03-03": {
+                        "schedTasks": ["Neuroscience Lab", "Linear Algebra", "Flashcards", "", "", "", "", "", "", ""],
+                        "schedCats": ["3", "1", "4", "", "", "", "", "", "", ""],
+                        "todoTexts": ["Print Lab", "", "", "", ""],
+                        "todoChecks": [true, false, false, false, false],
+                        "topThrees": ["Finish Lab", "", ""],
+                        "startTimes": ["08:00", "10:00", "13:00", "15:30", "", "", "", "", "", ""],
+                        "finishTimes": ["09:30", "12:00", "15:00", "16:30", "", "", "", "", "", ""],
+                        "trackChecks": [true, true, true, true, false, false, false, false, false, false],
+                        "notesTimes": ["07:45", "08:00", "08:00", "16:30"],
+                        "reward": "Watch Netflix", "goal": "Crush it",
+                        "breaks": [true, true, true, false, false],
+                        "totalMinutes": 390 // 6.5 hours
+                    },
+                    "2026-03-04": {
+                        "schedTasks": ["Biology Reading", "Math Review", "", "", "", "", "", "", "", ""],
+                        "schedCats": ["3", "1", "", "", "", "", "", "", "", ""],
+                        "todoTexts": ["Read pages 100-150", "", "", "", ""],
+                        "todoChecks": [true, false, false, false, false],
+                        "topThrees": ["Reading", "", ""],
+                        "startTimes": ["10:00", "12:30", "14:00", "", "", "", "", "", "", ""],
+                        "finishTimes": ["12:00", "13:30", "16:00", "", "", "", "", "", "", ""],
+                        "trackChecks": [true, true, true, false, false, false, false, false, false, false],
+                        "notesTimes": ["09:30", "10:00", "10:00", "16:00"],
+                        "reward": "Walk outside", "goal": "Learn well",
+                        "breaks": [true, true, false, false, false],
+                        "totalMinutes": 300 // 5.0 hours
+                    }
+                };
+                saveAllData(fakeData);
+            }
+        }
+
+        async function initCloudSync() {
+            try {
+                document.getElementById('syncStatus').innerText = '☁️ Syncing from Google Drive...';
+                const response = await fetch(CLOUD_URL);
+                const cloudData = await response.json();
+                
+                // If cloud has data, override local
+                if(Object.keys(cloudData).length > 0) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+                }
+                document.getElementById('syncStatus').innerText = '☁️ Synced & Up to Date';
+                
+                if (document.getElementById('notebooksView').style.display === 'block') renderNotebookList();
+                else if (document.getElementById('analyticsView').style.display === 'grid') updateAnalyticsData();
+                
+            } catch (error) {
+                console.error("Cloud sync failed", error);
+                document.getElementById('syncStatus').innerText = '☁️ Offline Mode (Local Data Only)';
+                renderNotebookList(); 
+            }
+        }
+
+        async function saveToCloud(dateKey, dayData) {
+            try {
+                document.getElementById('syncStatus').innerText = '☁️ Saving to Drive...';
+                await fetch(CLOUD_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ dateKey: dateKey, dayData: dayData })
+                });
+                document.getElementById('syncStatus').innerText = '☁️ Saved to Drive';
+            } catch (error) {
+                document.getElementById('syncStatus').innerText = '☁️ Saved Locally (Cloud Error)';
+            }
+        }
         
-        // Load data from LocalStorage or create empty object
         function loadAllData() {
             const data = localStorage.getItem(STORAGE_KEY);
             return data ? JSON.parse(data) : {};
         }
 
-        // Save data object to LocalStorage
         function saveAllData(dataObj) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj));
         }
@@ -416,7 +471,6 @@
             document.getElementById('analyticsView').style.display = 'none';
             
             document.getElementById('btnNotebooks').classList.remove('active');
-            document.getElementById('btnPlanner').classList.remove('active');
             document.getElementById('btnAnalytics').classList.remove('active');
 
             const title = document.getElementById('mainTitle');
@@ -425,29 +479,29 @@
                 document.getElementById('notebooksView').style.display = 'block';
                 document.getElementById('btnNotebooks').classList.add('active');
                 title.innerText = 'MY NOTEBOOKS';
-                renderNotebookList(); // Refresh list
+                renderNotebookList();
             } else if (tabName === 'planner') {
                 document.getElementById('plannerView').style.display = 'grid';
-                document.getElementById('btnPlanner').classList.add('active');
+                // No active tab on top, just the title changes
                 title.innerText = 'STUDY PLANNER';
             } else if (tabName === 'analytics') {
                 document.getElementById('analyticsView').style.display = 'grid'; 
                 document.getElementById('btnAnalytics').classList.add('active');
                 title.innerText = 'STUDY ANALYTICS';
-                updateAnalyticsData(); // Recalculate based on real data
+                updateAnalyticsData();
             }
         }
 
-        // --- Notebook List Generation ---
+        // --- Notebook List ---
         function renderNotebookList() {
             const data = loadAllData();
             const container = document.getElementById('savedPagesContainer');
-            container.innerHTML = ''; // Clear current
+            container.innerHTML = ''; 
 
-            const dates = Object.keys(data).sort((a, b) => new Date(b) - new Date(a)); // Newest first
+            const dates = Object.keys(data).sort((a, b) => new Date(b) - new Date(a)); 
 
             if (dates.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#666;">No pages saved yet. Create your first daily page!</p>';
+                container.innerHTML = '<p style="text-align:center; color:#666;">No pages saved yet.</p>';
                 return;
             }
 
@@ -455,7 +509,6 @@
                 const dayData = data[dateStr];
                 const totalH = (dayData.totalMinutes / 60).toFixed(1);
                 
-                // Format date nicely
                 const dateObj = new Date(dateStr);
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const niceDate = dateObj.toLocaleDateString('en-US', options);
@@ -471,34 +524,27 @@
             });
         }
 
-        // --- Auto-Save & Loading Engine ---
-        function getFormattedDate(dateObj) {
-            return dateObj.toISOString().split('T')[0]; // Returns YYYY-MM-DD
-        }
+        // --- Form Engine ---
+        function getFormattedDate(dateObj) { return dateObj.toISOString().split('T')[0]; }
 
         function createNewPage() {
             const today = new Date();
-            const dateKey = getFormattedDate(today);
-            loadDayIntoPlanner(dateKey); // Will load if exists, or create clean slate
+            loadDayIntoPlanner(getFormattedDate(today)); 
         }
 
         function loadDayIntoPlanner(dateKey) {
             const data = loadAllData();
             document.getElementById('activeDateKey').value = dateKey;
             
-            // Format for display (DD/MM/YYYY)
             const d = new Date(dateKey);
             const displayDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
             document.getElementById('currentPlannerDate').value = displayDate;
 
-            // Clear all fields first
             clearPlannerForm();
 
-            // If data exists for this day, populate it
             if (data[dateKey]) {
                 const dayData = data[dateKey];
                 
-                // Load texts, numbers, times
                 populateArray('.sched-task', dayData.schedTasks);
                 populateArray('.sched-cat', dayData.schedCats);
                 populateArray('.todo-text', dayData.todoTexts);
@@ -510,23 +556,20 @@
                 document.getElementById('rewardInput').value = dayData.reward || '';
                 document.getElementById('goalInput').value = dayData.goal || '';
                 
-                // Load checkboxes
                 populateChecks('.todo-check', dayData.todoChecks);
                 populateChecks('.track-check', dayData.trackChecks);
 
-                // Load breaks (crossed class)
                 const breaks = document.querySelectorAll('.break-box');
                 (dayData.breaks || []).forEach((isCrossed, i) => {
                     if (isCrossed && breaks[i]) breaks[i].classList.add('crossed');
                 });
 
-                // Fix time inputs type (if they have data, make them type="time")
                 document.querySelectorAll('.time-input').forEach(input => {
                     if(input.value !== "") input.type = "time";
                 });
             }
             
-            calculateTotalTime(); // Update total visual
+            calculateTotalTime(); 
             switchTab('planner');
         }
 
@@ -535,29 +578,22 @@
                 if (el.type === 'checkbox') el.checked = false;
                 else if (el.classList.contains('break-box')) el.classList.remove('crossed');
                 else if (el.id !== 'currentPlannerDate') el.value = '';
-                
-                if (el.classList.contains('time-input')) el.type = 'text'; // reset to blank
+                if (el.classList.contains('time-input')) el.type = 'text'; 
             });
         }
 
         function saveCurrentData() {
             const dateKey = document.getElementById('activeDateKey').value;
-            if (!dateKey) return; // Don't save if no date is active
+            if (!dateKey) return; 
 
-            // Always calculate time before saving
             const totalMins = calculateTotalTime();
 
             const dayData = {
-                schedTasks: getArrayValues('.sched-task'),
-                schedCats: getArrayValues('.sched-cat'),
-                todoTexts: getArrayValues('.todo-text'),
-                todoChecks: getCheckValues('.todo-check'),
-                topThrees: getArrayValues('.top-three'),
-                startTimes: getArrayValues('.start-time'),
-                finishTimes: getArrayValues('.finish-time'),
-                trackChecks: getCheckValues('.track-check'),
-                notesTimes: getArrayValues('.notes-time'),
-                reward: document.getElementById('rewardInput').value,
+                schedTasks: getArrayValues('.sched-task'), schedCats: getArrayValues('.sched-cat'),
+                todoTexts: getArrayValues('.todo-text'), todoChecks: getCheckValues('.todo-check'),
+                topThrees: getArrayValues('.top-three'), startTimes: getArrayValues('.start-time'),
+                finishTimes: getArrayValues('.finish-time'), trackChecks: getCheckValues('.track-check'),
+                notesTimes: getArrayValues('.notes-time'), reward: document.getElementById('rewardInput').value,
                 goal: document.getElementById('goalInput').value,
                 breaks: Array.from(document.querySelectorAll('.break-box')).map(b => b.classList.contains('crossed')),
                 totalMinutes: totalMins
@@ -566,15 +602,14 @@
             const allData = loadAllData();
             allData[dateKey] = dayData;
             saveAllData(allData);
+
+            clearTimeout(syncTimer);
+            document.getElementById('syncStatus').innerText = '☁️ Pending save...';
+            syncTimer = setTimeout(() => { saveToCloud(dateKey, dayData); }, 2000);
         }
 
-        // Helper functions for saving/loading
-        function getArrayValues(selector) {
-            return Array.from(document.querySelectorAll(selector)).map(el => el.value);
-        }
-        function getCheckValues(selector) {
-            return Array.from(document.querySelectorAll(selector)).map(el => el.checked);
-        }
+        function getArrayValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.value); }
+        function getCheckValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.checked); }
         function populateArray(selector, valuesArr) {
             if (!valuesArr) return;
             const elements = document.querySelectorAll(selector);
@@ -585,12 +620,7 @@
             const elements = document.querySelectorAll(selector);
             boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; });
         }
-
-        function toggleBreak(element) {
-            element.classList.toggle('crossed');
-            saveCurrentData(); // Save state when a break is clicked
-        }
-
+        function toggleBreak(element) { element.classList.toggle('crossed'); saveCurrentData(); }
 
         // --- Time Calculation ---
         function calculateTotalTime() {
@@ -599,29 +629,20 @@
             const finishTimes = document.querySelectorAll('.finish-time');
 
             for (let i = 0; i < 10; i++) {
-                const startVal = startTimes[i].value;
-                const finishVal = finishTimes[i].value;
-
+                const startVal = startTimes[i].value; const finishVal = finishTimes[i].value;
                 if (startVal && finishVal) {
                     const [startH, startM] = startVal.split(':').map(Number);
                     const [finishH, finishM] = finishVal.split(':').map(Number);
-
-                    let startTotalMins = (startH * 60) + startM;
-                    let finishTotalMins = (finishH * 60) + finishM;
-
+                    let startTotalMins = (startH * 60) + startM; let finishTotalMins = (finishH * 60) + finishM;
                     if (finishTotalMins < startTotalMins) finishTotalMins += (24 * 60); 
                     totalMinutes += (finishTotalMins - startTotalMins);
                 }
             }
-
-            const finalHours = Math.floor(totalMinutes / 60);
-            const finalMins = totalMinutes % 60;
+            const finalHours = Math.floor(totalMinutes / 60); const finalMins = totalMinutes % 60;
             document.getElementById('totalTime').value = `${String(finalHours).padStart(2, '0')}:${String(finalMins).padStart(2, '0')}`;
-            
-            return totalMinutes; // Return for the save function
+            return totalMinutes; 
         }
 
-        // --- Time Input UX ---
         const timeInputs = document.querySelectorAll('.time-input');
         timeInputs.forEach(input => {
             input.addEventListener('focus', function() { this.type = 'time'; });
@@ -650,29 +671,20 @@
             });
         });
 
-
-        // --- Analytics Engine (Real Data!) ---
-        let trendChartObj = null;
-        let pieChartObj = null;
+        // --- Analytics Engine ---
+        let trendChartObj = null; let pieChartObj = null;
+        let globalChartHours = []; let globalChartSessions = [];
 
         function updateAnalyticsData() {
             const data = loadAllData();
-            const dates = Object.keys(data).sort(); // chronological
+            const dates = Object.keys(data).sort(); 
             
-            if(dates.length === 0) return; // No data yet
+            if(dates.length === 0) return; 
 
-            let totalMinsAllTime = 0;
-            let totalSessionsAllTime = 0;
-            let maxMinsInDay = 0;
+            let totalMinsAllTime = 0; let totalSessionsAllTime = 0; let maxMinsInDay = 0;
             let dayAverages = { 'Sunday':[], 'Monday':[], 'Tuesday':[], 'Wednesday':[], 'Thursday':[], 'Friday':[], 'Saturday':[] };
             
-            // Arrays for the chart (last 7 days max)
-            const chartLabels = [];
-            const chartHours = [];
-            const chartSessions = [];
-            
-            // Category counting map
-            const categoryCounts = {};
+            const chartLabels = []; const chartHours = []; const chartSessions = []; const categoryCounts = {};
 
             dates.forEach(dateStr => {
                 const dayData = data[dateStr];
@@ -680,51 +692,37 @@
                 const dayName = d.toLocaleDateString('en-US', { weekday: 'long' });
                 
                 totalMinsAllTime += dayData.totalMinutes;
-                
-                // Count real sessions (where a start time exists)
                 let daySessions = dayData.startTimes.filter(t => t !== "").length;
                 totalSessionsAllTime += daySessions;
-
                 if (dayData.totalMinutes > maxMinsInDay) maxMinsInDay = dayData.totalMinutes;
 
-                // Track for "Best Day" calculation
                 dayAverages[dayName].push(dayData.totalMinutes);
 
-                // Collect categories
                 dayData.schedCats.forEach(cat => {
-                    if(cat) {
-                        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-                    }
+                    if(cat) categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
                 });
 
-                // Add to chart arrays
                 chartLabels.push(dayName.substring(0,3));
                 chartHours.push((dayData.totalMinutes / 60).toFixed(1));
                 chartSessions.push(daySessions);
             });
 
-            // Update Quick Stats Text
             const totalHoursDec = (totalMinsAllTime / 60).toFixed(1);
             document.getElementById('statTotalHours').innerText = totalHoursDec;
             document.getElementById('statDailyAvg').innerText = (totalHoursDec / dates.length).toFixed(1);
             document.getElementById('statTotalSessions').innerText = totalSessionsAllTime;
-            
             document.getElementById('insightRecord').innerText = (maxMinsInDay / 60).toFixed(1) + " hours";
             document.getElementById('insightDays').innerText = dates.length;
 
-            // Find Best Day
-            let bestDay = "N/A";
-            let bestAvg = -1;
+            let bestDay = "N/A"; let bestAvg = -1;
             for (const [day, arr] of Object.entries(dayAverages)) {
                 if(arr.length > 0) {
-                    let sum = arr.reduce((a, b) => a + b, 0);
-                    let avg = sum / arr.length;
+                    let avg = arr.reduce((a, b) => a + b, 0) / arr.length;
                     if(avg > bestAvg) { bestAvg = avg; bestDay = day.substring(0,3); }
                 }
             }
             document.getElementById('statBestDay').innerText = bestDay;
 
-            // Update Charts (Take only last 7 entries for trend)
             const recentLabels = chartLabels.slice(-7);
             const recentHours = chartHours.slice(-7);
             const recentSessions = chartSessions.slice(-7);
@@ -733,53 +731,29 @@
             updatePieChart(categoryCounts);
         }
 
-        // Global variables to hold chart data so toggle works
-        let globalChartHours = [];
-        let globalChartSessions = [];
-
         function updateTrendChart(labels, hoursData, sessionsData) {
-            globalChartHours = hoursData;
-            globalChartSessions = sessionsData;
-
+            globalChartHours = hoursData; globalChartSessions = sessionsData;
             const ctxBar = document.getElementById('trendBarChart').getContext('2d');
-            if(trendChartObj) trendChartObj.destroy(); // Destroy old chart before drawing new
+            if(trendChartObj) trendChartObj.destroy(); 
 
             trendChartObj = new Chart(ctxBar, {
                 type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Study Hours',
-                        data: hoursData,
-                        backgroundColor: '#fdf1a9',
-                        borderColor: '#000000',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, suggestedMax: Math.max(...hoursData) + 2 } },
-                    plugins: { datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold', size: 14 } } }
-                }
+                data: { labels: labels, datasets: [{ label: 'Study Hours', data: hoursData, backgroundColor: '#fdf1a9', borderColor: '#000000', borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, suggestedMax: Math.max(...hoursData) + 2 } }, plugins: { datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold', size: 14 } } } }
             });
-            // Reset toggle buttons
-            document.getElementById('btnHours').classList.add('active');
-            document.getElementById('btnSessions').classList.remove('active');
+            document.getElementById('btnHours').classList.add('active'); document.getElementById('btnSessions').classList.remove('active');
         }
 
         function toggleChart(type) {
             if(!trendChartObj) return;
-            const btnHours = document.getElementById('btnHours');
-            const btnSessions = document.getElementById('btnSessions');
+            const btnHours = document.getElementById('btnHours'); const btnSessions = document.getElementById('btnSessions');
 
             if (type === 'hours') {
-                trendChartObj.data.datasets[0].data = globalChartHours;
-                trendChartObj.data.datasets[0].label = 'Study Hours';
+                trendChartObj.data.datasets[0].data = globalChartHours; trendChartObj.data.datasets[0].label = 'Study Hours';
                 btnHours.classList.add('active'); btnSessions.classList.remove('active');
                 trendChartObj.options.scales.y.suggestedMax = Math.max(...globalChartHours) + 2;
             } else {
-                trendChartObj.data.datasets[0].data = globalChartSessions;
-                trendChartObj.data.datasets[0].label = 'Number of Sessions';
+                trendChartObj.data.datasets[0].data = globalChartSessions; trendChartObj.data.datasets[0].label = 'Number of Sessions';
                 btnSessions.classList.add('active'); btnHours.classList.remove('active');
                 trendChartObj.options.scales.y.suggestedMax = Math.max(...globalChartSessions) + 2;
             }
@@ -793,29 +767,20 @@
             const labels = Object.keys(categoryCounts).map(k => `Category ${k}`);
             const data = Object.values(categoryCounts);
             
-            // If empty, show a grey placeholder
             if(data.length === 0) { labels.push('No Data'); data.push(1); }
 
             pieChartObj = new Chart(ctxPie, {
                 type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#cccccc'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font: { weight: 'bold' } } }
-                }
+                data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#cccccc'], borderWidth: 1 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font: { weight: 'bold' } } } }
             });
         }
 
         // Initialize App on Load
         window.onload = () => {
-            switchTab('notebooks'); // Start at notebooks screen
+            seedFakeDataIfEmpty(); // Inject initial fake data so it's not empty!
+            switchTab('notebooks'); 
+            initCloudSync(); 
         };
     </script>
 </body>
