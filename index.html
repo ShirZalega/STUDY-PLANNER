@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Planner & Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -167,7 +168,7 @@
         .break-box:last-child {
             border-right: none;
         }
-        /* Red X effect for breaks and calendar days */
+        /* Red X effect */
         .crossed {
             background: linear-gradient(to top left, transparent calc(50% - 2px), red, transparent calc(50% + 2px)), 
                         linear-gradient(to top right, transparent calc(50% - 2px), red, transparent calc(50% + 2px));
@@ -233,6 +234,7 @@
             justify-content: center;
             align-items: center;
             height: 250px;
+            position: relative;
         }
         .chart-toggle-group {
             position: absolute;
@@ -244,33 +246,35 @@
             padding: 2px 8px;
             font-size: 10px;
         }
+        
+        /* Ultra-minimalist Insights List */
         .insights-list {
-            padding: 20px 40px;
+            padding: 20px;
             font-size: 16px;
-            line-height: 1.8;
+            line-height: 2;
             margin: 0;
-        }
-        .insights-list li {
-            margin-bottom: 15px;
+            list-style-type: none;
+            text-align: center;
         }
 
-        /* Calendar Grid */
+        /* RTL Calendar Grid for Hebrew Days */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             border-top: 1px solid #000;
             border-left: 1px solid #000;
             margin: 10px;
+            direction: rtl; /* Makes Sunday (א) start on the right */
         }
         .calendar-header {
             background-color: #f9f9f9;
-            font-size: 12px;
-            padding: 5px 0;
+            font-size: 14px;
+            padding: 8px 0;
         }
         .calendar-cell {
-            border-right: 1px solid #000;
+            border-left: 1px solid #000; /* Adjusted for RTL */
             border-bottom: 1px solid #000;
-            aspect-ratio: 1; /* Makes it a square */
+            aspect-ratio: 1; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -452,15 +456,35 @@
         </div>
 
         <div class="box">
+            <div class="yellow-header">CATEGORY BREAKDOWN</div>
+            <div class="chart-container">
+                <canvas id="categoryPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="yellow-header">
+                <span>STUDY TRENDS</span>
+                <div class="chart-toggle-group">
+                    <button class="chart-toggle-btn active" id="btnHours" onclick="toggleChart('hours')">Hours</button>
+                    <button class="chart-toggle-btn" id="btnSessions" onclick="toggleChart('sessions')">Sessions</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="trendBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">CONSISTENCY CALENDAR</div>
             <div class="calendar-grid">
-                <div class="calendar-cell calendar-header">S</div>
-                <div class="calendar-cell calendar-header">M</div>
-                <div class="calendar-cell calendar-header">T</div>
-                <div class="calendar-cell calendar-header">W</div>
-                <div class="calendar-cell calendar-header">T</div>
-                <div class="calendar-cell calendar-header">F</div>
-                <div class="calendar-cell calendar-header">S</div>
+                <div class="calendar-cell calendar-header">א</div>
+                <div class="calendar-cell calendar-header">ב</div>
+                <div class="calendar-cell calendar-header">ג</div>
+                <div class="calendar-cell calendar-header">ד</div>
+                <div class="calendar-cell calendar-header">ה</div>
+                <div class="calendar-cell calendar-header">ו</div>
+                <div class="calendar-cell calendar-header">ש</div>
                 
                 <div class="calendar-cell calendar-empty"></div>
                 <div class="calendar-cell calendar-empty"></div>
@@ -504,31 +528,21 @@
             </div>
         </div>
 
-        <div class="box">
+        <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">DATA INSIGHTS & RECOMMENDATIONS</div>
             <ul class="insights-list">
-                <li><strong>Your Best Day:</strong> You study best on <strong>Tuesdays</strong>. On these days, you manage an average of 4 steady sessions, contributing to your highest daily total.</li>
-                <li><strong>Optimal Time Range:</strong> Your golden hours are between <strong>08:30 AM and 13:00 PM</strong>. Sessions started in this window last 45% longer before you need a break.</li>
-                <li><strong>Ideal Break Strategy:</strong> To maximize your daily total hours, keep breaks around <strong>15-20 minutes</strong>. Data shows that when your breaks exceed 30 minutes, you drop a full session from your daily routine.</li>
+                <li>🏆 <strong>BEST DAY:</strong> Tuesday (Highest Volume)</li>
+                <li>⭐ <strong>GOLDEN HOURS:</strong> 08:30 - 13:00 (+45% Focus)</li>
+                <li>☕ <strong>IDEAL BREAK:</strong> 15-20 mins (Maximizes Daily Total)</li>
             </ul>
-        </div>
-
-        <div class="box" style="grid-column: span 2;">
-            <div class="yellow-header">
-                <span>STUDY TRENDS</span>
-                <div class="chart-toggle-group">
-                    <button class="chart-toggle-btn active" id="btnHours" onclick="toggleChart('hours')">Hours</button>
-                    <button class="chart-toggle-btn" id="btnSessions" onclick="toggleChart('sessions')">Sessions</button>
-                </div>
-            </div>
-            <div class="chart-container" style="height: 300px;">
-                <canvas id="trendBarChart"></canvas>
-            </div>
         </div>
 
     </div>
 
     <script>
+        // --- Register Chart DataLabels Plugin ---
+        Chart.register(ChartDataLabels);
+
         // --- Tab Switching Logic ---
         function switchTab(tabName) {
             const planner = document.getElementById('plannerView');
@@ -636,7 +650,6 @@
             });
         });
 
-        // Toggle calendar days manually for fun
         const calendarDays = document.querySelectorAll('.calendar-day');
         calendarDays.forEach(day => {
             day.addEventListener('click', function() {
@@ -646,7 +659,33 @@
 
         // --- Chart.js Configuration & Toggle Logic ---
         
-        // Fake Data
+        // 1. Category Pie Chart (Now with DataLabels!)
+        const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' },
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold', size: 14 },
+                        formatter: (value) => value + '%' // Show percentage sign
+                    }
+                }
+            }
+        });
+
+        // 2. Trend Bar Chart (Now with DataLabels on top of bars!)
         const dataHours = [2, 5.5, 7.2, 4, 6, 4.5, 3.3];
         const dataSessions = [2, 4, 6, 3, 5, 4, 2];
 
@@ -667,7 +706,18 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true }
+                    y: { 
+                        beginAtZero: true,
+                        suggestedMax: 10 // Gives breathing room for the label above the bar
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#000',
+                        font: { weight: 'bold', size: 14 }
+                    }
                 }
             }
         });
@@ -682,11 +732,13 @@
                 trendChart.data.datasets[0].label = 'Study Hours';
                 btnHours.classList.add('active');
                 btnSessions.classList.remove('active');
+                trendChart.options.scales.y.suggestedMax = 10;
             } else {
                 trendChart.data.datasets[0].data = dataSessions;
                 trendChart.data.datasets[0].label = 'Number of Sessions';
                 btnSessions.classList.add('active');
                 btnHours.classList.remove('active');
+                trendChart.options.scales.y.suggestedMax = 8;
             }
             trendChart.update();
         }
