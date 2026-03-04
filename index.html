@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+        .header-title {
+            text-align: center;
+            letter-spacing: 2px;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .box {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .yellow-header {
+            background-color: #fef08a; /* הצבע הצהוב מהדף שלך */
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+        }
+        .row {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        .row input {
+            border: none;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+        }
+        .half-width {
+            flex: 1;
+        }
+        .hebrew-section {
+            direction: rtl;
+            text-align: right;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="header-title">STUDY PLANNER</h2>
+
+    <div class="container">
+        <div>
+            <div class="flex-row">
+                <div class="box" style="width: 30%; background-color: #fef08a; padding: 10px; border-right: none;">DATE:</div>
+                <div class="box" style="width: 70%;"><input type="date"></div>
+            </div>
+
+            <div class="box">
+                <div class="yellow-header">SCHEDULE</div>
+                <div class="row"><input type="time" style="width: 30%; border-right: 1px solid #ccc;"><input type="text" placeholder="Task..."></div>
+                <div class="row"><input type="time" style="width: 30%; border-right: 1px solid #ccc;"><input type="text"></div>
+                <div class="row"><input type="time" style="width: 30%; border-right: 1px solid #ccc;"><input type="text"></div>
+            </div>
+
+            <div class="box">
+                <div class="yellow-header">Todo</div>
+                <div class="row"><input type="checkbox" style="width: 10%;"><input type="text"></div>
+                <div class="row"><input type="checkbox" style="width: 10%;"><input type="text"></div>
+                <div class="row"><input type="checkbox" style="width: 10%;"><input type="text"></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="box">
+                <div class="yellow-header">STUDY SESSION GOAL</div>
+                <input type="text" style="width: 100%; padding: 10px; border: none; box-sizing: border-box;">
+            </div>
+
+            <div class="box">
+                <div class="yellow-header">TODAY'S TOP THREE</div>
+                <div class="row"><span style="padding: 10px; border-right: 1px solid #ccc;">1</span><input type="text"></div>
+                <div class="row"><span style="padding: 10px; border-right: 1px solid #ccc;">2</span><input type="text"></div>
+                <div class="row"><span style="padding: 10px; border-right: 1px solid #ccc;">3</span><input type="text"></div>
+            </div>
+
+            <div class="box">
+                <div class="flex-row" style="background-color: #fef08a; border-bottom: 1px solid #ccc;">
+                    <div style="flex: 2; padding: 10px; border-right: 1px solid #ccc;">TASK</div>
+                    <div style="flex: 1; padding: 10px; border-right: 1px solid #ccc;">START</div>
+                    <div style="flex: 1; padding: 10px;">FINISH</div>
+                </div>
+                <div class="row">
+                    <div style="flex: 2; border-right: 1px solid #ccc;"><input type="text" placeholder="Task 1"></div>
+                    <div style="flex: 1; border-right: 1px solid #ccc;"><input type="time"></div>
+                    <div style="flex: 1;"><input type="time"></div>
+                </div>
+                <div class="row">
+                    <div style="flex: 2; border-right: 1px solid #ccc;"><input type="text" placeholder="Task 2"></div>
+                    <div style="flex: 1; border-right: 1px solid #ccc;"><input type="time"></div>
+                    <div style="flex: 1;"><input type="time"></div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="yellow-header">NOTES / סיכום שעות</div>
+                <div class="hebrew-section">
+                    <div class="row"><span style="width: 50%;">סה"כ זמן למידה:</span><input type="text" placeholder="יחושב אוטומטית..."></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
