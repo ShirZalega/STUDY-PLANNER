@@ -39,21 +39,25 @@
                 <button onclick="openEditTitleModal()" style="background:none; border:none; cursor:pointer; font-size: 18px;" title="ערוך שם">✏️</button>
             </div>
             <div id="detailNotebookDesc">Description</div>
-            <div style="margin-top: 20px; border-top: 1px dashed #000; padding-top: 15px; text-align: right; direction: rtl;">
-                <div style="font-weight: bold; margin-bottom: 15px; font-size: 16px;">קטגוריות למידה / קורסים:</div>
-                <ol id="categoryListContainer" style="margin: 0; padding-right: 25px; font-family: inherit; text-align: right;"></ol>
-                <div style="margin-top: 15px; text-align: right;">
-                    <button onclick="addCategoryRow()" style="background: #fff; border: 2px dashed #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s; margin-left: 5px;">+ שורה נוספת</button>
-                    <button onclick="saveNotebookCategoriesBtn()" style="background: #000; color: #fff; border: 2px solid #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s;">שמור קטגוריות</button>
-                </div>
-                <div id="catSaveFeedback" style="color: green; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
-            </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <button class="btn-black" onclick="createNewPage()">+ צור דף למידה יומי חדש</button>
         </div>
 
         <div class="page-list">
             <h3 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;">דפי למידה קיימים</h3>
             <div id="savedPagesContainer"></div>
-            <button class="btn-black" onclick="createNewPage()">+ צור דף למידה יומי חדש</button>
+        </div>
+
+        <div class="box" style="padding: 20px; direction: rtl; text-align: right;">
+            <div style="font-weight: bold; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px;">קטגוריות למידה / קורסים:</div>
+            <ol id="categoryListContainer" style="margin: 0; padding-right: 25px; font-family: inherit; text-align: right;"></ol>
+            <div style="margin-top: 15px; text-align: right;">
+                <button onclick="addCategoryRow()" style="background: #fff; border: 2px dashed #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s; margin-left: 5px;">+ שורה נוספת</button>
+                <button onclick="saveNotebookCategoriesBtn()" style="background: #000; color: #fff; border: 2px solid #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s;">שמור קטגוריות</button>
+            </div>
+            <div id="catSaveFeedback" style="color: green; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
         </div>
     </div>
 
