@@ -53,7 +53,7 @@ function changeAnalyticsNotebook() {
 function parseTimeMin(t) { if(!t) return 0; let [h,m] = t.split(':'); return parseInt(h)*60 + parseInt(m); }
 function formatTime(m) {
     if(isNaN(m) || m === null) return "N/A";
-    let h = Math.floor(m/60); let mins = Math.floor(m%60);
+    let h = Math.floor(m/60) % 24; let mins = Math.floor(m%60);
     return `${String(h).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
 }
 
@@ -107,8 +107,8 @@ function renderDynamicCalendar() {
 
 function getMacroCategory(cat) {
     if (!cat) return "";
+    let cleanCat = cat.replace("ליניאירית", "ליניארית");
     let wordsToRemove = ["תרגול", "הרצאה", "מעבדה", "השלמה", "חזרה", "מטלה", "מבחן", "בוחן"];
-    let cleanCat = cat;
     wordsToRemove.forEach(w => { cleanCat = cleanCat.replace(w, ""); });
     cleanCat = cleanCat.replace(/^[- ]+|[- ]+$/g, "").replace(/\s+/g, " ").trim();
     return cleanCat || cat;
@@ -146,10 +146,10 @@ function updateAnalyticsData() {
         document.getElementById('statTotalHours').innerText = "0.0"; document.getElementById('statDailyAvg').innerText = "0.0";
         document.getElementById('statTotalSessions').innerText = "0"; document.getElementById('statBestDay').innerText = "N/A";
         document.getElementById('statTotalSpan').innerText = "0"; document.getElementById('statActiveDays').innerText = "0"; document.getElementById('statRestDays').innerText = "0";
+        document.getElementById('inAvgRange').innerText = "00:00 - 00:00";
         updateTrendChart([], [], []); updatePieChart({}); return;
     }
 
-    // --- חישוב עקביות וטווח ימים ---
     const dateObjects = filteredDates.map(d => new Date(d));
     const firstStudyDate = new Date(Math.min(...dateObjects));
     const lastStudyDate = new Date(Math.max(...dateObjects));
@@ -172,13 +172,20 @@ function updateAnalyticsData() {
         const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
         const dayNameHe = dateObj.toLocaleDateString('he-IL', { weekday: 'short' });
         totalMinsFiltered += dayData.totalMinutes;
-        let sessionsMins = []; let breaksMins = []; let firstStartTime = null; let prevFinish = null;
+        
+        let sessionsMins = []; let breaksMins = []; 
+        let firstStartTime = null; let prevFinish = null;
+        let dayEarliest = Infinity; let dayLatest = -Infinity;
 
         for(let i=0; i<10; i++) {
             if(dayData.startTimes[i] && dayData.finishTimes[i]) {
                 let start = parseTimeMin(dayData.startTimes[i]); let finish = parseTimeMin(dayData.finishTimes[i]);
                 let dur = finish - start; if(dur < 0) dur += 24*60;
                 sessionsMins.push(dur);
+                
+                if (start < dayEarliest) dayEarliest = start;
+                if (finish > dayLatest) dayLatest = finish;
+
                 if(prevFinish !== null) { let brk = start - prevFinish; if(brk < 0) brk += 24*60; breaksMins.push(brk); }
                 prevFinish = finish; if(firstStartTime === null) firstStartTime = start;
             }
@@ -188,14 +195,22 @@ function updateAnalyticsData() {
         if(dayData.schedCats) {
             dayData.schedCats.forEach((cat, idx) => {
                 if(cat && dayData.startTimes[idx] && dayData.finishTimes[idx]) {
+                    let normalizedCat = cat.replace("השלמה", "תרגול").replace("ליניאירית", "ליניארית");
                     let st = parseTimeMin(dayData.startTimes[idx]); let ft = parseTimeMin(dayData.finishTimes[idx]);
                     let diff = ft - st; if(diff < 0) diff += 24*60;
-                    rawCategoryCounts[cat] = (rawCategoryCounts[cat] || 0) + diff;
+                    rawCategoryCounts[normalizedCat] = (rawCategoryCounts[normalizedCat] || 0) + diff;
                 }
             });
         }
         chartLabels.push(dayNameHe); chartHours.push((dayData.totalMinutes / 60).toFixed(1)); chartSessions.push(daySessionsCount);
-        allDaysProcessed.push({ dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount, avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0, avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0, startHour: firstStartTime });
+        allDaysProcessed.push({ 
+            dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount, 
+            avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0, 
+            avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0, 
+            startHour: firstStartTime,
+            dayStart: dayEarliest,
+            dayEnd: dayLatest
+        });
     });
 
     document.getElementById('statTotalHours').innerText = (totalMinsFiltered / 60).toFixed(1);
@@ -211,15 +226,33 @@ function updateAnalyticsData() {
 
     allDaysProcessed.sort((a,b) => b.totalMins - a.totalMins);
     let topDaysCount = Math.max(1, Math.ceil(allDaysProcessed.length / 2)); let topDays = allDaysProcessed.slice(0, topDaysCount);
+    
     let sumSess = 0, sumBreak = 0, sumCount = 0, sumStart = 0;
-    topDays.forEach(d => { sumSess += d.avgSessLen; sumBreak += d.avgBreakLen; sumCount += d.sessionCount; sumStart += d.startHour; });
+    let sumDayStartTotal = 0, sumDayEndTotal = 0;
+
+    allDaysProcessed.forEach(d => {
+        sumDayStartTotal += d.dayStart;
+        sumDayEndTotal += d.dayEnd;
+    });
+
+    topDays.forEach(d => { 
+        sumSess += d.avgSessLen; sumBreak += d.avgBreakLen; 
+        sumCount += d.sessionCount; sumStart += d.startHour; 
+    });
+
     let idealSess = Math.round(sumSess / topDaysCount); let idealBreak = Math.round(sumBreak / topDaysCount);
     let idealCount = Math.round(sumCount / topDaysCount); let idealStart = sumStart / topDaysCount;
+    
+    // חישוב ממוצע טווח השעות
+    let avgStart = sumDayStartTotal / allDaysProcessed.length;
+    let avgEnd = sumDayEndTotal / allDaysProcessed.length;
 
     document.getElementById('inBestDay').innerText = bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A";
     document.getElementById('inIdealSession').innerText = (isNaN(idealSess) || idealSess===0) ? "N/A" : idealSess + " דקות";
     document.getElementById('inIdealBreak').innerText = (isNaN(idealBreak) || idealBreak===0) ? "N/A" : idealBreak + " דקות";
     document.getElementById('inIdealStart').innerText = formatTime(idealStart);
+    document.getElementById('inAvgRange').innerText = `${formatTime(avgStart)} - ${formatTime(avgEnd)}`;
+    
     document.getElementById('inStrategy').innerText = idealSess > 0 ? `כדי למקסם שעות למידה, הנתונים מראים שאת עובדת הכי טוב כשאת מחלקת את הלמידה לכ-${idealCount} סשנים של ${idealSess} דקות. תשתדלי להקפיד על הפסקות באורך של ${idealBreak} דקות!` : `יש להזין יותר נתונים.`;
 
     let recentLabels = chartLabels; let recentHours = chartHours; let recentSessions = chartSessions;
