@@ -42,12 +42,23 @@
         /* Analytics */
         .stat-number { font-size: 36px; font-weight: bold; text-align: center; margin: 20px 0; color: #000; }
         .stat-label { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; padding: 0 5px; }
-        .time-filter { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; grid-column: span 2; }
+        .time-filter { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 10px; grid-column: span 2; }
         .filter-btn, .chart-toggle-btn { background: #fff; border: 1px solid #000; padding: 5px 15px; cursor: pointer; font-weight: bold; }
         .filter-btn.active, .chart-toggle-btn.active { background: #000; color: #fff; }
+        
+        .nav-arrow { background: transparent; border: none; font-size: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .nav-arrow:hover { transform: scale(1.3); }
+
         .chart-container { padding: 20px; display: flex; justify-content: center; align-items: center; height: 250px; position: relative; }
         .chart-toggle-group { position: absolute; right: 5px; display: flex; gap: 5px; } .chart-toggle-btn { padding: 2px 8px; font-size: 10px; }
-        .insights-list { padding: 20px; font-size: 18px; line-height: 2; margin: 0; list-style-type: none; text-align: center; }
+        
+        /* Strategy Insights - RTL */
+        .insights-container { padding: 20px 30px; font-size: 16px; line-height: 1.8; text-align: right; direction: rtl; }
+        .insights-container ul { list-style: none; padding: 0; margin: 0; }
+        .insights-container li { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        .insights-container li:last-child { border-bottom: none; }
+        .insight-highlight { font-weight: bold; color: #000; background: #fdf1a9; padding: 2px 6px; border-radius: 4px; }
+        .strategy-box { background: #f9f9f9; border-right: 4px solid #000; padding: 15px; margin-top: 20px; font-size: 15px; font-style: italic; }
 
         .calendar-wrapper { max-width: 500px; margin: 0 auto; padding-bottom: 20px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid #000; border-left: 1px solid #000; direction: rtl; }
@@ -83,7 +94,9 @@
         .analytics-dropdown { font-size: 24px; font-weight: bold; font-family: inherit; text-align: center; border: none; border-bottom: 2px solid #000; padding: 5px; outline: none; background: transparent; cursor: pointer; margin-bottom: 5px; letter-spacing: 2px;}
         .btn-import { margin-top: 40px; background: #fff; color: #000; padding: 15px; font-weight: bold; cursor: pointer; width: 100%; border: 3px dashed #000; font-size: 16px; transition: 0.2s;}
         .btn-import:hover { background: #000; color: #fdf1a9; border-style: solid; }
-        .categories-input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #000; font-family: inherit; font-size: 14px; text-align: right; direction: rtl; }
+        
+        .cat-list-input { width: 80%; padding: 8px; border: 1px solid #000; font-family: inherit; font-size: 14px; margin-bottom: 5px; box-sizing: border-box; }
+        .cat-list-input:focus { border-color: #fdf1a9; outline: 2px solid #000; }
     </style>
 </head>
 <body>
@@ -117,9 +130,16 @@
             <div id="detailNotebookDesc">Description</div>
             
             <div style="margin-top: 20px; border-top: 1px dashed #000; padding-top: 15px; text-align: right; direction: rtl;">
-                <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">קטגוריות למידה / קורסים (הפרידי בפסיק):</div>
-                <input type="text" id="detailCategoriesInput" class="categories-input" onchange="saveNotebookCategories()" placeholder="לדוגמה: תרגול סי, הרצאה סי, קוגניציה...">
-                <div id="catSaveFeedback" style="color: green; font-size: 12px; margin-top: 5px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
+                <div style="font-weight: bold; margin-bottom: 15px; font-size: 16px;">קטגוריות למידה / קורסים:</div>
+                
+                <ol id="categoryListContainer" style="margin: 0; padding-right: 25px; font-family: inherit; text-align: right;">
+                    </ol>
+                
+                <div style="margin-top: 15px; text-align: right;">
+                    <button onclick="addCategoryRow()" style="background: #fff; border: 2px dashed #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s; margin-left: 5px;">+ שורה נוספת</button>
+                    <button onclick="saveNotebookCategoriesBtn()" style="background: #000; color: #fff; border: 2px solid #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s;">שמור קטגוריות</button>
+                </div>
+                <div id="catSaveFeedback" style="color: green; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
             </div>
         </div>
 
@@ -245,18 +265,23 @@
     </div>
 
     <div id="analyticsView" class="container">
-        
         <div style="grid-column: span 2; text-align: center; margin-bottom: 10px; margin-top: 10px;">
             <select id="analyticsNotebookSelect" class="analytics-dropdown" onchange="changeAnalyticsNotebook()"></select>
             <div style="color:#666; font-size: 14px; margin-top: 5px;">Analytics for this notebook</div>
         </div>
 
         <div class="time-filter">
-            <button class="filter-btn" id="fltDay" onclick="setAnalyticsFilter('day')">Today</button>
-            <button class="filter-btn" id="fltWeek" onclick="setAnalyticsFilter('week')">This Week</button>
-            <button class="filter-btn" id="fltMonth" onclick="setAnalyticsFilter('month')">This Month</button>
-            <button class="filter-btn active" id="fltAll" onclick="setAnalyticsFilter('all')">All Time</button>
+            <button class="nav-arrow" onclick="navigateTime(-1)">&#9664;</button>
+            <div style="display:flex; gap:10px;">
+                <button class="filter-btn" id="fltDay" onclick="setAnalyticsFilter('day')">יום</button>
+                <button class="filter-btn active" id="fltWeek" onclick="setAnalyticsFilter('week')">שבוע</button>
+                <button class="filter-btn" id="fltMonth" onclick="setAnalyticsFilter('month')">חודש</button>
+                <button class="filter-btn" id="fltAll" onclick="setAnalyticsFilter('all')">הכל</button>
+            </div>
+            <button class="nav-arrow" onclick="navigateTime(1)">&#9654;</button>
         </div>
+        
+        <div id="analyticsDateLabel" style="grid-column: span 2; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px; color: #333;"></div>
 
         <div style="grid-column: span 2; display: flex; gap: 20px;">
             <div class="box" style="flex: 1; margin-bottom: 0;">
@@ -271,7 +296,7 @@
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">BEST DAY</div>
-                <div class="stat-number" id="statBestDay" style="font-size: 28px;">N/A</div>
+                <div class="stat-number" id="statBestDay" style="font-size: 24px;">N/A</div>
                 <div class="stat-label">Most productive</div>
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
@@ -282,7 +307,13 @@
         </div>
 
         <div class="box">
-            <div class="yellow-header">CATEGORY BREAKDOWN</div>
+            <div class="yellow-header">
+                <span>CATEGORY BREAKDOWN</span>
+                <div class="chart-toggle-group" style="left:5px; right:auto;">
+                    <button class="chart-toggle-btn active" id="btnPieDetail" onclick="togglePieChart('detail')">מפורט</button>
+                    <button class="chart-toggle-btn" id="btnPieMacro" onclick="togglePieChart('macro')">מקצועות</button>
+                </div>
+            </div>
             <div class="chart-container">
                 <canvas id="categoryPieChart"></canvas>
             </div>
@@ -304,8 +335,14 @@
         <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">CONSISTENCY CALENDAR</div>
             <div style="padding-top: 20px;">
-                <div id="calendarMonthLabel" style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 10px;">MONTH</div>
-                <div class="calendar-wrapper">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 350px; margin: 0 auto 10px; direction: ltr;">
+                    <button class="nav-arrow" onclick="changeCalendarMonth(-1)">&#9664;</button>
+                    <div id="calendarMonthLabel" style="text-align: center; font-weight: bold; font-size: 18px;"></div>
+                    <button class="nav-arrow" onclick="changeCalendarMonth(1)">&#9654;</button>
+                </div>
+                
+                <div class="calendar-wrapper" style="margin-top: 0;">
                     <div class="calendar-grid" id="dynamicCalendarGrid"></div>
                 </div>
             </div>
@@ -314,14 +351,14 @@
         <div class="box" style="grid-column: span 2;">
             <div class="yellow-header">DATA INSIGHTS & RECOMMENDATIONS</div>
             <div class="insights-container">
-                <ul>
-                    <li>🏆 <strong>Best Day to Study:</strong> <span id="inBestDay" class="insight-highlight">Calculating...</span></li>
-                    <li>⏳ <strong>Ideal Session Length:</strong> <span id="inIdealSession" class="insight-highlight">0 mins</span></li>
-                    <li>☕ <strong>Ideal Break Length:</strong> <span id="inIdealBreak" class="insight-highlight">0 mins</span></li>
-                    <li>⏰ <strong>Ideal Starting Hours:</strong> Start around <span id="inIdealStart" class="insight-highlight">00:00</span></li>
+                <ul style="padding-right: 0;">
+                    <li>🏆 <strong>היום המוצלח ביותר ללמידה:</strong> <span id="inBestDay" class="insight-highlight">מחשב...</span></li>
+                    <li>⏳ <strong>אורך סשן אידיאלי:</strong> <span id="inIdealSession" class="insight-highlight">0 דקות</span></li>
+                    <li>☕ <strong>אורך הפסקה אידיאלי:</strong> <span id="inIdealBreak" class="insight-highlight">0 דקות</span></li>
+                    <li>⏰ <strong>שעת התחלה אידיאלית:</strong> להתחיל סביב השעה <span id="inIdealStart" class="insight-highlight">00:00</span></li>
                 </ul>
                 <div class="strategy-box">
-                    💡 <strong>Your Winning Strategy:</strong> <span id="inStrategy">Waiting for data...</span>
+                    💡 <strong>האסטרטגיה המנצחת שלך:</strong> <span id="inStrategy">ממתין לנתונים...</span>
                 </div>
             </div>
         </div>
@@ -348,51 +385,41 @@
         const STORAGE_KEY = 'studyApp_NotebookData';
         let syncTimer;
         let currentNotebookId = null;
-        let currentAnalyticsFilter = 'all'; // Default to ALL to show historic 2025 data!
+        
+        let currentAnalyticsFilter = 'all'; 
+        let filterRefDate = new Date(); // Date used for navigating time
+        
+        let currentPieView = 'detail'; 
+        let calRenderYear = null;
+        let calRenderMonth = null;
 
         function loadAllData() { const data = localStorage.getItem(STORAGE_KEY); return data ? JSON.parse(data) : { notebooks: {} }; }
         function saveAllData(dataObj) { localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj)); }
 
         // --- HUGE PDF + ICS PARSED DATABASE ---
         const mySemesterData = [
-            {d:"2025-03-17", s:[["15:15","16:00","ליניארית 1"],["16:00","18:15","ליניארית 1"],["18:15","19:00","ליניארית 1"],["19:15","19:30","ליניארית 1"]]},
-            {d:"2025-03-19", s:[["08:00","10:00","ליניארית 1"],["10:00","12:00","סי"],["12:00","14:00","סי"],["14:00","15:00","סי"],["15:00","17:00","סי"]]},
-            {d:"2025-03-20", s:[["12:00","13:30","ליניארית 1"],["14:00","15:00","סי"],["15:00","16:00","סי"],["16:00","17:00","ליניארית 1"],["17:00","18:00","ליניארית 1"]]},
-            {d:"2025-03-23", s:[["08:30","09:15","סי"],["09:15","10:00","סי"],["10:00","11:00","סי"],["11:00","11:30","סי"],["11:30","12:00","סי"],["12:00","13:30","סי"],["13:30","14:00","סי"],["14:00","15:30","סי"]]},
-            {d:"2025-03-24", s:[["10:45","11:30","ליניארית 1"],["11:30","12:30","ליניארית 1"],["12:30","13:30","ליניארית 1"],["14:00","16:00","סי"],["16:00","18:00","סי"],["18:00","19:30","ליניארית 1"]]},
-            {d:"2025-03-25", s:[["10:00","10:45","ליניארית 1"],["11:00","11:45","ליניארית 1"],["12:30","13:30","סי"],["14:00","15:00","סי"],["15:00","16:00","ליניארית 1"],["16:00","17:00","ליניארית 1"],["17:00","18:00","סי"]]},
-            {d:"2025-03-26", s:[["10:00","10:45","ליניארית 1"],["11:00","11:45","ליניארית 1"],["12:00","13:00","סי"],["13:00","13:30","סי"],["14:00","15:00","ליניארית 1"],["15:00","16:00","ליניארית 1"],["16:00","17:00","סי"],["17:00","18:00","ליניארית 1"],["18:00","19:00","ליניארית 1"],["19:00","20:00","סי"]]},
-            {d:"2025-03-27", s:[["09:15","11:00","סי"],["11:00","12:00","סי"],["12:00","14:00","ליניארית 1"],["14:00","16:00","ליניארית 1"],["17:00","18:30","סי"],["18:30","19:00","סי"]]},
-            {d:"2025-03-30", s:[["08:30","10:00","סי"],["10:00","11:30","סי"],["11:30","12:30","סי"],["13:00","15:00","סי"],["15:00","16:00","ליניארית 1"],["16:00","17:00","ליניארית 1"]]},
-            {d:"2025-03-31", s:[["11:00","12:30","סי"],["12:30","13:30","סי"],["14:00","14:45","סי"],["15:00","15:45","ליניארית 1"],["16:00","17:00","ליניארית 1"],["18:30","19:30","סי"]]},
+            {d:"2025-03-17", s:[["15:15","16:00","תרגול ליניארית 1"],["16:00","18:15","תרגול ליניארית 1"],["18:15","19:00","תרגול ליניארית 1"],["19:15","19:30","תרגול ליניארית 1"]]},
+            {d:"2025-03-19", s:[["08:00","10:00","הרצאה ליניארית 1"],["10:00","12:00","תרגול סי"],["12:00","14:00","תרגול סי"],["14:00","15:00","תרגול סי"],["15:00","17:00","תרגול סי"]]},
+            {d:"2025-03-20", s:[["12:00","13:30","הרצאה ליניארית 1"],["14:00","15:00","הרצאה סי"],["15:00","16:00","הרצאה סי"],["16:00","17:00","הרצאה ליניארית 1"],["17:00","18:00","הרצאה ליניארית 1"]]},
+            {d:"2025-03-23", s:[["08:30","09:15","תרגול סי"],["09:15","10:00","תרגול סי"],["10:00","11:00","תרגול סי"],["11:00","11:30","תרגול סי"],["11:30","12:00","תרגול סי"],["12:00","13:30","תרגול סי"],["13:30","14:00","תרגול סי"],["14:00","15:30","תרגול סי"]]},
+            {d:"2025-03-24", s:[["10:45","11:30","תרגול ליניארית 1"],["11:30","12:30","תרגול ליניארית 1"],["12:30","13:30","תרגול ליניארית 1"],["14:00","16:00","הרצאה סי"],["16:00","18:00","הרצאה סי"],["18:00","19:30","תרגול ליניארית 1"]]},
+            {d:"2025-03-25", s:[["10:00","10:45","הרצאה ליניארית 1"],["11:00","11:45","הרצאה ליניארית 1"],["12:30","13:30","תרגול סי"],["14:00","15:00","תרגול סי"],["15:00","16:00","הרצאה ליניארית 1"],["16:00","17:00","הרצאה ליניארית 1"],["17:00","18:00","תרגול סי"]]},
+            {d:"2025-03-26", s:[["10:00","10:45","הרצאה ליניארית 1"],["11:00","11:45","הרצאה ליניארית 1"],["12:00","13:00","תרגול סי"],["13:00","13:30","תרגול סי"],["14:00","15:00","הרצאה ליניארית 1"],["15:00","16:00","הרצאה ליניארית 1"],["16:00","17:00","תרגול סי"],["17:00","18:00","תרגול ליניארית 1"],["18:00","19:00","תרגול ליניארית 1"],["19:00","20:00","תרגול סי"]]},
+            {d:"2025-03-27", s:[["09:15","11:00","תרגול סי"],["11:00","12:00","תרגול סי"],["12:00","14:00","הרצאה ליניארית 1"],["14:00","16:00","הרצאה ליניארית 1"],["17:00","18:30","תרגול סי"],["18:30","19:00","תרגול סי"]]},
+            {d:"2025-03-30", s:[["08:30","10:00","תרגול סי"],["10:00","11:30","תרגול סי"],["11:30","12:30","תרגול סי"],["13:00","15:00","תרגול סי"],["15:00","16:00","תרגול ליניארית 1"],["16:00","17:00","תרגול ליניארית 1"]]},
+            {d:"2025-03-31", s:[["11:00","12:30","תרגול סי"],["12:30","13:30","תרגול סי"],["14:00","14:45","תרגול סי"],["15:00","15:45","הרצאה ליניארית 1"],["16:00","17:00","הרצאה ליניארית 1"],["18:30","19:30","תרגול סי"]]},
             {d:"2025-04-01", s:[["12:00","13:00","ליניארית 1"],["13:00","14:00","ליניארית 1"],["14:00","15:00","ליניארית 1"],["15:00","16:00","ליניארית 1"],["16:00","17:30","ליניארית 1"],["18:00","19:00","ליניארית 1"],["19:00","20:00","ליניארית 1"],["20:00","21:00","ליניארית 1"]]},
             {d:"2025-04-02", s:[["09:00","10:00","סי"],["10:00","11:00","סי"],["11:00","12:00","סי"],["12:00","13:00","סי"],["13:00","14:00","סי"],["14:00","15:00","סי"],["15:00","16:00","סי"],["16:00","17:00","סי"],["17:00","19:00","סי"]]},
             {d:"2025-04-03", s:[["12:00","13:00","ליניארית 1"],["13:00","14:00","ליניארית 1"],["15:00","16:00","ליניארית 1"],["16:00","17:00","ליניארית 1"],["17:00","18:00","ליניארית 1"]]},
-            {d:"2025-04-06", s:[["13:00","14:00","סי"],["14:00","15:00","סי"],["15:00","16:00","סי"],["16:00","17:00","סי"],["17:00","18:00","סי"]]},
+            {d:"2025-04-06", s:[["13:00","14:00","הרצאה סי"],["14:00","15:00","הרצאה סי"],["15:00","16:00","הרצאה סי"],["16:00","17:00","הרצאה סי"],["17:00","18:00","הרצאה סי"]]},
             {d:"2025-04-07", s:[["10:30","11:30","ליניארית 1"],["12:00","13:00","ליניארית 1"],["14:00","14:45","ליניארית 1"],["15:00","15:45","ליניארית 1"],["16:00","16:45","ליניארית 1"],["17:00","17:45","ליניארית 1"],["19:00","20:00","ליניארית 1"]]},
-            {d:"2025-04-08", s:[["10:00","10:45","סי"],["11:00","11:45","סי"],["12:30","13:30","תהליכים קוגניטיביים"],["13:30","14:00","תהליכים קוגניטיביים"],["16:00","17:00","ליניארית 1"],["17:00","19:00","ליניארית 1"]]},
-            {d:"2025-04-09", s:[["09:00","10:00","ליניארית 1"],["10:00","11:00","ליניארית 1"],["11:00","12:00","ליניארית 1"],["12:00","13:30","ליניארית 1"],["14:00","15:00","סי"],["15:00","16:00","סי"],["16:30","17:30","סי"]]},
+            {d:"2025-04-08", s:[["10:00","10:45","תרגול סי"],["11:00","11:45","תרגול סי"],["12:30","13:30","תהליכים קוגניטיביים"],["13:30","14:00","תהליכים קוגניטיביים"],["16:00","17:00","ליניארית 1"],["17:00","19:00","ליניארית 1"]]},
+            {d:"2025-04-09", s:[["09:00","10:00","ליניארית 1"],["10:00","11:00","ליניארית 1"],["11:00","12:00","ליניארית 1"],["12:00","13:30","ליניארית 1"],["14:00","15:00","תרגול סי"],["15:00","16:00","תרגול סי"],["16:30","17:30","תרגול סי"]]},
             {d:"2025-04-10", s:[["12:00","13:00","תהליכים קוגניטיביים"],["13:00","14:00","תהליכים קוגניטיביים"],["15:00","16:00","תהליכים קוגניטיביים"],["16:00","17:00","תהליכים קוגניטיביים"]]},
             {d:"2025-04-14", s:[["12:00","13:00","ליניארית 1"],["13:00","13:50","ליניארית 1"],["14:00","15:30","ליניארית 1"],["16:30","18:00","ליניארית 1"],["18:00","19:00","ליניארית 1"]]},
-            {d:"2025-04-15", s:[["10:30","11:30","סי"],["11:30","12:30","סי"],["13:00","15:00","סי"],["16:00","17:00","סי"],["18:00","19:00","סי"]]},
-            {d:"2025-04-16", s:[["10:30","11:30","סי"],["11:30","12:30","סי"],["13:00","14:00","סי"],["14:00","15:30","סי"]]},
-            {d:"2025-04-17", s:[["09:00","10:00","סי"],["10:00","11:00","סי"],["11:00","12:00","ליניארית 1"],["12:00","12:30","ליניארית 1"],["13:30","15:00","סי"],["16:00","18:00","סי"]]},
-            {d:"2025-04-20", s:[["09:00","10:00","ליניארית 1"],["10:00","11:00","סי"],["11:00","12:00","סי"],["12:00","13:00","ליניארית 1"],["13:00","14:00","ליניארית 1"],["14:00","15:30","ליניארית 1"],["16:15","17:00","סי"],["17:00","17:30","סי"]]},
-            {d:"2025-04-21", s:[["14:00","15:00","סי"],["15:00","16:00","סי"],["16:00","17:00","סי"],["17:00","18:00","סי"]]},
-            {d:"2025-04-22", s:[["10:00","11:00","ליניארית 1"],["11:00","12:00","ליניארית 1"],["12:00","13:00","ליניארית 1"],["13:00","14:30","ליניארית 1"],["15:30","16:00","ליניארית 1"],["16:00","17:00","ליניארית 1"],["17:30","19:00","ליניארית 1"]]},
-            {d:"2025-04-23", s:[["09:00","10:00","סי"],["10:00","11:00","סי"],["11:00","12:00","סי"],["12:00","13:00","סי"],["13:00","14:00","סי"],["14:00","16:00","סי"],["16:00","18:00","סי"]]},
-            {d:"2025-04-24", s:[["10:30","12:00","ליניארית 1"],["12:00","13:30","ליניארית 1"],["14:00","16:00","סי"],["16:30","18:15","סי"],["18:45","19:30","סי"]]},
-            {d:"2025-04-25", s:[["10:30","11:30","סי"],["11:30","12:30","סי"],["14:00","15:30","סי"],["16:00","16:30","סי"]]},
-            {d:"2025-04-27", s:[["10:00","11:00","ליניארית 1"],["11:00","12:00","ליניארית 1"],["12:30","14:30","ליניארית 1"],["15:30","16:30","ליניארית 1"],["16:30","17:30","ליניארית 1"]]},
-            {d:"2025-04-28", s:[["14:00","15:00","סי"],["15:00","16:00","סי"]]},
-            {d:"2025-04-29", s:[["10:00","11:00","ליניארית 1"],["11:30","14:00","ליניארית 1"],["16:00","17:00","ליניארית 1"],["18:00","19:15","ליניארית 1"],["19:45","20:15","ליניארית 1"],["20:15","20:30","ליניארית 1"]]},
-            {d:"2025-05-01", s:[["10:30","12:30","סי"],["13:00","15:00","סי"],["15:30","18:30","סי"]]},
-            {d:"2025-05-02", s:[["09:30","11:00","ליניארית 1"],["11:00","13:30","ליניארית 1"],["14:00","16:00","ליניארית 1"],["16:15","16:30","ליניארית 1"]]},
-            {d:"2025-05-04", s:[["09:30","11:30","סי"],["12:00","13:00","סי"],["13:30","14:45","סי"],["15:00","16:30","סי"],["16:45","17:45","סי"]]},
-            {d:"2025-05-05", s:[["14:00","14:45","סי"],["15:00","15:45","סי"],["16:00","16:45","סי"]]},
-            {d:"2025-05-06", s:[["10:00","10:45","ליניארית 1"],["11:00","11:45","ליניארית 1"],["12:00","12:50","ליניארית 1"],["13:00","13:50","ליניארית 1"],["14:45","15:00","ליניארית 1"],["15:00","15:50","ליניארית 1"],["16:00","16:50","ליניארית 1"],["17:30","19:30","ליניארית 1"]]},
-            {d:"2025-05-07", s:[["09:00","09:45","סי"],["10:00","10:45","סי"],["11:00","11:45","סי"],["12:15","13:30","סי"],["14:00","14:45","סי"],["15:00","15:45","סי"],["16:30","18:00","סי"]]},
-            {d:"2025-05-08", s:[["09:00","10:30","ליניארית 1"],["10:45","11:45","ליניארית 1"],["12:00","13:30","ליניארית 1"],["14:15","16:00","ליניארית 1"],["16:30","18:00","ליניארית 1"]]}
+            {d:"2025-04-15", s:[["10:30","11:30","תרגול סי"],["11:30","12:30","תרגול סי"],["13:00","15:00","תרגול סי"],["16:00","17:00","תרגול סי"],["18:00","19:00","תרגול סי"]]},
+            {d:"2025-04-16", s:[["10:30","11:30","תרגול סי"],["11:30","12:30","תרגול סי"],["13:00","14:00","תרגול סי"],["14:00","15:30","תרגול סי"]]},
+            {d:"2025-04-17", s:[["09:00","10:00","תרגול סי"],["10:00","11:00","תרגול סי"],["11:00","12:00","ליניארית 1"],["12:00","12:30","ליניארית 1"],["13:30","15:00","תרגול סי"],["16:00","18:00","תרגול סי"]]}
         ];
 
         function importMassive2025Data() {
@@ -433,8 +460,8 @@
             data.notebooks[newId] = {
                 id: newId,
                 title: "סמסטר ב' 2025 - מסד מלא",
-                desc: "נשאב מה-PDF והיומן - 38 ימים!",
-                categories: ["סי", "ליניארית 1", "תהליכים קוגניטיביים"],
+                desc: "נשאב מה-PDF והיומן",
+                categories: ["תרגול סי", "הרצאה סי", "סי", "ליניארית 1", "תרגול ליניארית 1", "הרצאה ליניארית 1", "תהליכים קוגניטיביים"],
                 pages: pagesObj
             };
             
@@ -442,8 +469,8 @@
             
             currentNotebookId = newId;
             switchTab('analytics');
-            setAnalyticsFilter('all'); // INSTANTLY SHOW THE BIG DATA!
-            alert("הנתונים המלאים של כל הסמסטר נשאבו בהצלחה! 38 ימי למידה עמוסים הוכנסו למערכת.");
+            setAnalyticsFilter('all'); 
+            alert("הנתונים המלאים של כל הסמסטר נשאבו בהצלחה!");
         }
 
         async function initCloudSync() {
@@ -498,7 +525,8 @@
                     if(keys.length > 0) currentNotebookId = keys[0];
                 }
                 populateAnalyticsDropdown();
-                renderCharts(); 
+                initCalendarState();
+                updateAnalyticsData(); 
             }
         }
 
@@ -561,19 +589,58 @@
             }
         }
 
-        function saveNotebookCategories() {
+        // --- CATEGORY LIST FUNCTIONS ---
+        function renderCategoryList(cats) {
+            const container = document.getElementById('categoryListContainer');
+            container.innerHTML = '';
+            
+            if (cats && cats.length > 0) {
+                cats.forEach(cat => {
+                    if(cat.trim() !== '') createCatInput(cat);
+                });
+            }
+            createCatInput('');
+            createCatInput('');
+        }
+
+        function createCatInput(val) {
+            const container = document.getElementById('categoryListContainer');
+            const li = document.createElement('li');
+            li.style.marginBottom = '8px';
+            const inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'cat-list-input';
+            inp.value = val;
+            inp.placeholder = 'שם הקורס/נושא...';
+            inp.onchange = () => saveNotebookCategoriesSilently();
+            
+            li.appendChild(inp);
+            container.appendChild(li);
+        }
+
+        function addCategoryRow() {
+            createCatInput('');
+        }
+
+        function saveNotebookCategoriesSilently() {
             if (!currentNotebookId) return;
-            const rawVal = document.getElementById('detailCategoriesInput').value;
-            const cats = rawVal.split(',').map(s => s.trim()).filter(s => s);
+            const inputs = document.querySelectorAll('.cat-list-input');
+            const cats = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== '');
             
             const data = loadAllData();
             data.notebooks[currentNotebookId].categories = cats;
             saveAllData(data);
             triggerCloudSave();
-            
+        }
+
+        function saveNotebookCategoriesBtn() {
+            saveNotebookCategoriesSilently();
             const feedback = document.getElementById('catSaveFeedback');
             feedback.style.display = 'block';
             setTimeout(() => { feedback.style.display = 'none'; }, 2500);
+            
+            const data = loadAllData();
+            renderCategoryList(data.notebooks[currentNotebookId].categories || []);
         }
 
         function openNotebook(nbId) {
@@ -588,7 +655,7 @@
             document.getElementById('detailNotebookTitle').innerText = nb.title;
             document.getElementById('detailNotebookDesc').innerText = nb.desc;
             
-            document.getElementById('detailCategoriesInput').value = (nb.categories || []).join(', ');
+            renderCategoryList(nb.categories || []);
 
             const container = document.getElementById('savedPagesContainer'); container.innerHTML = ''; 
             const dates = Object.keys(nb.pages).sort((a, b) => new Date(b) - new Date(a)); 
@@ -599,7 +666,7 @@
                 const dayData = nb.pages[dateStr]; const totalH = (dayData.totalMinutes / 60).toFixed(1);
                 let [y, m, d] = dateStr.split('-').map(Number);
                 const dateObj = new Date(y, m - 1, d);
-                const niceDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const niceDate = dateObj.toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 
                 const div = document.createElement('div'); div.className = 'page-item'; 
                 div.onclick = () => loadDayIntoPlanner(dateStr);
@@ -617,8 +684,11 @@
 
         function createNewPage() { 
             const today = new Date(); 
-            const d = today.toISOString().split('T')[0];
-            loadDayIntoPlanner(d); 
+            // Format strictly as YYYY-MM-DD
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            loadDayIntoPlanner(`${y}-${m}-${d}`); 
         }
 
         function loadDayIntoPlanner(dateKey) {
@@ -626,10 +696,7 @@
             const nb = data.notebooks[currentNotebookId];
             const pages = nb.pages;
             
-            let notebookCategories = nb.categories;
-            if (!notebookCategories || notebookCategories.length === 0) {
-                notebookCategories = ["תרגול סי", "הרצאה סי", "תרגול ליניארית 1", "הרצאה ליניארית 1", "תהליכים קוגנטיבים"];
-            }
+            let notebookCategories = nb.categories || [];
 
             const catSelects = document.querySelectorAll('.sched-cat');
             catSelects.forEach(select => {
@@ -649,7 +716,9 @@
             if (pages[dateKey]) {
                 const dayData = pages[dateKey];
                 populateArray('.sched-task', dayData.schedTasks); 
+                
                 populateArray('.sched-cat', dayData.schedCats);
+                
                 populateArray('.todo-text', dayData.todoTexts); populateArray('.top-three', dayData.topThrees);
                 populateArray('.start-time', dayData.startTimes); populateArray('.finish-time', dayData.finishTimes);
                 populateArray('.notes-time', dayData.notesTimes); document.getElementById('rewardInput').value = dayData.reward || '';
@@ -743,17 +812,31 @@
             });
         });
 
-        // --- Analytics Engine ---
+        // --- Analytics Engine with Time Navigation ---
         let trendChartObj = null; let pieChartObj = null;
         let globalChartHours = []; let globalChartSessions = [];
 
+        function navigateTime(dir) {
+            if (currentAnalyticsFilter === 'all') return;
+            if (currentAnalyticsFilter === 'day') {
+                filterRefDate.setDate(filterRefDate.getDate() + dir);
+            } else if (currentAnalyticsFilter === 'week') {
+                filterRefDate.setDate(filterRefDate.getDate() + (dir * 7));
+            } else if (currentAnalyticsFilter === 'month') {
+                filterRefDate.setMonth(filterRefDate.getMonth() + dir);
+            }
+            updateAnalyticsData();
+        }
+
         function setAnalyticsFilter(type) {
             currentAnalyticsFilter = type;
-            document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             if(type==='day') document.getElementById('fltDay').classList.add('active');
             if(type==='week') document.getElementById('fltWeek').classList.add('active');
             if(type==='month') document.getElementById('fltMonth').classList.add('active');
             if(type==='all') document.getElementById('fltAll').classList.add('active');
+            
+            filterRefDate = new Date(); // Reset to today when clicking a filter
             updateAnalyticsData();
         }
 
@@ -771,7 +854,8 @@
         
         function changeAnalyticsNotebook() {
             currentNotebookId = document.getElementById('analyticsNotebookSelect').value;
-            renderCharts(); 
+            initCalendarState();
+            updateAnalyticsData(); 
         }
 
         function parseTimeMin(t) { if(!t) return 0; let [h,m]=t.split(':'); return parseInt(h)*60+parseInt(m); }
@@ -781,7 +865,34 @@
             return `${String(h).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
         }
 
-        function renderDynamicCalendar(pagesData) {
+        function initCalendarState() {
+            if(!currentNotebookId) return;
+            const data = loadAllData();
+            const pages = data.notebooks[currentNotebookId].pages || {};
+            const allDates = Object.keys(pages).sort();
+            if(allDates.length > 0) {
+                let [y, m, d] = allDates[allDates.length-1].split('-');
+                calRenderYear = parseInt(y);
+                calRenderMonth = parseInt(m) - 1;
+            } else {
+                let td = new Date();
+                calRenderYear = td.getFullYear();
+                calRenderMonth = td.getMonth();
+            }
+            renderDynamicCalendar();
+        }
+
+        function changeCalendarMonth(dir) {
+            if(calRenderYear === null) return;
+            calRenderMonth += dir;
+            if(calRenderMonth > 11) { calRenderMonth = 0; calRenderYear++; }
+            if(calRenderMonth < 0) { calRenderMonth = 11; calRenderYear--; }
+            renderDynamicCalendar();
+        }
+
+        function renderDynamicCalendar() {
+            if(!currentNotebookId) return;
+            const pagesData = loadAllData().notebooks[currentNotebookId].pages || {};
             const grid = document.getElementById('dynamicCalendarGrid');
             grid.innerHTML = '';
             
@@ -791,22 +902,11 @@
                 el.className = 'calendar-cell calendar-header'; el.innerText = d; grid.appendChild(el);
             });
 
-            const allDates = Object.keys(pagesData || {}).sort();
-            let year, month;
-            if(allDates.length > 0) {
-                let lastDate = allDates[allDates.length-1];
-                let [y, m, d] = lastDate.split('-');
-                year = parseInt(y); month = parseInt(m) - 1;
-            } else {
-                const today = new Date();
-                year = today.getFullYear(); month = today.getMonth(); 
-            }
-            
-            const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-            document.getElementById('calendarMonthLabel').innerText = monthNames[month] + " " + year;
+            const hebrewMonths = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+            document.getElementById('calendarMonthLabel').innerText = hebrewMonths[calRenderMonth] + " " + calRenderYear;
 
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(calRenderYear, calRenderMonth, 1).getDay();
+            const daysInMonth = new Date(calRenderYear, calRenderMonth + 1, 0).getDate();
 
             for(let i=0; i<firstDay; i++) {
                 const el = document.createElement('div'); el.className = 'calendar-cell calendar-empty'; grid.appendChild(el);
@@ -816,10 +916,19 @@
                 const el = document.createElement('div');
                 el.className = 'calendar-cell calendar-day'; el.innerText = d;
                 
-                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                if(pagesData && pagesData[dateStr] && pagesData[dateStr].totalMinutes > 0) { el.classList.add('crossed'); }
+                const dateStr = `${calRenderYear}-${String(calRenderMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                if(pagesData[dateStr] && pagesData[dateStr].totalMinutes > 0) { el.classList.add('crossed'); }
                 grid.appendChild(el);
             }
+        }
+
+        function getMacroCategory(cat) {
+            if (!cat) return "";
+            let wordsToRemove = ["תרגול", "הרצאה", "מעבדה", "השלמה", "חזרה", "מטלה", "מבחן", "בוחן"];
+            let cleanCat = cat;
+            wordsToRemove.forEach(w => { cleanCat = cleanCat.replace(w, ""); });
+            cleanCat = cleanCat.replace(/^[- ]+|[- ]+$/g, "").replace(/\s+/g, " ").trim();
+            return cleanCat || cat;
         }
 
         function renderCharts() {
@@ -833,23 +942,37 @@
             const pages = nb.pages; 
             const allDates = Object.keys(pages).sort(); 
             
-            renderDynamicCalendar(pages);
+            // Generate Date Boundaries based on filterRefDate
+            let startD = new Date(filterRefDate);
+            let endD = new Date(filterRefDate);
+            startD.setHours(0,0,0,0);
+            endD.setHours(23,59,59,999);
             
-            const todayDate = new Date();
-            todayDate.setHours(0,0,0,0);
+            let labelText = "";
+            const hebrewMonths = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+            
+            if (currentAnalyticsFilter === 'day') {
+                labelText = startD.toLocaleDateString('he-IL');
+            } else if (currentAnalyticsFilter === 'week') {
+                let day = startD.getDay();
+                startD.setDate(startD.getDate() - day);
+                endD.setDate(startD.getDate() + 6);
+                labelText = startD.toLocaleDateString('he-IL') + " - " + endD.toLocaleDateString('he-IL');
+            } else if (currentAnalyticsFilter === 'month') {
+                startD.setDate(1);
+                endD = new Date(startD.getFullYear(), startD.getMonth() + 1, 0);
+                endD.setHours(23,59,59,999);
+                labelText = hebrewMonths[startD.getMonth()] + " " + startD.getFullYear();
+            } else {
+                labelText = "כל הזמנים";
+            }
+            document.getElementById('analyticsDateLabel').innerText = labelText;
 
             const filteredDates = allDates.filter(dateStr => {
                 if(currentAnalyticsFilter === 'all') return true;
-                
-                const d = new Date(dateStr);
-                d.setHours(0,0,0,0);
-                const diffTime = todayDate - d;
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                if(currentAnalyticsFilter === 'day') return diffDays === 0;
-                if(currentAnalyticsFilter === 'week') return diffDays >= 0 && diffDays <= 7;
-                if(currentAnalyticsFilter === 'month') return diffDays >= 0 && diffDays <= 30;
-                return true;
+                let [y, m, d] = dateStr.split('-').map(Number);
+                let currentD = new Date(y, m-1, d);
+                return currentD >= startD && currentD <= endD;
             });
 
             if(filteredDates.length === 0) {
@@ -862,7 +985,7 @@
                 document.getElementById('inIdealSession').innerText = "N/A";
                 document.getElementById('inIdealBreak').innerText = "N/A";
                 document.getElementById('inIdealStart').innerText = "N/A";
-                document.getElementById('inStrategy').innerText = "יש להזין יותר ימי למידה כדי שהאלגוריתם יוכל לבנות אסטרטגיה.";
+                document.getElementById('inStrategy').innerText = "יש להזין יותר ימי למידה בטווח זמן זה כדי שהאלגוריתם יוכל לבנות אסטרטגיה.";
                 
                 updateTrendChart([], [], []); updatePieChart({});
                 return;
@@ -871,7 +994,8 @@
             let totalMinsFiltered = 0; let totalSessionsFiltered = 0; 
             let dayAverages = { 'Sunday':[], 'Monday':[], 'Tuesday':[], 'Wednesday':[], 'Thursday':[], 'Friday':[], 'Saturday':[] };
             
-            const chartLabels = []; const chartHours = []; const chartSessions = []; const categoryCounts = {};
+            const chartLabels = []; const chartHours = []; const chartSessions = []; 
+            const rawCategoryCounts = {};
             let allDaysProcessed = [];
 
             filteredDates.forEach(dateStr => {
@@ -879,7 +1003,9 @@
                 let [y, m, d] = dateStr.split('-').map(Number);
                 const dateObj = new Date(y, m - 1, d);
                 const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-                const dayNameShort = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                
+                // Hebrew short day for chart
+                const dayNameHe = dateObj.toLocaleDateString('he-IL', { weekday: 'short' });
                 
                 totalMinsFiltered += dayData.totalMinutes;
                 
@@ -911,17 +1037,17 @@
                             let ft = parseTimeMin(dayData.finishTimes[idx]);
                             let diff = ft - st;
                             if(diff < 0) diff += 24*60;
-                            categoryCounts[cat] = (categoryCounts[cat] || 0) + diff;
+                            rawCategoryCounts[cat] = (rawCategoryCounts[cat] || 0) + diff;
                         }
                     });
                 }
 
-                chartLabels.push(dayNameShort);
+                chartLabels.push(dayNameHe);
                 chartHours.push((dayData.totalMinutes / 60).toFixed(1));
                 chartSessions.push(daySessionsCount);
 
                 allDaysProcessed.push({
-                    dayName: dayNameShort, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount,
+                    dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount,
                     avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0,
                     avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0,
                     startHour: firstStartTime
@@ -933,14 +1059,19 @@
             document.getElementById('statDailyAvg').innerText = (totalHoursDec / filteredDates.length).toFixed(1);
             document.getElementById('statTotalSessions').innerText = totalSessionsFiltered;
 
-            let bestDay = "N/A"; let bestAvg = -1;
+            let bestDayEn = "N/A"; let bestAvg = -1;
             for (const [day, arr] of Object.entries(dayAverages)) {
                 if(arr.length > 0) {
                     let avg = arr.reduce((a, b) => a + b, 0) / arr.length;
-                    if(avg > bestAvg) { bestAvg = avg; bestDay = day; }
+                    if(avg > bestAvg) { bestAvg = avg; bestDayEn = day; }
                 }
             }
-            document.getElementById('statBestDay').innerText = bestDay !== "N/A" ? bestDay.substring(0,3) : "N/A";
+            
+            // Map English day to Hebrew
+            const enToHe = {"Sunday":"יום ראשון", "Monday":"יום שני", "Tuesday":"יום שלישי", "Wednesday":"יום רביעי", "Thursday":"יום חמישי", "Friday":"יום שישי", "Saturday":"שבת"};
+            let bestDayHe = bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A";
+            
+            document.getElementById('statBestDay').innerText = bestDayHe;
 
             // --- STRATEGY ALGORITHM ---
             allDaysProcessed.sort((a,b) => b.totalMins - a.totalMins);
@@ -955,19 +1086,48 @@
             let idealCount = Math.round(sumCount / topDaysCount);
             let idealStart = sumStart / topDaysCount;
 
-            document.getElementById('inBestDay').innerText = bestDay;
+            document.getElementById('inBestDay').innerText = bestDayHe;
             document.getElementById('inIdealSession').innerText = (isNaN(idealSess) || idealSess===0) ? "N/A" : idealSess + " דקות";
             document.getElementById('inIdealBreak').innerText = (isNaN(idealBreak) || idealBreak===0) ? "N/A" : idealBreak + " דקות";
             document.getElementById('inIdealStart').innerText = formatTime(idealStart);
 
             if(idealSess > 0) {
-                document.getElementById('inStrategy').innerText = `כדי למקסם שעות למידה, הנתונים שלך מראים שאת עובדת הכי טוב כשאת מחלקת את היום ל-${idealCount} סשנים של ${idealSess} דקות כל אחד. תשתדלי להקפיד על הפסקות באורך של ${idealBreak} דקות כדי לשמור על אנרגיה!`;
+                document.getElementById('inStrategy').innerText = `כדי למקסם שעות למידה, הנתונים מראים שאת עובדת הכי טוב כשאת מחלקת את הלמידה לכ-${idealCount} סשנים של ${idealSess} דקות. תשתדלי להקפיד על הפסקות באורך של ${idealBreak} דקות כדי לשמור על אנרגיה!`;
             } else {
                 document.getElementById('inStrategy').innerText = `אין מספיק נתונים על שעות סשנים מפורטות.`;
             }
 
-            const recentLabels = chartLabels.slice(-7); const recentHours = chartHours.slice(-7); const recentSessions = chartSessions.slice(-7);
-            updateTrendChart(recentLabels, recentHours, recentSessions); updatePieChart(categoryCounts);
+            // Only show last 7 for trend chart if there are many days
+            let recentLabels = chartLabels;
+            let recentHours = chartHours;
+            let recentSessions = chartSessions;
+            if(chartLabels.length > 7 && currentAnalyticsFilter !== 'week') {
+                recentLabels = chartLabels.slice(-7);
+                recentHours = chartHours.slice(-7);
+                recentSessions = chartSessions.slice(-7);
+            }
+
+            updateTrendChart(recentLabels, recentHours, recentSessions); 
+            
+            let finalPieData = {};
+            if (currentPieView === 'detail') {
+                finalPieData = rawCategoryCounts;
+            } else {
+                Object.keys(rawCategoryCounts).forEach(cat => {
+                    let macro = getMacroCategory(cat);
+                    finalPieData[macro] = (finalPieData[macro] || 0) + rawCategoryCounts[cat];
+                });
+            }
+            updatePieChart(finalPieData);
+        }
+
+        function togglePieChart(mode) {
+            currentPieView = mode;
+            document.getElementById('btnPieDetail').classList.remove('active');
+            document.getElementById('btnPieMacro').classList.remove('active');
+            if(mode === 'detail') document.getElementById('btnPieDetail').classList.add('active');
+            else document.getElementById('btnPieMacro').classList.add('active');
+            updateAnalyticsData(); 
         }
 
         function updateTrendChart(labels, hoursData, sessionsData) {
@@ -1000,12 +1160,13 @@
         function updatePieChart(categoryCounts) {
             const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
             if(pieChartObj) pieChartObj.destroy();
-            const labels = Object.keys(categoryCounts).map(k => `${k}`); const data = Object.values(categoryCounts);
+            const labels = Object.keys(categoryCounts); const data = Object.values(categoryCounts);
             if(data.length === 0) { labels.push('אין נתונים'); data.push(1); }
             pieChartObj = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#333333', '#cccccc'], borderWidth: 1 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font: { weight: 'bold' }, formatter: (value, ctx) => {
+                    if (labels[0] === 'אין נתונים') return '';
                     let sum = 0; let dataArr = ctx.chart.data.datasets[0].data; dataArr.map(data => { sum += data; });
                     return (value*100 / sum).toFixed(0)+"%";
                 }} } }
