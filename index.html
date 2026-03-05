@@ -7,59 +7,35 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            margin: 0; 
-            padding-bottom: 40px;
-            color: #000;
-        }
+        body { font-family: Arial, sans-serif; background-color: #ffffff; margin: 0; padding-bottom: 40px; color: #000; }
         
         /* Navigation Bar */
-        .navbar {
-            background-color: #000; padding: 15px; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;
-        }
-        .nav-button {
-            background-color: transparent; color: #fff; border: 2px solid #fff; padding: 10px 20px;
-            font-size: 16px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
-        }
+        .navbar { background-color: #000; padding: 15px; display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; direction: ltr;}
+        .nav-button { background-color: transparent; color: #fff; border: 2px solid #fff; padding: 10px 20px; font-size: 16px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
         .nav-button:hover { background-color: #333; }
         .nav-button.active { background-color: #fdf1a9; color: #000; border-color: #fdf1a9; }
 
         .header-title { text-align: center; letter-spacing: 3px; font-weight: bold; font-size: 24px; margin-bottom: 10px; }
         .sync-status { text-align: center; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 30px; height: 20px; }
 
-        .container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px;
-        }
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; padding: 0 20px; direction: ltr;}
         
         #notebooksGridView, #notebookDetailView, #plannerView, #analyticsView { display: none; }
 
         .box { border: 1px solid #000; margin-bottom: 20px; background: #fff; }
-        .yellow-header {
-            background-color: #fdf1a9; padding: 8px; font-weight: bold; font-size: 14px;
-            border-bottom: 1px solid #000; text-align: center; letter-spacing: 1px; text-transform: uppercase; position: relative;
-        }
-        input[type="text"], input[type="time"], input[type="number"], textarea, select {
-            font-size: 14px; color: #000; border: none; outline: none; font-family: inherit; background: transparent;
-        }
-        
+        .yellow-header { background-color: #fdf1a9; padding: 8px; font-weight: bold; font-size: 14px; border-bottom: 1px solid #000; text-align: center; letter-spacing: 1px; text-transform: uppercase; position: relative; }
+        input[type="text"], input[type="time"], input[type="number"], textarea, select { font-size: 14px; color: #000; border: none; outline: none; font-family: inherit; background: transparent; }
         .row input[type="text"], .row input[type="time"], .row input[type="number"], #currentPlannerDate, .time-input { text-align: center; }
-        .row { display: flex; border-bottom: 1px solid #000; }
-        .row:last-child { border-bottom: none; }
-        .flex-row { display: flex; }
+        .row { display: flex; border-bottom: 1px solid #000; } .row:last-child { border-bottom: none; } .flex-row { display: flex; }
         
         .checkbox-cell { width: 40px; display: flex; align-items: center; justify-content: center; }
         .checkbox-cell input { width: 18px; height: 18px; border: 1px solid #000; cursor: pointer; }
         .number-cell { display: flex; align-items: center; justify-content: center; font-weight: bold; }
         
-        /* Schedule Box */
         .task-label { width: 70px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #000; font-size: 14px; font-weight: bold; }
         .schedule-middle-col { flex: 1; display: flex; border-right: 1px solid #000; }
         .schedule-right-col { width: 140px; display: flex; border-left: 1px dashed #ccc; } 
         .schedule-middle-col input { width: 100%; box-sizing: border-box; padding: 8px; }
-        
-        /* Dynamic Category Dropdown */
         select.sched-cat { width: 100%; padding: 8px; cursor: pointer; text-align: center; text-align-last: center; font-weight: bold;}
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -91,34 +67,48 @@
         .calendar-empty { background-color: #f0f0f0; }
 
         /* Notebook Views */
-        .single-col-container { display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 20px; }
+        .single-col-container { display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 20px; direction: ltr;}
         .notebook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        
         .notebook-card { border: 2px solid #000; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background-color: #fdf1a9; box-shadow: 4px 4px 0px #000; position: relative; }
         .notebook-card:hover { transform: translateY(-2px); box-shadow: 6px 6px 0px #000; }
+        
+        .notebook-header-card { border: 2px solid #000; padding: 20px; text-align: center; background-color: #fdf1a9; box-shadow: 4px 4px 0px #000; margin-bottom: 10px; }
         .notebook-title { font-size: 24px; font-weight: bold; letter-spacing: 2px; margin-bottom: 10px; }
+        
         .add-notebook-card { border: 2px dashed #000; background-color: #fff; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; }
         .add-notebook-card:hover { background-color: #f9f9f9; box-shadow: none; border-color: #333; color: #000; }
         
-        .page-list { text-align: left; width: 100%; margin-top: 20px; border-top: 2px dashed #000; padding-top: 20px; }
+        .page-list { text-align: left; width: 100%; margin-top: 10px; border-top: 2px dashed #000; padding-top: 20px; }
         .page-item { padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; background: #fff; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .page-item:hover { border-color: #000; background: #fdf1a9; }
+        
         .btn-black { background: #000; color: #fff; border: none; padding: 15px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase; }
         .btn-black:hover { background: #333; }
-        .back-btn { background: transparent; border: none; color: #000; font-size: 16px; font-weight: bold; text-align: left; cursor: pointer; padding: 0; align-self: flex-start; margin-bottom: 10px; }
+        
+        /* Buttons for UI / Delete */
+        .top-nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%; }
+        .back-btn { background: transparent; border: none; color: #000; font-size: 16px; font-weight: bold; text-align: left; cursor: pointer; padding: 0; }
         .back-btn:hover { text-decoration: underline; }
+        
+        .delete-nb-btn { background: #fff; border: 1px solid red; color: red; font-size: 12px; font-weight: bold; cursor: pointer; padding: 5px 10px; transition: 0.2s;}
+        .delete-nb-btn:hover { background: red; color: #fff; }
+        
+        .delete-page-btn { background: transparent; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; transition: 0.2s; }
+        .delete-page-btn:hover { opacity: 1; transform: scale(1.1); }
 
-        /* Modal for New Notebook */
+        /* Modal */
         #newNotebookModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; direction: rtl;}
-        .modal-content { background: #fff; padding: 30px; border: 2px solid #000; width: 450px; text-align: center; box-shadow: 8px 8px 0px #000; }
+        .modal-content { background: #fff; padding: 30px; border: 2px solid #000; width: 400px; text-align: center; box-shadow: 8px 8px 0px #000; }
         .modal-input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #000; box-sizing: border-box; font-size: 16px; font-family: inherit;}
         .modal-btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .modal-btn { flex: 1; padding: 10px; font-weight: bold; border: 2px solid #000; cursor: pointer; background: #fff; }
         .modal-btn.primary { background: #000; color: #fff; }
         
         .analytics-dropdown { font-size: 24px; font-weight: bold; font-family: inherit; text-align: center; border: none; border-bottom: 2px solid #000; padding: 5px; outline: none; background: transparent; cursor: pointer; margin-bottom: 5px; letter-spacing: 2px;}
-        
         .btn-import { margin-top: 40px; background: #fff; color: #000; padding: 15px; font-weight: bold; cursor: pointer; width: 100%; border: 3px dashed #000; font-size: 16px;}
         .btn-import:hover { background: #fdf1a9; }
+        .categories-input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #000; font-family: inherit; font-size: 14px; text-align: right; direction: rtl; }
     </style>
 </head>
 <body>
@@ -141,20 +131,32 @@
     </div>
 
     <div id="notebookDetailView" class="single-col-container">
-        <button class="back-btn" onclick="switchTab('notebooks')">🔙 ALL NOTEBOOKS</button>
-        <div class="notebook-card" style="width: 100%; box-sizing: border-box; margin-bottom: 10px;">
+        
+        <div class="top-nav-row">
+            <button class="back-btn" onclick="switchTab('notebooks')">🔙 חזרה למחברות</button>
+            <button class="delete-nb-btn" onclick="deleteCurrentNotebook()">🗑️ מחיקת מחברת</button>
+        </div>
+        
+        <div class="notebook-header-card" style="width: 100%; box-sizing: border-box;">
             <div class="notebook-title" id="detailNotebookTitle">Notebook Name</div>
             <div id="detailNotebookDesc">Description</div>
+            
+            <div style="margin-top: 20px; border-top: 1px dashed #000; padding-top: 15px; text-align: right; direction: rtl;">
+                <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">קטגוריות למידה / קורסים (הפרידי בפסיק):</div>
+                <input type="text" id="detailCategoriesInput" class="categories-input" onchange="saveNotebookCategories()" placeholder="לדוגמה: תרגול סי, הרצאה סי, קוגניציה...">
+                <div id="catSaveFeedback" style="color: green; font-size: 12px; margin-top: 5px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
+            </div>
         </div>
+
         <div class="page-list">
-            <h3 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;">Saved Study Pages</h3>
+            <h3 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;">דפי למידה קיימים</h3>
             <div id="savedPagesContainer"></div>
-            <button class="btn-black" onclick="createNewPage()">+ CREATE NEW DAILY PAGE</button>
+            <button class="btn-black" onclick="createNewPage()">+ צור דף למידה יומי חדש</button>
         </div>
     </div>
 
     <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
-        <button class="back-btn" style="grid-column: span 2; padding-bottom: 20px;" onclick="openNotebook(currentNotebookId)">🔙 BACK TO NOTEBOOK</button>
+        <button class="back-btn" style="grid-column: span 2; padding-bottom: 20px;" onclick="openNotebook(currentNotebookId)">🔙 חזרה למחברת</button>
         <input type="hidden" id="activeDateKey">
 
         <div>
@@ -270,7 +272,6 @@
     </div>
 
     <div id="analyticsView" class="container">
-        
         <div style="grid-column: span 2; text-align: center; margin-bottom: 10px; margin-top: 10px;">
             <select id="analyticsNotebookSelect" class="analytics-dropdown" onchange="changeAnalyticsNotebook()"></select>
             <div style="color:#666; font-size: 14px; margin-top: 5px;">Analytics for this notebook</div>
@@ -295,7 +296,7 @@
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
                 <div class="yellow-header">BEST DAY</div>
-                <div class="stat-number" id="statBestDay">N/A</div>
+                <div class="stat-number" id="statBestDay" style="font-size: 28px;">N/A</div>
                 <div class="stat-label">Most productive</div>
             </div>
             <div class="box" style="flex: 1; margin-bottom: 0;">
@@ -330,8 +331,7 @@
             <div style="padding-top: 20px;">
                 <div id="calendarMonthLabel" style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 10px;">MONTH</div>
                 <div class="calendar-wrapper">
-                    <div class="calendar-grid" id="dynamicCalendarGrid">
-                        </div>
+                    <div class="calendar-grid" id="dynamicCalendarGrid"></div>
                 </div>
             </div>
         </div>
@@ -349,17 +349,10 @@
     <div id="newNotebookModal">
         <div class="modal-content">
             <h2 style="margin-top: 0;">יצירת מחברת חדשה</h2>
-            
             <div style="text-align: right; margin-top: 20px; font-weight: bold;">שם המחברת:</div>
             <input type="text" id="nnTitle" class="modal-input" placeholder="לדוגמה: סמסטר ב' 2026">
-            
             <div style="text-align: right; font-weight: bold;">תיאור (אופציונלי):</div>
             <input type="text" id="nnDesc" class="modal-input" placeholder="מדעי המחשב וקוגניציה">
-            
-            <div style="text-align: right; font-weight: bold; margin-top: 15px; color: #d32f2f;">הגדרת קטגוריות / קורסים:</div>
-            <div style="text-align: right; font-size: 12px; color: #666; margin-bottom: 5px;">רשמי כל קורס או נושא בשורה נפרדת. (לדוגמה: תרגול סי)</div>
-            <textarea id="nnCategories" class="modal-input" rows="5" placeholder="תרגול סי&#10;הרצאה סי&#10;ליניארית 1&#10;תהליכים קוגניטיביים"></textarea>
-            
             <div class="modal-btn-row">
                 <button class="modal-btn" onclick="document.getElementById('newNotebookModal').style.display='none'">ביטול</button>
                 <button class="modal-btn primary" onclick="submitNewNotebook()">צור מחברת</button>
@@ -378,13 +371,12 @@
         function loadAllData() { const data = localStorage.getItem(STORAGE_KEY); return data ? JSON.parse(data) : { notebooks: {} }; }
         function saveAllData(dataObj) { localStorage.setItem(STORAGE_KEY, JSON.stringify(dataObj)); }
 
-        // --- MAGICAL PDF DATA IMPORT SCRIPT ---
+        // --- PDF DATA IMPORT ---
         function importFromPDF() {
             let data = loadAllData();
             const newId = "nb_sem_b_2025";
             const categoriesList = ["תרגול סי", "הרצאה סי", "תרגול ליניארית 1", "הרצאה ליניארית 1", "תהליכים קוגניטיביים"];
             
-            // Raw data parsed straight from your PDF file (March 17th - March 31st)
             const rawDays = [
                 { d: "2025-03-17", st: ["15:15", "16:00", "18:15", "19:15"], ft: ["16:00", "18:15", "19:00", "19:30"] },
                 { d: "2025-03-19", st: ["08:00", "10:00", "12:00", "14:00", "15:00"], ft: ["10:00", "12:00", "14:00", "15:00", "17:00"] },
@@ -432,15 +424,15 @@
 
             data.notebooks[newId] = {
                 id: newId,
-                title: "סמסטר ב 2025 (מיובא מ-PDF)",
-                desc: "נתונים אמיתיים מחודש מרץ 2025",
+                title: "סמסטר ב 2025",
+                desc: "נתונים מיובאים אוטומטית מה-PDF",
                 categories: categoriesList,
                 pages: pagesObj
             };
             
             saveAllData(data);
             triggerCloudSave();
-            alert("10 ימי למידה מתוך ה-PDF נשאבו בהצלחה לתוך מחברת חדשה!");
+            alert("הנתונים משנת 2025 נשאבו בהצלחה לתוך מחברת חדשה!");
             renderNotebookGrid();
         }
 
@@ -525,17 +517,55 @@
         function submitNewNotebook() {
             const title = document.getElementById('nnTitle').value.trim();
             const desc = document.getElementById('nnDesc').value.trim();
-            const catsRaw = document.getElementById('nnCategories').value;
-            const categories = catsRaw.split('\n').map(s => s.trim()).filter(s => s);
 
             if(!title) { alert("יש להכניס שם למחברת!"); return; }
             const newId = "nb_" + Date.now();
             const data = loadAllData();
-            data.notebooks[newId] = { id: newId, title: title, desc: desc, categories: categories, pages: {} };
+            data.notebooks[newId] = { id: newId, title: title, desc: desc, categories: [], pages: {} };
             saveAllData(data); triggerCloudSave();
-            document.getElementById('nnTitle').value = ''; document.getElementById('nnDesc').value = ''; document.getElementById('nnCategories').value = '';
+            document.getElementById('nnTitle').value = ''; document.getElementById('nnDesc').value = '';
             document.getElementById('newNotebookModal').style.display = 'none';
             renderNotebookGrid();
+        }
+        
+        // --- NEW: DELETE ENTIRE NOTEBOOK ---
+        function deleteCurrentNotebook() {
+            if(!currentNotebookId) return;
+            if(confirm("האם את בטוחה שאת רוצה למחוק את כל המחברת הזו? לא ניתן יהיה לשחזר אותה!")) {
+                const data = loadAllData();
+                delete data.notebooks[currentNotebookId];
+                saveAllData(data);
+                triggerCloudSave();
+                currentNotebookId = null;
+                switchTab('notebooks');
+            }
+        }
+
+        // --- NEW: DELETE SINGLE PAGE ---
+        function deletePage(dateKey) {
+            if(!currentNotebookId) return;
+            if(confirm(`האם למחוק לצמיתות את הדף של תאריך ${dateKey}?`)) {
+                const data = loadAllData();
+                delete data.notebooks[currentNotebookId].pages[dateKey];
+                saveAllData(data);
+                triggerCloudSave();
+                openNotebook(currentNotebookId); // refresh view
+            }
+        }
+
+        function saveNotebookCategories() {
+            if (!currentNotebookId) return;
+            const rawVal = document.getElementById('detailCategoriesInput').value;
+            const cats = rawVal.split(',').map(s => s.trim()).filter(s => s);
+            
+            const data = loadAllData();
+            data.notebooks[currentNotebookId].categories = cats;
+            saveAllData(data);
+            triggerCloudSave();
+            
+            const feedback = document.getElementById('catSaveFeedback');
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2500);
         }
 
         function openNotebook(nbId) {
@@ -549,17 +579,31 @@
 
             document.getElementById('detailNotebookTitle').innerText = nb.title;
             document.getElementById('detailNotebookDesc').innerText = nb.desc;
+            
+            document.getElementById('detailCategoriesInput').value = (nb.categories || []).join(', ');
+
             const container = document.getElementById('savedPagesContainer'); container.innerHTML = ''; 
             const dates = Object.keys(nb.pages).sort((a, b) => new Date(b) - new Date(a)); 
 
             if (dates.length === 0) { container.innerHTML = '<p style="text-align:center; color:#666;">אין עדיין דפים במחברת זו.</p>'; return; }
+            
             dates.forEach(dateStr => {
                 const dayData = nb.pages[dateStr]; const totalH = (dayData.totalMinutes / 60).toFixed(1);
                 let [y, m, d] = dateStr.split('-').map(Number);
                 const dateObj = new Date(y, m - 1, d);
                 const niceDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                const div = document.createElement('div'); div.className = 'page-item'; div.onclick = () => loadDayIntoPlanner(dateStr);
-                div.innerHTML = `<span>📅 ${niceDate}</span><span>⏱️ ${totalH} Hours Logged</span>`;
+                
+                const div = document.createElement('div'); div.className = 'page-item'; 
+                div.onclick = () => loadDayIntoPlanner(dateStr);
+                
+                // Add Delete Page button directly inside the list item
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>📅 ${niceDate}</span>
+                        <span style="font-size:14px; font-weight:normal; color:#555;">(⏱️ ${totalH}h)</span>
+                    </div>
+                    <button class="delete-page-btn" onclick="event.stopPropagation(); deletePage('${dateStr}')" title="מחק דף">🗑️</button>
+                `;
                 container.appendChild(div);
             });
         }
@@ -575,8 +619,12 @@
             const nb = data.notebooks[currentNotebookId];
             const pages = nb.pages;
             
-            // Populating Categories Dropdown dynamically for THIS notebook!
-            const notebookCategories = nb.categories || [];
+            // Auto fallback for old notebooks to ensure categories exist
+            let notebookCategories = nb.categories;
+            if (!notebookCategories || notebookCategories.length === 0) {
+                notebookCategories = ["תרגול סי", "הרצאה סי", "תרגול ליניארית 1", "הרצאה ליניארית 1", "תהליכים קוגנטיבים"];
+            }
+
             const catSelects = document.querySelectorAll('.sched-cat');
             catSelects.forEach(select => {
                 select.innerHTML = '<option value=""></option>'; 
@@ -594,7 +642,11 @@
             
             if (pages[dateKey]) {
                 const dayData = pages[dateKey];
-                populateArray('.sched-task', dayData.schedTasks); populateArray('.sched-cat', dayData.schedCats);
+                populateArray('.sched-task', dayData.schedTasks); 
+                
+                // Smart select populator
+                populateArray('.sched-cat', dayData.schedCats);
+                
                 populateArray('.todo-text', dayData.todoTexts); populateArray('.top-three', dayData.topThrees);
                 populateArray('.start-time', dayData.startTimes); populateArray('.finish-time', dayData.finishTimes);
                 populateArray('.notes-time', dayData.notesTimes); document.getElementById('rewardInput').value = dayData.reward || '';
@@ -632,7 +684,25 @@
 
         function getArrayValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.value); }
         function getCheckValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.checked); }
-        function populateArray(selector, valuesArr) { if (!valuesArr) return; const elements = document.querySelectorAll(selector); valuesArr.forEach((val, i) => { if (elements[i]) elements[i].value = val; }); }
+        
+        function populateArray(selector, valuesArr) { 
+            if (!valuesArr) return; 
+            const elements = document.querySelectorAll(selector); 
+            valuesArr.forEach((val, i) => { 
+                if (elements[i]) { 
+                    if (elements[i].tagName === 'SELECT' && val) {
+                        let exists = Array.from(elements[i].options).some(opt => opt.value === val);
+                        if (!exists) {
+                            let newOpt = document.createElement('option');
+                            newOpt.value = val; newOpt.innerText = val;
+                            elements[i].appendChild(newOpt);
+                        }
+                    }
+                    elements[i].value = val; 
+                } 
+            }); 
+        }
+
         function populateChecks(selector, boolArr) { if (!boolArr) return; const elements = document.querySelectorAll(selector); boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; }); }
         function toggleBreak(element) { element.classList.toggle('crossed'); saveCurrentData(); }
 
@@ -670,9 +740,10 @@
             });
         });
 
-        // --- Analytics Engine ---
+        // --- Analytics Drawer ---
         let trendChartObj = null; let pieChartObj = null;
-        let globalChartHours = []; let globalChartSessions = [];
+        let globalChartHours = [2, 5.5, 7.2, 4, 6, 4.5, 3.3]; 
+        let globalChartSessions = [2, 4, 6, 3, 5, 4, 2];
 
         function populateAnalyticsDropdown() {
             const select = document.getElementById('analyticsNotebookSelect');
@@ -703,7 +774,6 @@
                 el.className = 'calendar-cell calendar-header'; el.innerText = d; grid.appendChild(el);
             });
 
-            // Find the most recent date in the notebook to display the calendar for that month
             const allDates = Object.keys(pagesData || {}).sort();
             let year, month;
             if(allDates.length > 0) {
@@ -777,12 +847,10 @@
                 chartSessions.push(daySessions);
             });
 
-            // Update Quick Stats
             document.getElementById('statTotalHours').innerText = (totalMinsAllTime / 60).toFixed(1);
             document.getElementById('statDailyAvg').innerText = dates.length > 0 ? ((totalMinsAllTime / 60) / dates.length).toFixed(1) : "0.0";
             document.getElementById('statTotalSessions').innerText = chartSessions.reduce((a,b)=>a+b, 0);
             
-            // Revert BEST DAY to fixed text based on your required design
             document.getElementById('statBestDay').innerText = "Tue";
             document.getElementById('insightRecord').innerText = (maxMinsInDay / 60).toFixed(1);
             document.getElementById('insightDays').innerText = dates.length;
@@ -844,6 +912,9 @@
             }
             trendChartObj.update();
         }
+
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(day => { day.addEventListener('click', function() { this.classList.toggle('crossed'); }); });
 
         window.onload = () => {
             initCloudSync(); 
