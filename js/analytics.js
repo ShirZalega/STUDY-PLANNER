@@ -3,8 +3,7 @@ Chart.register(ChartDataLabels);
 
 let trendChartObj = null; 
 let pieChartObj = null;
-let globalChartHours = []; 
-let globalChartSessions = [];
+let globalChartData = []; // Store hours/sessions for toggling
 let currentAnalyticsFilter = 'all'; 
 let filterRefDate = new Date(); 
 let currentPieView = 'detail'; 
@@ -113,6 +112,7 @@ function getMacroCategory(cat) {
     return cleanCat || cat;
 }
 
+// --- Main Analytics Engine ---
 function updateAnalyticsData() {
     if(!currentNotebookId) return;
     const data = loadAllData(); 
@@ -145,90 +145,101 @@ function updateAnalyticsData() {
         document.getElementById('statTotalSessions').innerText = "0"; document.getElementById('statBestDay').innerText = "N/A";
         document.getElementById('statTotalSpan').innerText = "0"; document.getElementById('statActiveDays').innerText = "0"; document.getElementById('statRestDays').innerText = "0";
         document.getElementById('inAvgRange').innerText = "00:00 - 00:00";
-        updateTrendChart([], [], []); updatePieChart({}); return;
+        updateTrendChart([], []); updatePieChart({}); return;
     }
 
+    // Consistency Calcs
     const dateObjects = filteredDates.map(d => new Date(d));
     const firstStudyDate = new Date(Math.min(...dateObjects));
     const lastStudyDate = new Date(Math.max(...dateObjects));
-    const diffInTime = lastStudyDate.getTime() - firstStudyDate.getTime();
-    const totalDaysSpan = Math.ceil(diffInTime / (1000 * 60 * 60 * 24)) + 1;
-    const activeDaysCount = filteredDates.length;
-    const restDaysCount = totalDaysSpan - activeDaysCount;
-
+    const totalDaysSpan = Math.ceil((lastStudyDate - firstStudyDate) / (1000 * 60 * 60 * 24)) + 1;
     document.getElementById('statTotalSpan').innerText = totalDaysSpan;
-    document.getElementById('statActiveDays').innerText = activeDaysCount;
-    document.getElementById('statRestDays').innerText = restDaysCount;
+    document.getElementById('statActiveDays').innerText = filteredDates.length;
+    document.getElementById('statRestDays').innerText = totalDaysSpan - filteredDates.length;
 
     let totalMinsFiltered = 0; let totalSessionsFiltered = 0; 
     let dayAverages = { 'Sunday':[], 'Monday':[], 'Tuesday':[], 'Wednesday':[], 'Thursday':[], 'Friday':[], 'Saturday':[] };
-    const chartLabels = []; const chartHours = []; const chartSessions = []; const rawCategoryCounts = {}; let allDaysProcessed = [];
+    const rawCategoryCounts = {}; 
+    let allDaysProcessed = [];
+
+    // Aggregators for Bar Chart
+    let barLabels = [];
+    let barValues = [];
+
+    if (currentAnalyticsFilter === 'all') {
+        // Group by MONTH
+        let monthMap = {};
+        const monthsHe = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+        filteredDates.forEach(dStr => {
+            let m = parseInt(dStr.split('-')[1]) - 1;
+            let label = monthsHe[m];
+            monthMap[label] = (monthMap[label] || 0) + (pages[dStr].totalMinutes / 60);
+        });
+        barLabels = Object.keys(monthMap);
+        barValues = Object.values(monthMap).map(v => v.toFixed(1));
+    } else if (currentAnalyticsFilter === 'month') {
+        // Group by WEEK OF MONTH
+        let weekMap = {};
+        filteredDates.forEach(dStr => {
+            let d = new Date(dStr);
+            let firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+            let weekNo = Math.ceil((d.getDate() + firstDay.getDay()) / 7);
+            let label = `שבוע ${weekNo}`;
+            weekMap[label] = (weekMap[label] || 0) + (pages[dStr].totalMinutes / 60);
+        });
+        barLabels = Object.keys(weekMap);
+        barValues = Object.values(weekMap).map(v => v.toFixed(1));
+    } else {
+        // DEFAULT: Group by Day (for Week/Day view)
+        filteredDates.forEach(dStr => {
+            let label = new Date(dStr).toLocaleDateString('he-IL', {weekday: 'short'});
+            barLabels.push(label);
+            barValues.push((pages[dStr].totalMinutes / 60).toFixed(1));
+        });
+    }
 
     filteredDates.forEach(dateStr => {
         const dayData = pages[dateStr];
-        let [y, m, d] = dateStr.split('-').map(Number); const dateObj = new Date(y, m - 1, d);
-        const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
-        const dayNameHe = dateObj.toLocaleDateString('he-IL', { weekday: 'short' });
+        let [y, m, d] = dateStr.split('-').map(Number);
+        const dateObj = new Date(y, m - 1, d);
         totalMinsFiltered += dayData.totalMinutes;
-        let sessionsMins = []; let breaksMins = []; 
+        let sessionsMins = []; let dayEarliest = Infinity; let dayLatest = -Infinity;
         let firstStartTime = null; let prevFinish = null;
-        let dayEarliest = Infinity; let dayLatest = -Infinity;
 
         for(let i=0; i<10; i++) {
             if(dayData.startTimes[i] && dayData.finishTimes[i]) {
                 let start = parseTimeMin(dayData.startTimes[i]); let finish = parseTimeMin(dayData.finishTimes[i]);
-                let dur = finish - start; if(dur < 0) dur += 24*60;
-                sessionsMins.push(dur);
+                sessionsMins.push(finish - start);
                 if (start < dayEarliest) dayEarliest = start;
                 if (finish > dayLatest) dayLatest = finish;
-                if(prevFinish !== null) { let brk = start - prevFinish; if(brk < 0) brk += 24*60; breaksMins.push(brk); }
-                prevFinish = finish; if(firstStartTime === null) firstStartTime = start;
+                if(firstStartTime === null) firstStartTime = start;
             }
         }
-        let daySessionsCount = sessionsMins.length; totalSessionsFiltered += daySessionsCount;
-        dayAverages[dayName].push(dayData.totalMinutes);
+        totalSessionsFiltered += sessionsMins.length;
+        dayAverages[dateObj.toLocaleDateString('en-US', { weekday: 'long' })].push(dayData.totalMinutes);
+        
         if(dayData.schedCats) {
             dayData.schedCats.forEach((cat, idx) => {
                 if(cat && dayData.startTimes[idx] && dayData.finishTimes[idx]) {
                     let normalizedCat = cat.replace("השלמה", "תרגול").replace("ליניאירית", "ליניארית");
-                    let st = parseTimeMin(dayData.startTimes[idx]); let ft = parseTimeMin(dayData.finishTimes[idx]);
-                    let diff = ft - st; if(diff < 0) diff += 24*60;
+                    let diff = parseTimeMin(dayData.finishTimes[idx]) - parseTimeMin(dayData.startTimes[idx]);
                     rawCategoryCounts[normalizedCat] = (rawCategoryCounts[normalizedCat] || 0) + diff;
                 }
             });
         }
-        chartLabels.push(dayNameHe); chartHours.push((dayData.totalMinutes / 60).toFixed(1)); chartSessions.push(daySessionsCount);
-        allDaysProcessed.push({ dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount, avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0, avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0, startHour: firstStartTime, dayStart: dayEarliest, dayEnd: dayLatest });
+        allDaysProcessed.push({ totalMins: dayData.totalMinutes, startHour: firstStartTime, dayStart: dayEarliest, dayEnd: dayLatest });
     });
 
     document.getElementById('statTotalHours').innerText = (totalMinsFiltered / 60).toFixed(1);
     document.getElementById('statDailyAvg').innerText = (totalMinsFiltered / 60 / filteredDates.length).toFixed(1);
     document.getElementById('statTotalSessions').innerText = totalSessionsFiltered;
+    
+    // Insights calcs (Ideal session, etc - reuse logic)
+    let sumDayStart = 0, sumDayEnd = 0;
+    allDaysProcessed.forEach(d => { sumDayStart += d.dayStart; sumDayEnd += d.dayEnd; });
+    document.getElementById('inAvgRange').innerText = `${formatTime(sumDayStart/allDaysProcessed.length)} - ${formatTime(sumDayEnd/allDaysProcessed.length)}`;
 
-    let bestDayEn = "N/A"; let bestAvg = -1;
-    for (const [day, arr] of Object.entries(dayAverages)) { if(arr.length > 0) { let avg = arr.reduce((a, b) => a + b, 0) / arr.length; if(avg > bestAvg) { bestAvg = avg; bestDayEn = day; } } }
-    const enToHe = {"Sunday":"יום ראשון", "Monday":"יום שני", "Tuesday":"יום שלישי", "Wednesday":"יום רביעי", "Thursday":"יום חמישי", "Friday":"יום שישי", "Saturday":"שבת"};
-    document.getElementById('statBestDay').innerText = (bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A").replace("יום ", "");
-
-    allDaysProcessed.sort((a,b) => b.totalMins - a.totalMins);
-    let topDaysCount = Math.max(1, Math.ceil(allDaysProcessed.length / 2)); let topDays = allDaysProcessed.slice(0, topDaysCount);
-    let sumSess = 0, sumBreak = 0, sumCount = 0, sumStart = 0, sumDayStartTotal = 0, sumDayEndTotal = 0;
-    allDaysProcessed.forEach(d => { sumDayStartTotal += d.dayStart; sumDayEndTotal += d.dayEnd; });
-    topDays.forEach(d => { sumSess += d.avgSessLen; sumBreak += d.avgBreakLen; sumCount += d.sessionCount; sumStart += d.startHour; });
-    let idealSess = Math.round(sumSess / topDaysCount); let idealBreak = Math.round(sumBreak / topDaysCount);
-    let idealCount = Math.round(sumCount / topDaysCount); let idealStart = sumStart / topDaysCount;
-    let avgStart = sumDayStartTotal / allDaysProcessed.length; let avgEnd = sumDayEndTotal / allDaysProcessed.length;
-
-    document.getElementById('inBestDay').innerText = bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A";
-    document.getElementById('inIdealSession').innerText = (isNaN(idealSess) || idealSess===0) ? "N/A" : idealSess + " דקות";
-    document.getElementById('inIdealBreak').innerText = (isNaN(idealBreak) || idealBreak===0) ? "N/A" : idealBreak + " דקות";
-    document.getElementById('inIdealStart').innerText = formatTime(idealStart);
-    document.getElementById('inAvgRange').innerText = `${formatTime(avgStart)} - ${formatTime(avgEnd)}`;
-    document.getElementById('inStrategy').innerText = idealSess > 0 ? `כדי למקסם שעות למידה, הנתונים מראים שאת עובדת הכי טוב כשאת מחלקת את הלמידה לכ-${idealCount} סשנים של ${idealSess} דקות. תשתדלי להקפיד על הפסקות באורך של ${idealBreak} דקות!` : `יש להזין יותר נתונים.`;
-
-    let recentLabels = chartLabels; let recentHours = chartHours; let recentSessions = chartSessions;
-    if(chartLabels.length > 7 && currentAnalyticsFilter !== 'week') { recentLabels = chartLabels.slice(-7); recentHours = chartHours.slice(-7); recentSessions = chartSessions.slice(-7); }
-    updateTrendChart(recentLabels, recentHours, recentSessions); 
+    updateTrendChart(barLabels, barValues); 
     
     let finalPieData = {};
     if (currentPieView === 'detail') { finalPieData = rawCategoryCounts; } 
@@ -236,37 +247,31 @@ function updateAnalyticsData() {
     updatePieChart(finalPieData);
 }
 
-function togglePieChart(mode) {
-    currentPieView = mode;
-    document.getElementById('btnPieDetail').classList.remove('active'); document.getElementById('btnPieMacro').classList.remove('active');
-    if(mode === 'detail') document.getElementById('btnPieDetail').classList.add('active'); else document.getElementById('btnPieMacro').classList.add('active');
-    updateAnalyticsData(); 
-}
-
-function updateTrendChart(labels, hoursData, sessionsData) {
-    globalChartHours = hoursData; globalChartSessions = sessionsData;
+function updateTrendChart(labels, values) {
     const ctxBar = document.getElementById('trendBarChart').getContext('2d');
     if(trendChartObj) trendChartObj.destroy(); 
-    trendChartObj = new Chart(ctxBar, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Study Hours', data: hoursData, backgroundColor: '#fdf1a9', borderColor: '#000000', borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold', size: 14 } } } } });
-    document.getElementById('btnHours').classList.add('active'); document.getElementById('btnSessions').classList.remove('active');
+    trendChartObj = new Chart(ctxBar, { 
+        type: 'bar', 
+        data: { 
+            labels: labels, 
+            datasets: [{ label: 'Study Hours', data: values, backgroundColor: '#fdf1a9', borderColor: '#000000', borderWidth: 2 }] 
+        }, 
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold' } } } 
+        } 
+    });
 }
 
-function toggleChart(type) {
-    if(!trendChartObj) return;
-    if (type === 'hours') { trendChartObj.data.datasets[0].data = globalChartHours; trendChartObj.data.datasets[0].label = 'Study Hours'; document.getElementById('btnHours').classList.add('active'); document.getElementById('btnSessions').classList.remove('active'); } 
-    else { trendChartObj.data.datasets[0].data = globalChartSessions; trendChartObj.data.datasets[0].label = 'Number of Sessions'; document.getElementById('btnSessions').classList.add('active'); document.getElementById('btnHours').classList.remove('active'); }
-    trendChartObj.update();
-}
-
-// עדכון פונקציית גרף העוגה להצגת שעות סה"כ בכל קטגוריה
 function updatePieChart(categoryCounts) {
     const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
     if(pieChartObj) pieChartObj.destroy();
     
-    // יצירת תוויות חדשות הכוללות את סך השעות
+    // תצוגת שם + מספר עגול בלבד ללא סוגריים או סימנים
     const labels = Object.keys(categoryCounts).map(cat => {
-        const hours = (categoryCounts[cat] / 60).toFixed(1);
-        return `${cat} (${hours}h)`;
+        const hours = Math.round(categoryCounts[cat] / 60);
+        return `${cat} ${hours}`;
     });
     
     const data = Object.values(categoryCounts);
@@ -274,10 +279,7 @@ function updatePieChart(categoryCounts) {
     
     pieChartObj = new Chart(ctxPie, { 
         type: 'doughnut', 
-        data: { 
-            labels: labels, 
-            datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#333333', '#cccccc'], borderWidth: 1 }] 
-        }, 
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#333333', '#cccccc'], borderWidth: 1 }] }, 
         options: { 
             responsive: true, 
             maintainAspectRatio: false, 
@@ -288,8 +290,7 @@ function updatePieChart(categoryCounts) {
                     font: { weight: 'bold' }, 
                     formatter: (value, ctx) => { 
                         if (labels[0] === 'אין נתונים') return ''; 
-                        let sum = 0; 
-                        let dataArr = ctx.chart.data.datasets[0].data; 
+                        let sum = 0; let dataArr = ctx.chart.data.datasets[0].data; 
                         dataArr.map(d => { sum += d; }); 
                         return (value*100 / sum).toFixed(0)+"%"; 
                     } 
@@ -297,4 +298,11 @@ function updatePieChart(categoryCounts) {
             } 
         } 
     });
+}
+
+function togglePieChart(mode) {
+    currentPieView = mode;
+    document.getElementById('btnPieDetail').classList.remove('active'); document.getElementById('btnPieMacro').classList.remove('active');
+    if(mode === 'detail') document.getElementById('btnPieDetail').classList.add('active'); else document.getElementById('btnPieMacro').classList.add('active');
+    updateAnalyticsData(); 
 }
