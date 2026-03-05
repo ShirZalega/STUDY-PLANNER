@@ -19,7 +19,6 @@ function setAnalyticsFilter(type) {
     if(type==='week') document.getElementById('fltWeek').classList.add('active');
     if(type==='month') document.getElementById('fltMonth').classList.add('active');
     if(type==='all') document.getElementById('fltAll').classList.add('active');
-    
     filterRefDate = new Date(); 
     updateAnalyticsData();
 }
@@ -114,7 +113,6 @@ function getMacroCategory(cat) {
     return cleanCat || cat;
 }
 
-// --- Main Analytics Engine ---
 function updateAnalyticsData() {
     if(!currentNotebookId) return;
     const data = loadAllData(); 
@@ -172,7 +170,6 @@ function updateAnalyticsData() {
         const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
         const dayNameHe = dateObj.toLocaleDateString('he-IL', { weekday: 'short' });
         totalMinsFiltered += dayData.totalMinutes;
-        
         let sessionsMins = []; let breaksMins = []; 
         let firstStartTime = null; let prevFinish = null;
         let dayEarliest = Infinity; let dayLatest = -Infinity;
@@ -182,10 +179,8 @@ function updateAnalyticsData() {
                 let start = parseTimeMin(dayData.startTimes[i]); let finish = parseTimeMin(dayData.finishTimes[i]);
                 let dur = finish - start; if(dur < 0) dur += 24*60;
                 sessionsMins.push(dur);
-                
                 if (start < dayEarliest) dayEarliest = start;
                 if (finish > dayLatest) dayLatest = finish;
-
                 if(prevFinish !== null) { let brk = start - prevFinish; if(brk < 0) brk += 24*60; breaksMins.push(brk); }
                 prevFinish = finish; if(firstStartTime === null) firstStartTime = start;
             }
@@ -203,14 +198,7 @@ function updateAnalyticsData() {
             });
         }
         chartLabels.push(dayNameHe); chartHours.push((dayData.totalMinutes / 60).toFixed(1)); chartSessions.push(daySessionsCount);
-        allDaysProcessed.push({ 
-            dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount, 
-            avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0, 
-            avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0, 
-            startHour: firstStartTime,
-            dayStart: dayEarliest,
-            dayEnd: dayLatest
-        });
+        allDaysProcessed.push({ dayNameEn: dayName, totalMins: dayData.totalMinutes, sessionCount: daySessionsCount, avgSessLen: daySessionsCount > 0 ? (dayData.totalMinutes / daySessionsCount) : 0, avgBreakLen: breaksMins.length > 0 ? (breaksMins.reduce((a,b)=>a+b,0) / breaksMins.length) : 0, startHour: firstStartTime, dayStart: dayEarliest, dayEnd: dayLatest });
     });
 
     document.getElementById('statTotalHours').innerText = (totalMinsFiltered / 60).toFixed(1);
@@ -218,41 +206,24 @@ function updateAnalyticsData() {
     document.getElementById('statTotalSessions').innerText = totalSessionsFiltered;
 
     let bestDayEn = "N/A"; let bestAvg = -1;
-    for (const [day, arr] of Object.entries(dayAverages)) {
-        if(arr.length > 0) { let avg = arr.reduce((a, b) => a + b, 0) / arr.length; if(avg > bestAvg) { bestAvg = avg; bestDayEn = day; } }
-    }
+    for (const [day, arr] of Object.entries(dayAverages)) { if(arr.length > 0) { let avg = arr.reduce((a, b) => a + b, 0) / arr.length; if(avg > bestAvg) { bestAvg = avg; bestDayEn = day; } } }
     const enToHe = {"Sunday":"יום ראשון", "Monday":"יום שני", "Tuesday":"יום שלישי", "Wednesday":"יום רביעי", "Thursday":"יום חמישי", "Friday":"יום שישי", "Saturday":"שבת"};
     document.getElementById('statBestDay').innerText = (bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A").replace("יום ", "");
 
     allDaysProcessed.sort((a,b) => b.totalMins - a.totalMins);
     let topDaysCount = Math.max(1, Math.ceil(allDaysProcessed.length / 2)); let topDays = allDaysProcessed.slice(0, topDaysCount);
-    
-    let sumSess = 0, sumBreak = 0, sumCount = 0, sumStart = 0;
-    let sumDayStartTotal = 0, sumDayEndTotal = 0;
-
-    allDaysProcessed.forEach(d => {
-        sumDayStartTotal += d.dayStart;
-        sumDayEndTotal += d.dayEnd;
-    });
-
-    topDays.forEach(d => { 
-        sumSess += d.avgSessLen; sumBreak += d.avgBreakLen; 
-        sumCount += d.sessionCount; sumStart += d.startHour; 
-    });
-
+    let sumSess = 0, sumBreak = 0, sumCount = 0, sumStart = 0, sumDayStartTotal = 0, sumDayEndTotal = 0;
+    allDaysProcessed.forEach(d => { sumDayStartTotal += d.dayStart; sumDayEndTotal += d.dayEnd; });
+    topDays.forEach(d => { sumSess += d.avgSessLen; sumBreak += d.avgBreakLen; sumCount += d.sessionCount; sumStart += d.startHour; });
     let idealSess = Math.round(sumSess / topDaysCount); let idealBreak = Math.round(sumBreak / topDaysCount);
     let idealCount = Math.round(sumCount / topDaysCount); let idealStart = sumStart / topDaysCount;
-    
-    // חישוב ממוצע טווח השעות
-    let avgStart = sumDayStartTotal / allDaysProcessed.length;
-    let avgEnd = sumDayEndTotal / allDaysProcessed.length;
+    let avgStart = sumDayStartTotal / allDaysProcessed.length; let avgEnd = sumDayEndTotal / allDaysProcessed.length;
 
     document.getElementById('inBestDay').innerText = bestDayEn !== "N/A" ? enToHe[bestDayEn] : "N/A";
     document.getElementById('inIdealSession').innerText = (isNaN(idealSess) || idealSess===0) ? "N/A" : idealSess + " דקות";
     document.getElementById('inIdealBreak').innerText = (isNaN(idealBreak) || idealBreak===0) ? "N/A" : idealBreak + " דקות";
     document.getElementById('inIdealStart').innerText = formatTime(idealStart);
     document.getElementById('inAvgRange').innerText = `${formatTime(avgStart)} - ${formatTime(avgEnd)}`;
-    
     document.getElementById('inStrategy').innerText = idealSess > 0 ? `כדי למקסם שעות למידה, הנתונים מראים שאת עובדת הכי טוב כשאת מחלקת את הלמידה לכ-${idealCount} סשנים של ${idealSess} דקות. תשתדלי להקפיד על הפסקות באורך של ${idealBreak} דקות!` : `יש להזין יותר נתונים.`;
 
     let recentLabels = chartLabels; let recentHours = chartHours; let recentSessions = chartSessions;
@@ -287,10 +258,43 @@ function toggleChart(type) {
     trendChartObj.update();
 }
 
+// עדכון פונקציית גרף העוגה להצגת שעות סה"כ בכל קטגוריה
 function updatePieChart(categoryCounts) {
     const ctxPie = document.getElementById('categoryPieChart').getContext('2d');
     if(pieChartObj) pieChartObj.destroy();
-    const labels = Object.keys(categoryCounts); const data = Object.values(categoryCounts);
+    
+    // יצירת תוויות חדשות הכוללות את סך השעות
+    const labels = Object.keys(categoryCounts).map(cat => {
+        const hours = (categoryCounts[cat] / 60).toFixed(1);
+        return `${cat} (${hours}h)`;
+    });
+    
+    const data = Object.values(categoryCounts);
     if(data.length === 0) { labels.push('אין נתונים'); data.push(1); }
-    pieChartObj = new Chart(ctxPie, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#333333', '#cccccc'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font: { weight: 'bold' }, formatter: (value, ctx) => { if (labels[0] === 'אין נתונים') return ''; let sum = 0; let dataArr = ctx.chart.data.datasets[0].data; dataArr.map(d => { sum += d; }); return (value*100 / sum).toFixed(0)+"%"; } } } } });
+    
+    pieChartObj = new Chart(ctxPie, { 
+        type: 'doughnut', 
+        data: { 
+            labels: labels, 
+            datasets: [{ data: data, backgroundColor: ['#000000', '#fdf1a9', '#888888', '#e0e0e0', '#333333', '#cccccc'], borderWidth: 1 }] 
+        }, 
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { 
+                legend: { position: 'right' }, 
+                datalabels: { 
+                    color: '#fff', 
+                    font: { weight: 'bold' }, 
+                    formatter: (value, ctx) => { 
+                        if (labels[0] === 'אין נתונים') return ''; 
+                        let sum = 0; 
+                        let dataArr = ctx.chart.data.datasets[0].data; 
+                        dataArr.map(d => { sum += d; }); 
+                        return (value*100 / sum).toFixed(0)+"%"; 
+                    } 
+                } 
+            } 
+        } 
+    });
 }
