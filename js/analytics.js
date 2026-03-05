@@ -20,7 +20,24 @@ function setAnalyticsFilter(type) {
     if(type === 'month') document.getElementById('fltMonth').classList.add('active');
     if(type === 'all') document.getElementById('fltAll').classList.add('active');
     
-    filterRefDate = new Date(); 
+    // Set the reference date to the FIRST ACTIVE day of the notebook instead of "today"
+    if (currentNotebookId) {
+        const data = loadAllData();
+        const pages = data.notebooks[currentNotebookId].pages || {};
+        const allDates = Object.keys(pages).sort();
+        // Ignore empty placeholder days
+        const activeDates = allDates.filter(dStr => pages[dStr].totalMinutes > 0);
+        
+        if (activeDates.length > 0) {
+            let [y, m, d] = activeDates[0].split('-').map(Number);
+            filterRefDate = new Date(y, m - 1, d);
+        } else {
+            filterRefDate = new Date();
+        }
+    } else {
+        filterRefDate = new Date();
+    }
+    
     updateAnalyticsData();
 }
 
@@ -68,10 +85,11 @@ function initCalendarState() {
     const data = loadAllData();
     const pages = data.notebooks[currentNotebookId].pages || {};
     const allDates = Object.keys(pages).sort();
+    const activeDates = allDates.filter(dStr => pages[dStr].totalMinutes > 0);
     
-    // Set the calendar to start from the very first day recorded in the notebook
-    if(allDates.length > 0) {
-        let [y, m, d] = allDates[0].split('-'); 
+    // Set the calendar to start from the first ACTIVE day
+    if(activeDates.length > 0) {
+        let [y, m, d] = activeDates[0].split('-'); 
         calRenderYear = parseInt(y); calRenderMonth = parseInt(m) - 1;
     } else {
         let td = new Date(); calRenderYear = td.getFullYear(); calRenderMonth = td.getMonth();
@@ -151,13 +169,17 @@ function updateAnalyticsData() {
         document.getElementById('analyticsDateLabel').innerText = "כל הזמנים"; 
     }
 
+    // Filter dates by time range first
     const filteredDates = allDates.filter(dateStr => {
         if(currentAnalyticsFilter === 'all') return true;
         let [y, m, d] = dateStr.split('-').map(Number); let currentD = new Date(y, m-1, d);
         return currentD >= startD && currentD <= endD;
     });
 
-    if(filteredDates.length === 0) {
+    // Only consider days that actually have study minutes
+    const activeDates = filteredDates.filter(dateStr => pages[dateStr] && pages[dateStr].totalMinutes > 0);
+
+    if(activeDates.length === 0) {
         document.getElementById('statTotalHours').innerText = "0.0"; document.getElementById('statDailyAvg').innerText = "0.0";
         document.getElementById('statTotalSessions').innerText = "0"; document.getElementById('statBestDay').innerText = "N/A";
         document.getElementById('statTotalSpan').innerText = "0"; document.getElementById('statActiveDays').innerText = "0"; document.getElementById('statRestDays').innerText = "0";
@@ -166,8 +188,8 @@ function updateAnalyticsData() {
         updateTrendChart([], []); updatePieChart({}); return;
     }
 
-    // --- Fix date range calculation (prevents year jumping bugs) ---
-    const dateObjects = filteredDates.map(dStr => {
+    // --- Dynamic Date Range Calculation ---
+    const dateObjects = activeDates.map(dStr => {
         let [y, m, d] = dStr.split('-').map(Number);
         return new Date(y, m - 1, d);
     });
@@ -175,7 +197,7 @@ function updateAnalyticsData() {
     const lastStudyDate = new Date(Math.max(...dateObjects));
     const diffInTime = lastStudyDate.getTime() - firstStudyDate.getTime();
     const totalDaysSpan = Math.ceil(diffInTime / (1000 * 60 * 60 * 24)) + 1;
-    const activeDaysCount = filteredDates.length;
+    const activeDaysCount = activeDates.length;
     const restDaysCount = totalDaysSpan - activeDaysCount;
 
     document.getElementById('statTotalSpan').innerText = totalDaysSpan;
@@ -183,7 +205,6 @@ function updateAnalyticsData() {
     document.getElementById('statRestDays').innerText = restDaysCount;
 
     let totalMinsFiltered = 0; let totalSessionsFiltered = 0; 
-    // Ordered by day index (0 = Sunday, 1 = Monday...)
     let dayAverages = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[] }; 
     const rawCategoryCounts = {}; 
     let allDaysProcessed = [];
@@ -195,16 +216,17 @@ function updateAnalyticsData() {
     if (currentAnalyticsFilter === 'all') {
         let monthMap = {};
         const monthsHe = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
-        filteredDates.forEach(dStr => {
-            let m = parseInt(dStr.split('-')[1]) - 1;
-            let label = monthsHe[m];
+        activeDates.forEach(dStr => {
+            let [yStr, mStr, dStrPart] = dStr.split('-');
+            let m = parseInt(mStr) - 1;
+            let label = `${monthsHe[m]} ${yStr.slice(2)}`; // Example: "מרץ 25"
             monthMap[label] = (monthMap[label] || 0) + (pages[dStr].totalMinutes / 60);
         });
         barLabels = Object.keys(monthMap);
         barValues = Object.values(monthMap).map(v => parseFloat(v).toFixed(1));
     } else if (currentAnalyticsFilter === 'month') {
         let weekMap = {};
-        filteredDates.forEach(dStr => {
+        activeDates.forEach(dStr => {
             let [y, m, d] = dStr.split('-').map(Number);
             let dateObj = new Date(y, m - 1, d);
             let firstDay = new Date(y, m - 1, 1);
@@ -215,7 +237,7 @@ function updateAnalyticsData() {
         barLabels = Object.keys(weekMap);
         barValues = Object.values(weekMap).map(v => parseFloat(v).toFixed(1));
     } else {
-        filteredDates.forEach(dStr => {
+        activeDates.forEach(dStr => {
             let [y, m, d] = dStr.split('-').map(Number);
             let label = new Date(y, m-1, d).toLocaleDateString('he-IL', {weekday: 'short'});
             barLabels.push(label);
@@ -223,7 +245,7 @@ function updateAnalyticsData() {
         });
     }
 
-    filteredDates.forEach(dateStr => {
+    activeDates.forEach(dateStr => {
         const dayData = pages[dateStr];
         let [y, m, d] = dateStr.split('-').map(Number); 
         const dateObj = new Date(y, m - 1, d);
@@ -262,7 +284,7 @@ function updateAnalyticsData() {
     });
 
     document.getElementById('statTotalHours').innerText = (totalMinsFiltered / 60).toFixed(1);
-    document.getElementById('statDailyAvg').innerText = (totalMinsFiltered / 60 / filteredDates.length).toFixed(1);
+    document.getElementById('statDailyAvg').innerText = (totalMinsFiltered / 60 / activeDates.length).toFixed(1);
     document.getElementById('statTotalSessions').innerText = totalSessionsFiltered;
 
     // --- Fix best day calculation ---
@@ -277,7 +299,7 @@ function updateAnalyticsData() {
     document.getElementById('statBestDay').innerText = bestDayIdx !== -1 ? hebrewDays[bestDayIdx] : "N/A";
     document.getElementById('inBestDay').innerText = bestDayIdx !== -1 ? "יום " + hebrewDays[bestDayIdx] : "N/A";
 
-    // --- Fix insights calculations ---
+    // --- Insights calculations ---
     allDaysProcessed.sort((a,b) => b.totalMins - a.totalMins);
     let topDaysCount = Math.max(1, Math.ceil(allDaysProcessed.length / 2)); 
     let topDays = allDaysProcessed.slice(0, topDaysCount);
@@ -285,7 +307,6 @@ function updateAnalyticsData() {
     let sumSess = 0, sumCount = 0;
     topDays.forEach(d => { sumSess += d.avgSessLen; sumCount += d.sessionCount; });
 
-    // Ignore days without entered hours (to prevent average with Infinity)
     let validTimeDays = allDaysProcessed.filter(d => d.dayStart !== Infinity && d.dayEnd !== -Infinity);
     if (validTimeDays.length > 0) {
         let avgStart = validTimeDays.reduce((acc, d) => acc + d.dayStart, 0) / validTimeDays.length;
@@ -301,7 +322,6 @@ function updateAnalyticsData() {
     let idealCount = Math.round(sumCount / topDaysCount) || 0;
 
     document.getElementById('inIdealSession').innerText = idealSess > 0 ? idealSess + " דקות" : "N/A";
-    // Restored to automatic recommended value
     document.getElementById('inIdealBreak').innerText = "15 דקות"; 
     document.getElementById('inStrategy').innerText = idealSess > 0 ? `כדי למקסם שעות למידה, הנתונים מראים שאת עובדת הכי טוב כשאת מחלקת את הלמידה לכ-${idealCount} סשנים של ${idealSess} דקות.` : `יש להזין יותר נתונים.`;
 
@@ -316,6 +336,11 @@ function updateAnalyticsData() {
 function updateTrendChart(labels, values) {
     const ctxBar = document.getElementById('trendBarChart').getContext('2d');
     if(trendChartObj) trendChartObj.destroy(); 
+    
+    // Calculate a dynamic maximum value to prevent data labels from being cut off at the top
+    let maxVal = Math.max(...values.map(Number));
+    let suggestedMax = maxVal > 0 ? maxVal * 1.2 : 10; // Adds 20% headroom above the highest bar
+
     trendChartObj = new Chart(ctxBar, { 
         type: 'bar', 
         data: { 
@@ -325,9 +350,18 @@ function updateTrendChart(labels, values) {
         options: { 
             responsive: true, 
             maintainAspectRatio: false, 
-            scales: { y: { beginAtZero: true } }, 
+            layout: {
+                padding: {
+                    top: 30 // Extra top padding to ensure labels are visible
+                }
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: true,
+                    suggestedMax: suggestedMax // Apply the dynamic headroom
+                } 
+            }, 
             plugins: { 
-                // Hide the yellow 'Study Hours' legend box
                 legend: { display: false }, 
                 datalabels: { anchor: 'end', align: 'top', color: '#000', font: { weight: 'bold' } } 
             } 
@@ -348,8 +382,8 @@ function updatePieChart(categoryCounts) {
     const data = Object.values(categoryCounts);
     if(data.length === 0) { labels.push('אין נתונים'); data.push(1); }
     
-    // Beautiful and prominent color palette for the pie chart
-    const customPalette = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#e67e22', '#34495e'];
+    // Beautiful Grayscale + Yellow custom palette to match the site theme perfectly
+    const customPalette = ['#fdf1a9', '#111111', '#cccccc', '#666666', '#f4d03f', '#999999', '#333333'];
     
     pieChartObj = new Chart(ctxPie, { 
         type: 'doughnut', 
@@ -363,17 +397,23 @@ function updatePieChart(categoryCounts) {
             plugins: { 
                 legend: { position: 'right', rtl: true, textDirection: 'rtl' }, 
                 datalabels: { 
-                    // Black text for readability
-                    color: '#000', 
-                    // White stroke around text
-                    textStrokeColor: '#fff', 
-                    textStrokeWidth: 3,
+                    // Set anchors to absolute center of the pie slice
+                    anchor: 'center', 
+                    align: 'center', 
+                    color: '#000', // Black text
+                    textStrokeColor: '#fff', // Strong white outline for visibility
+                    textStrokeWidth: 4, 
                     font: { weight: 'bold', size: 14 }, 
                     formatter: (value, ctx) => { 
                         if (labels[0] === 'אין נתונים') return ''; 
                         let sum = 0; let dataArr = ctx.chart.data.datasets[0].data; 
                         dataArr.map(d => { sum += d; }); 
-                        return (value*100 / sum).toFixed(0)+"%"; 
+                        let percentage = (value*100 / sum).toFixed(0);
+                        
+                        // Hide very small percentages (less than 4%) to prevent clutter
+                        if(percentage < 4) return ''; 
+                        
+                        return percentage + "%"; 
                     } 
                 } 
             } 
