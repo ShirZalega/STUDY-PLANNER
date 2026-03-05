@@ -59,19 +59,41 @@ function renderNotebookGrid() {
 function submitNewNotebook() {
     const title = document.getElementById('nnTitle').value.trim();
     const desc = document.getElementById('nnDesc').value.trim();
-
     if(!title) { alert("יש להכניס שם למחברת!"); return; }
-    
     const newId = "nb_" + Date.now();
     const data = loadAllData();
     data.notebooks[newId] = { id: newId, title: title, desc: desc, categories: [], pages: {} };
     saveAllData(data); 
     triggerCloudSave();
-    
     document.getElementById('nnTitle').value = ''; 
     document.getElementById('nnDesc').value = '';
     document.getElementById('newNotebookModal').style.display = 'none';
     renderNotebookGrid();
+}
+
+// --- פונקציות חדשות לעריכת שם מחברת ---
+function openEditTitleModal() {
+    if (!currentNotebookId) return;
+    const data = loadAllData();
+    const nb = data.notebooks[currentNotebookId];
+    document.getElementById('enTitle').value = nb.title;
+    document.getElementById('enDesc').value = nb.desc;
+    document.getElementById('editNotebookModal').style.display = 'flex';
+}
+
+function submitEditNotebook() {
+    const title = document.getElementById('enTitle').value.trim();
+    const desc = document.getElementById('enDesc').value.trim();
+    if(!title) { alert("שם המחברת לא יכול להיות ריק!"); return; }
+    
+    const data = loadAllData();
+    data.notebooks[currentNotebookId].title = title;
+    data.notebooks[currentNotebookId].desc = desc;
+    saveAllData(data);
+    triggerCloudSave();
+    
+    document.getElementById('editNotebookModal').style.display = 'none';
+    openNotebook(currentNotebookId); // רענון התצוגה
 }
 
 function deleteCurrentNotebook() {
@@ -120,14 +142,11 @@ function createCatInput(val) {
     inp.value = val;
     inp.placeholder = 'שם הקורס/נושא...';
     inp.onchange = () => saveNotebookCategoriesSilently();
-    
     li.appendChild(inp);
     container.appendChild(li);
 }
 
-function addCategoryRow() { 
-    createCatInput(''); 
-}
+function addCategoryRow() { createCatInput(''); }
 
 function saveNotebookCategoriesSilently() {
     if (!currentNotebookId) return;
@@ -184,7 +203,6 @@ function openNotebook(nbId) {
         const div = document.createElement('div'); 
         div.className = 'page-item'; 
         div.onclick = () => loadDayIntoPlanner(dateStr);
-        
         div.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
                 <span>📅 ${niceDate}</span>
@@ -208,7 +226,6 @@ function loadDayIntoPlanner(dateKey) {
     const data = loadAllData(); 
     const nb = data.notebooks[currentNotebookId];
     const pages = nb.pages;
-    
     let notebookCategories = nb.categories || [];
 
     const catSelects = document.querySelectorAll('.sched-cat');
@@ -236,23 +253,14 @@ function loadDayIntoPlanner(dateKey) {
         populateArray('.start-time', dayData.startTimes); 
         populateArray('.finish-time', dayData.finishTimes);
         populateArray('.notes-time', dayData.notesTimes); 
-        
         document.getElementById('rewardInput').value = dayData.reward || '';
         document.getElementById('goalInput').value = dayData.goal || '';
-        
         populateChecks('.todo-check', dayData.todoChecks); 
         populateChecks('.track-check', dayData.trackChecks);
-        
         const breaks = document.querySelectorAll('.break-box');
-        (dayData.breaks || []).forEach((isCrossed, i) => { 
-            if (isCrossed && breaks[i]) breaks[i].classList.add('crossed'); 
-        });
-        
-        document.querySelectorAll('.time-input').forEach(input => { 
-            if(input.value !== "") input.type = "time"; 
-        });
+        (dayData.breaks || []).forEach((isCrossed, i) => { if (isCrossed && breaks[i]) breaks[i].classList.add('crossed'); });
+        document.querySelectorAll('.time-input').forEach(input => { if(input.value !== "") input.type = "time"; });
     }
-    
     calculateTotalTime(); 
     document.getElementById('notebookDetailView').style.display = 'none'; 
     document.getElementById('plannerView').style.display = 'grid';
@@ -263,7 +271,6 @@ function clearPlannerForm() {
         if (el.type === 'checkbox') el.checked = false;
         else if (el.classList.contains('break-box')) el.classList.remove('crossed');
         else if (el.id !== 'currentPlannerDate') el.value = '';
-        
         if (el.classList.contains('time-input')) el.type = 'text'; 
     });
 }
@@ -271,31 +278,23 @@ function clearPlannerForm() {
 function saveCurrentData() {
     const dateKey = document.getElementById('activeDateKey').value; 
     if (!dateKey || !currentNotebookId) return; 
-    
     const totalMins = calculateTotalTime();
     const dayData = {
-        schedTasks: getArrayValues('.sched-task'), 
-        schedCats: getArrayValues('.sched-cat'), 
-        todoTexts: getArrayValues('.todo-text'), 
-        todoChecks: getCheckValues('.todo-check'),
-        topThrees: getArrayValues('.top-three'), 
-        startTimes: getArrayValues('.start-time'), 
-        finishTimes: getArrayValues('.finish-time'), 
-        trackChecks: getCheckValues('.track-check'),
-        notesTimes: getArrayValues('.notes-time'), 
-        reward: document.getElementById('rewardInput').value, 
+        schedTasks: getArrayValues('.sched-task'), schedCats: getArrayValues('.sched-cat'), 
+        todoTexts: getArrayValues('.todo-text'), todoChecks: getCheckValues('.todo-check'),
+        topThrees: getArrayValues('.top-three'), startTimes: getArrayValues('.start-time'), 
+        finishTimes: getArrayValues('.finish-time'), trackChecks: getCheckValues('.track-check'),
+        notesTimes: getArrayValues('.notes-time'), reward: document.getElementById('rewardInput').value, 
         goal: document.getElementById('goalInput').value,
         breaks: Array.from(document.querySelectorAll('.break-box')).map(b => b.classList.contains('crossed')), 
         totalMinutes: totalMins
     };
-    
     const data = loadAllData(); 
     data.notebooks[currentNotebookId].pages[dateKey] = dayData;
     saveAllData(data); 
     triggerCloudSave(); 
 }
 
-// --- DOM Extraction Helpers ---
 function getArrayValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.value); }
 function getCheckValues(selector) { return Array.from(document.querySelectorAll(selector)).map(el => el.checked); }
 
@@ -308,8 +307,7 @@ function populateArray(selector, valuesArr) {
                 let exists = Array.from(elements[i].options).some(opt => opt.value === val);
                 if (!exists) {
                     let newOpt = document.createElement('option');
-                    newOpt.value = val; 
-                    newOpt.innerText = val;
+                    newOpt.value = val; newOpt.innerText = val;
                     elements[i].appendChild(newOpt);
                 }
             }
@@ -321,22 +319,15 @@ function populateArray(selector, valuesArr) {
 function populateChecks(selector, boolArr) { 
     if (!boolArr) return; 
     const elements = document.querySelectorAll(selector); 
-    boolArr.forEach((val, i) => { 
-        if (elements[i]) elements[i].checked = val; 
-    }); 
+    boolArr.forEach((val, i) => { if (elements[i]) elements[i].checked = val; }); 
 }
 
-function toggleBreak(element) { 
-    element.classList.toggle('crossed'); 
-    saveCurrentData(); 
-}
+function toggleBreak(element) { element.classList.toggle('crossed'); saveCurrentData(); }
 
-// --- Time Calculation ---
 function calculateTotalTime() {
     let totalMinutes = 0; 
     const startTimes = document.querySelectorAll('.start-time'); 
     const finishTimes = document.querySelectorAll('.finish-time');
-    
     for (let i = 0; i < 10; i++) {
         const startVal = startTimes[i].value; 
         const finishVal = finishTimes[i].value;
@@ -355,7 +346,6 @@ function calculateTotalTime() {
     return totalMinutes; 
 }
 
-// --- Event Listeners & OnLoad Initialization ---
 window.onload = () => {
     const timeInputs = document.querySelectorAll('.time-input');
     timeInputs.forEach(input => {
