@@ -1,303 +1,287 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Study Planner&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="style.css"&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="navbar"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="nav-button active" id="btnNotebooks" onclick="switchTab('notebooks')"&gt;NOTEBOOKS&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="nav-button" id="btnAnalytics" onclick="switchTab('analytics')"&gt;ANALYTICS&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="appHeaderSection"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="header-title"&gt;STUDY PLANNER&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="sync-status" id="syncStatus"&gt;☁️ Connecting to Google Drive...&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="notebooksGridView" class="container" style="display: block;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="notebook-grid" id="notebookGridContainer"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="grid-column: span 2;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-import" onclick="importMassive2025Data()"&gt;📄 שאב מסד נתונים מלא (סמסטר ב' 2025)&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="notebookDetailView" class="single-col-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="top-nav-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="back-btn" onclick="switchTab('notebooks')"&gt;🔙 חזרה למחברות&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="delete-nb-btn" onclick="deleteCurrentNotebook()"&gt;🗑️ מחיקת מחברת&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="notebook-header-card" style="width: 100%; box-sizing: border-box;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="notebook-title" id="detailNotebookTitle"&gt;Notebook Name&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="detailNotebookDesc"&gt;Description&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="margin-top: 20px; border-top: 1px dashed #000; padding-top: 15px; text-align: right; direction: rtl;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-weight: bold; margin-bottom: 15px; font-size: 16px;"&gt;קטגוריות למידה / קורסים:&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;ol id="categoryListContainer" style="margin: 0; padding-right: 25px; font-family: inherit; text-align: right;"&gt;&lt;/ol&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="margin-top: 15px; text-align: right;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button onclick="addCategoryRow()" style="background: #fff; border: 2px dashed #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s; margin-left: 5px;"&gt;+ שורה נוספת&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button onclick="saveNotebookCategoriesBtn()" style="background: #000; color: #fff; border: 2px solid #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s;"&gt;שמור קטגוריות&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="catSaveFeedback" style="color: green; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;"&gt;הקטגוריות נשמרו בהצלחה!&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="page-list"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;"&gt;דפי למידה קיימים&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="savedPagesContainer"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-black" onclick="createNewPage()"&gt;+ צור דף למידה יומי חדש&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="back-btn" style="grid-column: span 2; padding-bottom: 20px;" onclick="openNotebook(currentNotebookId)"&gt;🔙 חזרה למחברת&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="hidden" id="activeDateKey"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box flex-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header" style="padding: 8px 15px; border-bottom: none; border-right: 1px solid #000; text-align: left;"&gt;DATE:&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="currentPlannerDate" class="save-target" style="flex: 1; padding: 8px; font-weight:bold;" readonly&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;SCHEDULE&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>for(let i=1; i&lt;=10; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>document.write(`</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="task-label"&gt;Task ${i}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="schedule-middle-col"&gt;&lt;input type="text" class="sched-task save-target" placeholder="..."&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="schedule-right-col"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;select class="sched-cat save-target"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header" style="font-size: 16px;"&gt;Todo&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>for(let i=1; i&lt;=5; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>document.write(`</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="checkbox-cell" style="border-right: 1px solid #000;"&gt;&lt;input type="checkbox" class="todo-check save-target"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;input type="text" class="todo-text save-target" style="width: 100%; padding: 8px; box-sizing: border-box;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;REWARD&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="rewardInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="..."&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;STUDY SESSION GOAL&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="goalInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;TODAY'S TOP THREE&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>for(let i=1; i&lt;=3; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>document.write(`</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="number-cell" style="width: 30px; border-right: 1px solid #000;"&gt;${i}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;input type="text" class="top-three save-target" style="width: 100%; padding: 8px; box-sizing: border-box;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex-row yellow-header" style="padding: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="width: 40px; border-right: 1px solid #000;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="flex: 1; display: flex; align-items: center; justify-content: center;"&gt;TASK NUMBER&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="width: 90px; padding: 8px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box;"&gt;START TIME&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="width: 90px; padding: 8px; box-sizing: border-box;"&gt;FINISH TIME&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>for(let i=1; i&lt;=10; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>document.write(`</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;"&gt;&lt;input type="checkbox" class="track-check save-target"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="number-cell" style="flex: 1; font-size: 14px;"&gt;Task ${i}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;input type="text" class="time-input start-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div style="width: 90px; box-sizing: border-box; display: flex;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;input type="text" class="time-input finish-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;BREAK TIMES CHECK LIST&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex-row" style="text-align: center;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="break-box save-target" onclick="toggleBreak(this)"&gt;1&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="break-box save-target" onclick="toggleBreak(this)"&gt;2&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="break-box save-target" onclick="toggleBreak(this)"&gt;3&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="break-box save-target" onclick="toggleBreak(this)"&gt;4&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="break-box save-target" onclick="toggleBreak(this)"&gt;5&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;NOTES&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="notes-table"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell notes-cell-right" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;"&gt;PHASE&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;"&gt;TIME&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell notes-cell-right" style="padding: 8px;"&gt;Taken&lt;/div&gt;&lt;div class="notes-cell"&gt;&lt;input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell notes-cell-right" style="padding: 8px;"&gt;Effect&lt;/div&gt;&lt;div class="notes-cell"&gt;&lt;input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell notes-cell-right" style="padding: 8px;"&gt;Start Work&lt;/div&gt;&lt;div class="notes-cell"&gt;&lt;input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="notes-cell notes-cell-right no-border-bottom" style="padding: 8px;"&gt;Finish&lt;/div&gt;&lt;div class="notes-cell no-border-bottom"&gt;&lt;input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;"&gt;TOTAL STUDY TIME&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="text" id="totalTime" readonly placeholder="00:00" style="font-size: 28px; font-weight: bold; text-align: center; border-bottom: 2px dashed #000; width: 120px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="analyticsView" class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="grid-column: span 2; text-align: center; margin-bottom: 10px; margin-top: 10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="analyticsNotebookSelect" class="analytics-dropdown" onchange="changeAnalyticsNotebook()"&gt;&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="color:#666; font-size: 14px; margin-top: 5px;"&gt;Analytics for this notebook&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="time-filter"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="nav-arrow" onclick="navigateTime(-1)"&gt;&amp;#9664;&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="display:flex; gap:10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="filter-btn" id="fltDay" onclick="setAnalyticsFilter('day')"&gt;יום&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="filter-btn active" id="fltWeek" onclick="setAnalyticsFilter('week')"&gt;שבוע&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="filter-btn" id="fltMonth" onclick="setAnalyticsFilter('month')"&gt;חודש&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="filter-btn" id="fltAll" onclick="setAnalyticsFilter('all')"&gt;הכל&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="nav-arrow" onclick="navigateTime(1)"&gt;&amp;#9654;&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="analyticsDateLabel" style="grid-column: span 2; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px; color: #333;"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="grid-column: span 2; display: flex; gap: 20px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box" style="flex: 1; margin-bottom: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;TOTAL HOURS&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-number" id="statTotalHours"&gt;0.0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-label"&gt;Hours logged&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box" style="flex: 1; margin-bottom: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;DAILY AVERAGE&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-number" id="statDailyAvg"&gt;0.0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-label"&gt;Hours per day&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box" style="flex: 1; margin-bottom: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;BEST DAY&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-number" id="statBestDay" style="font-size: 24px;"&gt;N/A&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-label"&gt;Most productive&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="box" style="flex: 1; margin-bottom: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="yellow-header"&gt;TOTAL SESSIONS&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-number" id="statTotalSessions"&gt;0&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="stat-label"&gt;Blocks completed&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="yellow-header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;CATEGORY BREAKDOWN&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="chart-toggle-group" style="left:5px; right:auto;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="chart-toggle-btn active" id="btnPieDetail" onclick="togglePieChart('detail')"&gt;מפורט&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="chart-toggle-btn" id="btnPieMacro" onclick="togglePieChart('macro')"&gt;מקצועות&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="chart-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;canvas id="categoryPieChart"&gt;&lt;/canvas&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="yellow-header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;STUDY TRENDS&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="chart-toggle-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="chart-toggle-btn active" id="btnHours" onclick="toggleChart('hours')"&gt;Hours&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="chart-toggle-btn" id="btnSessions" onclick="toggleChart('sessions')"&gt;Sessions&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="chart-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;canvas id="trendBarChart"&gt;&lt;/canvas&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="box" style="grid-column: span 2;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="yellow-header"&gt;CONSISTENCY CALENDAR&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="padding-top: 20px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="display: flex; justify-content: space-between; align-items: center; max-width: 350px; margin: 0 auto 10px; direction: ltr;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="nav-arrow" onclick="changeCalendarMonth(-1)"&gt;&amp;#9664;&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="calendarMonthLabel" style="text-align: center; font-weight: bold; font-size: 18px;"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="nav-arrow" onclick="changeCalendarMonth(1)"&gt;&amp;#9654;&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="calendar-wrapper" style="margin-top: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="calendar-grid" id="dynamicCalendarGrid"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="box" style="grid-column: span 2;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="yellow-header"&gt;DATA INSIGHTS &amp; RECOMMENDATIONS&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="insights-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;ul style="padding-right: 0;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;🏆 &lt;strong&gt;היום המוצלח ביותר ללמידה:&lt;/strong&gt; &lt;span id="inBestDay" class="insight-highlight"&gt;מחשב...&lt;/span&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;⏳ &lt;strong&gt;אורך סשן אידיאלי:&lt;/strong&gt; &lt;span id="inIdealSession" class="insight-highlight"&gt;0 דקות&lt;/span&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;☕ &lt;strong&gt;אורך הפסקה אידיאלי:&lt;/strong&gt; &lt;span id="inIdealBreak" class="insight-highlight"&gt;0 דקות&lt;/span&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;li&gt;⏰ &lt;strong&gt;שעת התחלה אידיאלית:&lt;/strong&gt; להתחיל סביב השעה &lt;span id="inIdealStart" class="insight-highlight"&gt;00:00&lt;/span&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="strategy-box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>💡 &lt;strong&gt;האסטרטגיה המנצחת שלך:&lt;/strong&gt; &lt;span id="inStrategy"&gt;ממתין לנתונים...&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="newNotebookModal"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="modal-content"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 style="margin-top: 0;"&gt;יצירת מחברת חדשה&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="text-align: right; margin-top: 20px; font-weight: bold;"&gt;שם המחברת:&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="nnTitle" class="modal-input" placeholder="לדוגמה: סמסטר ב' 2026"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="text-align: right; font-weight: bold;"&gt;תיאור (אופציונלי):&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="nnDesc" class="modal-input" placeholder="מדעי המחשב וקוגניציה"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="modal-btn-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="modal-btn" onclick="document.getElementById('newNotebookModal').style.display='none'"&gt;ביטול&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="modal-btn primary" onclick="submitNewNotebook()"&gt;צור מחברת&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="js/data.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="js/analytics.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="js/ui.js"&gt;&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+    <div class="navbar">
+        <button class="nav-button active" id="btnNotebooks" onclick="switchTab('notebooks')">NOTEBOOKS</button>
+        <button class="nav-button" id="btnAnalytics" onclick="switchTab('analytics')">ANALYTICS</button>
+    </div>
+
+    <div id="appHeaderSection">
+        <div class="header-title">STUDY PLANNER</div>
+        <div class="sync-status" id="syncStatus">☁️ Connecting to Google Drive...</div>
+    </div>
+
+    <div id="notebooksGridView" class="container" style="display: block;">
+        <div class="notebook-grid" id="notebookGridContainer"></div>
+        <div style="grid-column: span 2;">
+            <button class="btn-import" onclick="importMassive2025Data()">📄 שאב מסד נתונים מלא (סמסטר ב' 2025)</button>
+        </div>
+    </div>
+
+    <div id="notebookDetailView" class="single-col-container">
+        <div class="top-nav-row">
+            <button class="back-btn" onclick="switchTab('notebooks')">🔙 חזרה למחברות</button>
+            <button class="delete-nb-btn" onclick="deleteCurrentNotebook()">🗑️ מחיקת מחברת</button>
+        </div>
+        
+        <div class="notebook-header-card" style="width: 100%; box-sizing: border-box;">
+            <div class="notebook-title" id="detailNotebookTitle">Notebook Name</div>
+            <div id="detailNotebookDesc">Description</div>
+            <div style="margin-top: 20px; border-top: 1px dashed #000; padding-top: 15px; text-align: right; direction: rtl;">
+                <div style="font-weight: bold; margin-bottom: 15px; font-size: 16px;">קטגוריות למידה / קורסים:</div>
+                <ol id="categoryListContainer" style="margin: 0; padding-right: 25px; font-family: inherit; text-align: right;"></ol>
+                <div style="margin-top: 15px; text-align: right;">
+                    <button onclick="addCategoryRow()" style="background: #fff; border: 2px dashed #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s; margin-left: 5px;">+ שורה נוספת</button>
+                    <button onclick="saveNotebookCategoriesBtn()" style="background: #000; color: #fff; border: 2px solid #000; padding: 6px 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 12px; transition: 0.2s;">שמור קטגוריות</button>
+                </div>
+                <div id="catSaveFeedback" style="color: green; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;">הקטגוריות נשמרו בהצלחה!</div>
+            </div>
+        </div>
+
+        <div class="page-list">
+            <h3 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;">דפי למידה קיימים</h3>
+            <div id="savedPagesContainer"></div>
+            <button class="btn-black" onclick="createNewPage()">+ צור דף למידה יומי חדש</button>
+        </div>
+    </div>
+
+    <div id="plannerView" class="container" oninput="saveCurrentData()" onchange="saveCurrentData()">
+        <button class="back-btn" style="grid-column: span 2; padding-bottom: 20px;" onclick="openNotebook(currentNotebookId)">🔙 חזרה למחברת</button>
+        <input type="hidden" id="activeDateKey">
+
+        <div>
+            <div class="box flex-row">
+                <div class="yellow-header" style="padding: 8px 15px; border-bottom: none; border-right: 1px solid #000; text-align: left;">DATE:</div>
+                <input type="text" id="currentPlannerDate" class="save-target" style="flex: 1; padding: 8px; font-weight:bold;" readonly>
+            </div>
+            
+            <div class="box">
+                <div class="yellow-header">SCHEDULE</div>
+                <script>
+                    for(let i=1; i<=10; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="task-label">Task ${i}</div>
+                            <div class="schedule-middle-col"><input type="text" class="sched-task save-target" placeholder="..."></div>
+                            <div class="schedule-right-col">
+                                <select class="sched-cat save-target"><option value=""></option></select>
+                            </div>
+                        </div>`);
+                    }
+                </script>
+            </div>
+            
+            <div class="box">
+                <div class="yellow-header" style="font-size: 16px;">Todo</div>
+                <script>
+                    for(let i=1; i<=5; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="checkbox-cell" style="border-right: 1px solid #000;"><input type="checkbox" class="todo-check save-target"></div>
+                            <input type="text" class="todo-text save-target" style="width: 100%; padding: 8px; box-sizing: border-box;">
+                        </div>`);
+                    }
+                </script>
+            </div>
+            <div class="box">
+                <div class="yellow-header">REWARD</div>
+                <input type="text" id="rewardInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;" placeholder="...">
+            </div>
+        </div>
+
+        <div>
+            <div class="box">
+                <div class="yellow-header">STUDY SESSION GOAL</div>
+                <input type="text" id="goalInput" class="save-target" style="width: 100%; padding: 20px 10px; border: none; outline: none; box-sizing: border-box; text-align: center;">
+            </div>
+            <div class="box">
+                <div class="yellow-header">TODAY'S TOP THREE</div>
+                <script>
+                    for(let i=1; i<=3; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="number-cell" style="width: 30px; border-right: 1px solid #000;">${i}</div>
+                            <input type="text" class="top-three save-target" style="width: 100%; padding: 8px; box-sizing: border-box;">
+                        </div>`);
+                    }
+                </script>
+            </div>
+            <div class="box">
+                <div class="flex-row yellow-header" style="padding: 0;">
+                    <div style="width: 40px; border-right: 1px solid #000;"></div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center;">TASK NUMBER</div>
+                    <div style="width: 90px; padding: 8px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box;">START TIME</div>
+                    <div style="width: 90px; padding: 8px; box-sizing: border-box;">FINISH TIME</div>
+                </div>
+                <script>
+                    for(let i=1; i<=10; i++) {
+                        document.write(`
+                        <div class="row">
+                            <div class="checkbox-cell" style="width: 40px; border-right: 1px solid #000;"><input type="checkbox" class="track-check save-target"></div>
+                            <div class="number-cell" style="flex: 1; font-size: 14px;">Task ${i}</div>
+                            <div style="width: 90px; border-left: 1px solid #000; border-right: 1px solid #000; box-sizing: border-box; display: flex;">
+                                <input type="text" class="time-input start-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
+                            <div style="width: 90px; box-sizing: border-box; display: flex;">
+                                <input type="text" class="time-input finish-time save-target" style="width: 100%; padding: 8px; box-sizing: border-box; border: none;">
+                            </div>
+                        </div>`);
+                    }
+                </script>
+            </div>
+            <div class="box">
+                <div class="yellow-header">BREAK TIMES CHECK LIST</div>
+                <div class="flex-row" style="text-align: center;">
+                    <div class="break-box save-target" onclick="toggleBreak(this)">1</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">2</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">3</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">4</div>
+                    <div class="break-box save-target" onclick="toggleBreak(this)">5</div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="yellow-header">NOTES</div>
+                <div class="flex-row">
+                    <div class="notes-table">
+                        <div class="notes-cell notes-cell-right" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;">PHASE</div>
+                        <div class="notes-cell" style="background-color: #f9f9f9; font-weight: bold; padding: 8px;">TIME</div>
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Taken</div><div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Effect</div><div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
+                        <div class="notes-cell notes-cell-right" style="padding: 8px;">Start Work</div><div class="notes-cell"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
+                        <div class="notes-cell notes-cell-right no-border-bottom" style="padding: 8px;">Finish</div><div class="notes-cell no-border-bottom"><input type="text" class="time-input notes-time save-target" style="width: 100%; height: 100%; border: none; text-align: center; outline: none; background: transparent;"></div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+                        <div style="font-weight: bold; font-size: 20px; margin-bottom: 15px; text-align: center;">TOTAL STUDY TIME</div>
+                        <input type="text" id="totalTime" readonly placeholder="00:00" style="font-size: 28px; font-weight: bold; text-align: center; border-bottom: 2px dashed #000; width: 120px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="analyticsView" class="container">
+        <div style="grid-column: span 2; text-align: center; margin-bottom: 10px; margin-top: 10px;">
+            <select id="analyticsNotebookSelect" class="analytics-dropdown" onchange="changeAnalyticsNotebook()"></select>
+            <div style="color:#666; font-size: 14px; margin-top: 5px;">Analytics for this notebook</div>
+        </div>
+
+        <div class="time-filter">
+            <button class="nav-arrow" onclick="navigateTime(-1)">&#9664;</button>
+            <div style="display:flex; gap:10px;">
+                <button class="filter-btn" id="fltDay" onclick="setAnalyticsFilter('day')">יום</button>
+                <button class="filter-btn active" id="fltWeek" onclick="setAnalyticsFilter('week')">שבוע</button>
+                <button class="filter-btn" id="fltMonth" onclick="setAnalyticsFilter('month')">חודש</button>
+                <button class="filter-btn" id="fltAll" onclick="setAnalyticsFilter('all')">הכל</button>
+            </div>
+            <button class="nav-arrow" onclick="navigateTime(1)">&#9654;</button>
+        </div>
+        
+        <div id="analyticsDateLabel" style="grid-column: span 2; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px; color: #333;"></div>
+
+        <div style="grid-column: span 2; display: flex; gap: 20px;">
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">TOTAL HOURS</div>
+                <div class="stat-number" id="statTotalHours">0.0</div>
+                <div class="stat-label">Hours logged</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">DAILY AVERAGE</div>
+                <div class="stat-number" id="statDailyAvg">0.0</div>
+                <div class="stat-label">Hours per day</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">BEST DAY</div>
+                <div class="stat-number" id="statBestDay" style="font-size: 24px;">N/A</div>
+                <div class="stat-label">Most productive</div>
+            </div>
+            <div class="box" style="flex: 1; margin-bottom: 0;">
+                <div class="yellow-header">TOTAL SESSIONS</div>
+                <div class="stat-number" id="statTotalSessions">0</div>
+                <div class="stat-label">Blocks completed</div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="yellow-header">
+                <span>CATEGORY BREAKDOWN</span>
+                <div class="chart-toggle-group" style="left:5px; right:auto;">
+                    <button class="chart-toggle-btn active" id="btnPieDetail" onclick="togglePieChart('detail')">מפורט</button>
+                    <button class="chart-toggle-btn" id="btnPieMacro" onclick="togglePieChart('macro')">מקצועות</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="categoryPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="yellow-header">
+                <span>STUDY TRENDS</span>
+                <div class="chart-toggle-group">
+                    <button class="chart-toggle-btn active" id="btnHours" onclick="toggleChart('hours')">Hours</button>
+                    <button class="chart-toggle-btn" id="btnSessions" onclick="toggleChart('sessions')">Sessions</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="trendBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box" style="grid-column: span 2;">
+            <div class="yellow-header">CONSISTENCY CALENDAR</div>
+            <div style="padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 350px; margin: 0 auto 10px; direction: ltr;">
+                    <button class="nav-arrow" onclick="changeCalendarMonth(-1)">&#9664;</button>
+                    <div id="calendarMonthLabel" style="text-align: center; font-weight: bold; font-size: 18px;"></div>
+                    <button class="nav-arrow" onclick="changeCalendarMonth(1)">&#9654;</button>
+                </div>
+                <div class="calendar-wrapper" style="margin-top: 0;">
+                    <div class="calendar-grid" id="dynamicCalendarGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box" style="grid-column: span 2;">
+            <div class="yellow-header">DATA INSIGHTS & RECOMMENDATIONS</div>
+            <div class="insights-container">
+                <ul style="padding-right: 0;">
+                    <li>🏆 <strong>היום המוצלח ביותר ללמידה:</strong> <span id="inBestDay" class="insight-highlight">מחשב...</span></li>
+                    <li>⏳ <strong>אורך סשן אידיאלי:</strong> <span id="inIdealSession" class="insight-highlight">0 דקות</span></li>
+                    <li>☕ <strong>אורך הפסקה אידיאלי:</strong> <span id="inIdealBreak" class="insight-highlight">0 דקות</span></li>
+                    <li>⏰ <strong>שעת התחלה אידיאלית:</strong> להתחיל סביב השעה <span id="inIdealStart" class="insight-highlight">00:00</span></li>
+                </ul>
+                <div class="strategy-box">
+                    💡 <strong>האסטרטגיה המנצחת שלך:</strong> <span id="inStrategy">ממתין לנתונים...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="newNotebookModal">
+        <div class="modal-content">
+            <h2 style="margin-top: 0;">יצירת מחברת חדשה</h2>
+            <div style="text-align: right; margin-top: 20px; font-weight: bold;">שם המחברת:</div>
+            <input type="text" id="nnTitle" class="modal-input" placeholder="לדוגמה: סמסטר ב' 2026">
+            <div style="text-align: right; font-weight: bold;">תיאור (אופציונלי):</div>
+            <input type="text" id="nnDesc" class="modal-input" placeholder="מדעי המחשב וקוגניציה">
+            <div class="modal-btn-row">
+                <button class="modal-btn" onclick="document.getElementById('newNotebookModal').style.display='none'">ביטול</button>
+                <button class="modal-btn primary" onclick="submitNewNotebook()">צור מחברת</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/ui.js"></script>
 </body>
 </html>
